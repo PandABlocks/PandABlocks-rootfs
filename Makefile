@@ -120,7 +120,7 @@ DEVICE_TREE_DTB = $(BOOT_BUILD)/devicetree.dtb
 
 
 # Rule to create binary device tree from device tree source.
-$(DEVICE_TREE_DTB): devicetree.dts $(DTC)
+$(DEVICE_TREE_DTB): boot/devicetree.dts $(DTC)
 	$(DTC) -o $@ -O dtb -I dts $<
 
 # # Inverse rule to extract device tree source from blob.
@@ -159,7 +159,7 @@ u-boot-src: $(U_BOOT_SRC)
 # First stage bootloader image
 # This is managed here under source control, despite being a binary, because it
 # will never change and the build process is already recorded elsewhere.
-FSBL_ELF = $(PWD)/fsbl.elf
+FSBL_ELF = $(PWD)/boot/fsbl.elf
 
 
 $(BOOT_BUILD)/boot.bif:
