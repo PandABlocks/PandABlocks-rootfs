@@ -12,20 +12,15 @@ CROSS_COMPILE = arm-xilinx-linux-gnueabi-
 BINUTILS_DIR = /dls_sw/FPGA/Xilinx/SDK/2015.1/gnu/arm/lin/bin
 
 U_BOOT_TAG = xlnx-xilinx-v2015.1
+KERNEL_TAG = xilinx-v2015.1
 
+
+# Location of sources.
 TAR_REPO = /dls_sw/FPGA/Xilinx/OSLinux/tar-balls
 
 
-# The following are locations.
-#
+# Here is where the entire build occurs.
 ZYNQ_ROOT = /scratch/tmp/zynq-rootfs
-SRC_ROOT = $(ZYNQ_ROOT)/src
-BUILD_ROOT = $(ZYNQ_ROOT)/build
-
-# Bodge
-LINUX_BUILD = /scratch/targetOS/Zynq/build/linux-xlnx-xilinx-v2015.1/
-
-BOOT_BUILD = $(ZYNQ_ROOT)/boot
 
 
 # Allow local overrides of all the above.
