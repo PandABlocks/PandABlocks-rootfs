@@ -65,6 +65,12 @@ U_BOOT_ELF = $(U_BOOT_BUILD)/u-boot.elf
 
 MAKE_U_BOOT = $(EXPORTS) KBUILD_OUTPUT=$(U_BOOT_BUILD) $(MAKE) -C $(U_BOOT_SRC)
 
+DEVICE_TREE_DTB = $(BOOT_BUILD)/devicetree.dtb
+
+
+# Rule to create binary device tree from device tree source.
+$(DEVICE_TREE_DTB): devicetree.dts
+	$(DTC) -o $@ -O dtb -I dts $<
 
 $(U_BOOT_SRC):
 	mkdir -p $(SRC_ROOT)
@@ -77,7 +83,7 @@ $(U_BOOT_SRC):
 $(U_BOOT_ELF): $(U_BOOT_SRC)
 	mkdir -p $(U_BOOT_BUILD)
 	$(MAKE_U_BOOT) PandA_config
-	$(MAKE_U_BOOT)
+	$(MAKE_U_BOOT) EXT_DTB=$(DEVICE_TREE_DTB)
 	ln -s u-boot $(U_BOOT_ELF)
 
 u-boot: $(U_BOOT_ELF)
@@ -98,11 +104,7 @@ $(BOOT_BUILD)/boot.bif:
 $(BOOT_BUILD)/boot.bin: $(BOOT_BUILD)/boot.bif $(FSBL_ELF) $(U_BOOT_ELF)
 	cd $(BOOT_BUILD)  &&  $(BOOTGEN) -w -image boot.bif -o i $@
 
-# Rule to create binary device tree from device tree source.
-$(BOOT_BUILD)/devicetree.dtb: devicetree.dts
-	$(DTC) -o $@ -O dtb -I dts $<
-
-boot: $(BOOT_BUILD)/boot.bin $(BOOT_BUILD)/devicetree.dtb
+boot: $(BOOT_BUILD)/boot.bin $(DEVICE_TREE_DTB)
 
 # # Inverse rule to extract device tree source from blob.
 # %.dts: %.dtb
