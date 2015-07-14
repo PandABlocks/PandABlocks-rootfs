@@ -1,0 +1,19 @@
+This patch allows us to boot straight into a pre-loaded initramfs by
+specifying root=initramfs on the kernel command line.  I'm not sure why
+this seems to be necessary, but the point here is to bypass the attempt
+to load a block device over the initramfs that follows if CONFIG_BLOCK has
+been specified.
+
+diff --git a/init/do_mounts.c b/init/do_mounts.c
+index eb41008..6a7d10f 100644
+--- a/init/do_mounts.c
++++ b/init/do_mounts.c
+@@ -559,6 +559,8 @@ void __init prepare_namespace(void)
+ 
+ 	if (saved_root_name[0]) {
+ 		root_device_name = saved_root_name;
++		if (!strcmp(root_device_name, "initramfs"))
++			goto out;
+ 		if (!strncmp(root_device_name, "mtd", 3) ||
+ 		    !strncmp(root_device_name, "ubi", 3)) {
+ 			mount_block_root(root_device_name, root_mountflags);

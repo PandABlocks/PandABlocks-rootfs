@@ -81,6 +81,7 @@ UIMAGE = $(KERNEL_BUILD)/arch/arm/boot/uImage
 $(KERNEL_SRC):
 	mkdir -p $(SRC_ROOT)
 	tar xzf $(TAR_REPO)/linux-$(KERNEL_TAG).tgz -C $(SRC_ROOT)
+	patch -p1 -d $(KERNEL_SRC) <kernel/initramfs.patch
 	chmod -R a-w $(KERNEL_SRC)
 
 $(KERNEL_BUILD)/.config: $(KERNEL_CONFIG) $(KERNEL_SRC)
@@ -140,7 +141,7 @@ $(U_BOOT_ELF) $(U_BOOT_TOOLS)/mkimage: $(U_BOOT_SRC) $(DEVICE_TREE_DTB)
 	mkdir -p $(U_BOOT_BUILD)
 	$(MAKE_U_BOOT) PandA_config
 	$(MAKE_U_BOOT) EXT_DTB=$(DEVICE_TREE_DTB)
-	ln -s u-boot $(U_BOOT_ELF)
+	ln -sf u-boot $(U_BOOT_ELF)
 
 u-boot: $(U_BOOT_ELF)
 u-boot-src: $(U_BOOT_SRC)
