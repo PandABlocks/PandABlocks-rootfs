@@ -1,0 +1,25 @@
+# Kernel initramfs definition.  This is a minimal image with just enough to do
+# what we need to prepare to run the true system.
+
+TOOLCHAIN = xlnx-zynq
+
+PACKAGES += busybox
+busybox_CONFIG = $(configdir)/busybox.config
+busybox_VERSION = 1.23.2
+
+PACKAGES += e2fsprogs
+e2fsprogs_VERSION = 1.42.13
+
+PACKAGES += dosfstools
+dosfstools_VERSION = 3.0.26
+
+SKELETON = $(configdir)/file-list
+OPTIONS =
+EXTRA_LIBS =
+
+
+
+final-install:
+	$(install) $(configdir)/init /
+
+# vim: set filetype=make:

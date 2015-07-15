@@ -1,0 +1,44 @@
+#!/bin/sh
+
+echo Startup script
+
+error()
+{
+    echo "$@"
+    echo Unable to continue
+    exit
+}
+
+
+# Get our basic working environment up.
+mount -t proc proc /proc
+mount -t sysfs sysfs /sys
+mdev -s
+
+# First discover the state of the SD card.
+[ -e /dev/mmcblk0 ] || error Cannot find SD card!
+fdisk -l /dev/mmcblk0
+
+# Sort out the boot partition.  First run fsck on it and then mount it.
+fsck.fat -a /dev/mmcblk0p1
+mount /dev/mmcblk0p1 /mnt
+
+# Should be fresh partition...
+mount -t tmpfs boot /rootfs
+
+# Install the file system
+cd /rootfs
+gunzip -c /mnt/imagefile.cpio.gz | cpio -i
+
+
+exec /bin/sh
+
+
+# Umount everything and switch to new system
+
+umount /mnt
+
+umount /sys
+umount /proc
+exec switch_root -c /dev/console /rootfs /sbin/init
+
