@@ -81,7 +81,6 @@ UIMAGE = $(KERNEL_BUILD)/arch/arm/boot/uImage
 $(KERNEL_SRC):
 	mkdir -p $(SRC_ROOT)
 	tar xzf $(TAR_REPO)/linux-$(KERNEL_TAG).tgz -C $(SRC_ROOT)
-	patch -p1 -d $(KERNEL_SRC) <kernel/initramfs.patch
 	chmod -R a-w $(KERNEL_SRC)
 
 $(KERNEL_BUILD)/.config: $(KERNEL_CONFIG) $(KERNEL_SRC)
