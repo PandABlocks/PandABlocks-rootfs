@@ -1,13 +1,23 @@
 #!/bin/sh
 
-echo Startup script
-
 error()
 {
     echo "$@"
     echo Unable to continue
     exit
 }
+
+SD=/dev/mmcblk0
+SD_boot=${SD}p1
+SD_data=${SD}p2
+SD_rootfs=${SD}p3
+
+
+# We'll work in somewhat arbitrary parameters of cylinders (because fdisk gets
+# all peculiar if we don't).  A cylinder is 128*32 blocks, because we can't
+# make it any larger, which is 8032KB.  Our partition sizes are in cylinders
+P1_SIZE=64
+P2_SIZE=64
 
 
 # Get our basic working environment up.
@@ -16,29 +26,120 @@ mount -t sysfs sysfs /sys
 mdev -s
 
 # First discover the state of the SD card.
-[ -e /dev/mmcblk0 ] || error Cannot find SD card!
-fdisk -l /dev/mmcblk0
+[ -e $SD ] || error Cannot find SD card!
+fdisk -l $SD
 
 # Sort out the boot partition.  First run fsck on it and then mount it.
-fsck.fat -a /dev/mmcblk0p1
-mount /dev/mmcblk0p1 /mnt
+fsck.fat -a $SD_boot
+mount $SD_boot
 
-# Should be fresh partition...
-mount -t tmpfs boot /rootfs
-
-# Install the file system
-cd /rootfs
-gunzip -c /mnt/imagefile.cpio.gz | cpio -i
-
-
-exec /bin/sh
+# # Should be fresh partition...
+# mount -t tmpfs boot /rootfs
+# 
+# # Install the file system
+# cd /rootfs
+# gunzip -c /mnt/imagefile.cpio.gz | cpio -i
 
 
-# Umount everything and switch to new system
 
-umount /mnt
+rootfs_present()
+{
+    read -p 'Shall I repartition?'
+    if [ "$REPLY" = yes ]; then
+        return 1
+    elif [ "$REPLY" = sh ]; then
+        exec /bin/sh
+    else
+        mount /rootfs
+        return 0
+    fi
 
-umount /sys
-umount /proc
-exec switch_root -c /dev/console /rootfs /sbin/init
 
+    [ -e $SD_rootfs ]  &&
+    mount /rootfs  &&
+    [ -e /rootfs/etc/version ]
+}
+
+
+partition_sd_card()
+{
+    # First grab a copy of what's currently on the card and unmount it
+    echo Taking snapshot of existing boot partition
+    tar cf /tmp/boot.tar -C /mnt .  &&
+    umount /mnt  &&
+
+    cat <<EOF | sed 's/ *#.*//' | fdisk -H128 -S32 $SD  &&
+o       # Reset partition table
+n       # Create new partition
+p       # Primary
+1       # number 1
+
+$P1_SIZE
+t       # Set partition type
+b       # Win95 FAT32
+n
+p
+2
+
++$P2_SIZE
+n
+p
+3
+
+
+p
+w       # Write the new partition
+EOF
+
+    # Create FAT file system and restore the original data
+    mkfs.vfat -v -n BOOT $SD_boot  &&
+    mount /mnt  &&
+    tar xf /tmp/boot.tar -C /mnt
+}
+
+create_sd_file_systems()
+{
+    touch /etc/mtab  &&     # Suppresses message from mkfs.ext4
+    mkfs.ext4 -F $SD_rootfs  &&
+    mkfs.ext4 -F $SD_data  &&
+    echo ok
+}
+
+
+install_rootfs()
+{
+    mount /rootfs
+    cd /rootfs
+    gunzip -c /mnt/imagefile.cpio.gz | cpio -i
+    chroot /rootfs /sbin/ldconfig
+    sync
+    cd /
+}
+
+
+# Clean up current environment so switching to the new rootfs is as clean as
+# possible.
+switch_to_rootfs()
+{
+    mount -o remount,ro /rootfs
+
+    umount /mnt
+    umount /sys
+    umount /proc
+    exec switch_root -c /dev/console /rootfs /sbin/init
+}
+
+
+
+set -x
+
+
+
+# Work out whether we need to install
+if ! rootfs_present; then
+    partition_sd_card
+    create_sd_file_systems
+    install_rootfs
+fi
+
+switch_to_rootfs

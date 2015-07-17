@@ -1,1 +1,2 @@
 /dev/mmcblk0p1  /mnt    vfat    defaults    1   1
+/dev/mmcblk0p2  /rootfs ext4    defaults    1   1
