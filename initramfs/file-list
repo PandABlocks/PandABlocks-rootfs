@@ -4,7 +4,6 @@ d 755 /bin
 d 755 /dev
 d 755 /etc
 d 755 /lib
-d 755 /mnt
 d 555 /proc
 d 755 /sys
 d 755 /sbin
@@ -15,8 +14,13 @@ d 755 /usr/sbin
 
 c 600 /dev/console 5 1
 
-# This is where the target system will be mounted
+# Mount points
 d 755 /rootfs
+d 755 /boot
+d 755 /qspi
 
 # fsck wants an fstab!
 f 644 /etc/fstab
+
+# Finally install our init script
+f 755 /init

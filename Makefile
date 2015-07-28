@@ -47,8 +47,7 @@ EXPORT = $(foreach var,$(1),$(var)=$(call SAFE_QUOTE,$($(var))))
 EXPORTS = $(call EXPORT,CROSS_COMPILE ARCH)
 
 # Command for building rootfs.  Need to specify both action and target name.
-MAKE_ROOTFS = \
-    $(ROOTFS_TOP)/rootfs $2 TARGET=$(CURDIR)/$1 ROOTFS_ROOT=$(ZYNQ_ROOT)
+MAKE_ROOTFS = $(ROOTFS_TOP)/rootfs -r $(ZYNQ_ROOT) -t $(CURDIR)/$1 $2
 
 %.gz: %
 	gzip -c -1 $< >$@
@@ -105,6 +104,7 @@ $(DTC): $(KERNEL_BUILD)/.config
 
 $(UIMAGE): $(KERNEL_BUILD)/.config $(U_BOOT_TOOLS)/mkimage
 	$(MAKE_KERNEL) uImage UIMAGE_LOADADDR=$(UIMAGE_LOADADDR)
+	touch $@
 
 
 kernel-menuconfig: $(KERNEL_BUILD)/.config

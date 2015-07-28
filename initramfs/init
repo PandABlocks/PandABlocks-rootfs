@@ -1,23 +1,15 @@
 #!/bin/sh
 
-error()
+panic()
 {
     echo "$@"
     echo Unable to continue
     exit
 }
 
-SD=/dev/mmcblk0
-SD_boot=${SD}p1
-SD_data=${SD}p2
-SD_rootfs=${SD}p3
 
+IMAGEFILE=/boot/imagefile.cpio.gz
 
-# We'll work in somewhat arbitrary parameters of cylinders (because fdisk gets
-# all peculiar if we don't).  A cylinder is 128*32 blocks, because we can't
-# make it any larger, which is 8032KB.  Our partition sizes are in cylinders
-P1_SIZE=64
-P2_SIZE=64
 
 
 # Get our basic working environment up.
@@ -25,39 +17,79 @@ mount -t proc proc /proc
 mount -t sysfs sysfs /sys
 mdev -s
 
-# First discover the state of the SD card.
-[ -e $SD ] || error Cannot find SD card!
-fdisk -l $SD
 
-# Sort out the boot partition.  First run fsck on it and then mount it.
-fsck.fat -a $SD_boot
-mount $SD_boot
-
-# # Should be fresh partition...
-# mount -t tmpfs boot /rootfs
-# 
-# # Install the file system
-# cd /rootfs
-# gunzip -c /mnt/imagefile.cpio.gz | cpio -i
+# ------------------------------------------------------------------------------
+#
+#   SPI configuration and MAC address
+#
+# Here we ensure that the data partition on the QSPI flash is configured with a
+# JFFS2 file system and that the file /qspi/MAC has a valid MAC address.  If
+# not, the user will need to enter one.
 
 
-
-rootfs_present()
+validate_mac_address()
 {
-    read -p 'Shall I repartition?'
-    if [ "$REPLY" = yes ]; then
-        return 1
-    elif [ "$REPLY" = sh ]; then
-        exec /bin/sh
-    else
-        mount /rootfs
-        return 0
-    fi
+    [ "$(echo "$1" |
+         sed 's/OK/xx/g; s/[0-9A-Z][0-9A-Z]/OK/g')" = 'OK:OK:OK:OK:OK:OK' ]
+}
+
+check_mac_address()
+{
+    mount /qspi  &&
+    [ -r /qspi/MAC ]  &&
+    [ $(stat -c %s /qspi/MAC) = 18 ]  &&
+    validate_mac_address "$(cat /qspi/MAC)"
+}
+
+format_qspi()
+{
+    umount /qspi
+    flash_erase -j -q /dev/mtd2 0 0  &&
+    mount /qspi
+}
+
+read_mac_address()
+{
+    while :; do
+        read -p 'Enter MAC address: '
+        if validate_mac_address "$REPLY"; then
+            echo "$REPLY" >/qspi/MAC
+            return
+        else
+            echo MAC address "$REPLY" failed validation
+        fi
+    done
+}
 
 
-    [ -e $SD_rootfs ]  &&
-    mount /rootfs  &&
-    [ -e /rootfs/etc/version ]
+if ! check_mac_address; then
+    format_qspi  &&
+    read_mac_address
+fi
+umount /qspi
+
+
+
+# ------------------------------------------------------------------------------
+#
+#   SD card partitioning
+#
+# Here we check for the presence of the rootfs -- if present we assume that
+# partitioning is good unless the file /boot/repartition exists.
+
+# All partition sizes in units of "cylinders" of 128x32 512 byte blocks, or 2MB
+#
+P1_SIZE=64          # /boot     128MB
+P2_SIZE=256         # /         512MB
+# Remaining partition occupies rest of device
+
+
+need_to_partition()
+{
+    # Enable forced repartition, but only if a rootfs imagefile is present.
+    [ -e /boot/repartition -a -e $IMAGEFILE ]  ||
+    # Otherwise try to mount the rootfs and check for the version file
+    ! mount /rootfs || ! [ -e /rootfs/etc/version ]
 }
 
 
@@ -65,10 +97,10 @@ partition_sd_card()
 {
     # First grab a copy of what's currently on the card and unmount it
     echo Taking snapshot of existing boot partition
-    tar cf /tmp/boot.tar -C /mnt .  &&
-    umount /mnt  &&
+    tar cf /tmp/boot.tar -C /boot .  &&
+    umount /boot  &&
 
-    cat <<EOF | sed 's/ *#.*//' | fdisk -H128 -S32 $SD  &&
+    cat <<EOF | sed 's/ *#.*//' | fdisk -H128 -S32 /dev/mmcblk0  &&
 o       # Reset partition table
 n       # Create new partition
 p       # Primary
@@ -92,54 +124,58 @@ w       # Write the new partition
 EOF
 
     # Create FAT file system and restore the original data
-    mkfs.vfat -v -n BOOT $SD_boot  &&
-    mount /mnt  &&
-    tar xf /tmp/boot.tar -C /mnt
+    mkfs.vfat -v -n BOOT /dev/mmcblk0p1  &&
+    mount /boot  &&
+    tar xf /tmp/boot.tar -C /boot  &&
+
+    # Create the data file system -- the rootfs file system will be created at
+    # the next step.
+    mkfs.ext4 -F /dev/mmcblk0p3
 }
 
-create_sd_file_systems()
-{
-    touch /etc/mtab  &&     # Suppresses message from mkfs.ext4
-    mkfs.ext4 -F $SD_rootfs  &&
-    mkfs.ext4 -F $SD_data  &&
-    echo ok
-}
 
+mount /boot  ||  panic 'Unable to mount boot partition!'
+if need_to_partition; then
+    umount /rootfs
+    partition_sd_card
+fi
+
+
+# ------------------------------------------------------------------------------
+#
+#   Install rootfs
+#
+# If the imagefile is present then install it and delete from disk.
 
 install_rootfs()
 {
-    mount /rootfs
-    cd /rootfs
-    gunzip -c /mnt/imagefile.cpio.gz | cpio -i
-    chroot /rootfs /sbin/ldconfig
-    sync
+    umount /rootfs
+
+    mkfs.ext4 -F /dev/mmcblk0p2  &&
+    mount /rootfs  &&
+    cd /rootfs  &&
+    gunzip -c $IMAGEFILE | cpio -i  &&
+    # This is best run once, here is a good time to do it.
+    chroot /rootfs /sbin/ldconfig  &&
     cd /
 }
 
-
-# Clean up current environment so switching to the new rootfs is as clean as
-# possible.
-switch_to_rootfs()
-{
-    mount -o remount,ro /rootfs
-
-    umount /mnt
-    umount /sys
-    umount /proc
-    exec switch_root -c /dev/console /rootfs /sbin/init
-}
-
-
-
-set -x
-
-
-
-# Work out whether we need to install
-if ! rootfs_present; then
-    partition_sd_card
-    create_sd_file_systems
+if [ -e $IMAGEFILE ]; then
     install_rootfs
+    rm $IMAGEFILE
+    mount -o remount,ro /rootfs
+else
+    mount -o ro /rootfs
 fi
 
-switch_to_rootfs
+
+# ------------------------------------------------------------------------------
+#
+#   Switch to rootfs
+#
+
+sync
+umount /boot
+umount /sys
+umount /proc
+exec switch_root -c /dev/console /rootfs /sbin/init

@@ -9,17 +9,20 @@ busybox_VERSION = 1.23.2
 
 PACKAGES += e2fsprogs
 e2fsprogs_VERSION = 1.42.13
+e2fsprogs_INSTALL_FILES = /sbin/fsck.ext4 /sbin/mkfs.ext4
 
 PACKAGES += dosfstools
 dosfstools_VERSION = 3.0.26
+dosfstools_INSTALL_FILES = fsck.fat fsck.vfat
 
+PACKAGES += mtd-utils
+mtd-utils_VERSION = 1.5.1
+mtd-utils_INSTALL_FILES = flash_erase
+
+# This is a bare bones install which only executes an init script before calling
+# pivot_root.
 SKELETON = $(configdir)/file-list
 OPTIONS =
 EXTRA_LIBS =
-
-
-
-final-install:
-	$(install) $(configdir)/init /
 
 # vim: set filetype=make:

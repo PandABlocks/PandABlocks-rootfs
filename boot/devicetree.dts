@@ -245,13 +245,8 @@
 				};
 
 				partition@0x00520000 {
-					label = "kernel";
-					reg = <0x520000 0xa80000>;
-				};
-
-				partition@0x00fa0000 {
-					label = "spare";
-					reg = <0xfa0000 0x0>;
+					label = "data";
+					reg = <0x520000 0xae0000>;
 				};
 			};
 		};
