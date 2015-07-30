@@ -9,7 +9,6 @@ default: boot
 
 SRC_ROOT = $(ZYNQ_ROOT)/src
 BUILD_ROOT = $(ZYNQ_ROOT)/build
-BOOT = $(ZYNQ_ROOT)/boot
 
 U_BOOT_BUILD = $(BUILD_ROOT)/u-boot
 KERNEL_BUILD = $(BUILD_ROOT)/linux
@@ -185,11 +184,8 @@ $(INITRAMFS): $(INITRAMFS_CPIO).gz $(U_BOOT_TOOLS)/mkimage
 initramfs-menuconfig:
 	$(call MAKE_ROOTFS,initramfs,package busybox menuconfig)
 
-initramfs-save-config:
-	cp $(INITRAMFS_O)/packages/busybox/.config initramfs/busybox.config
-
 initramfs-busybox:
-	$(call MAKE_ROOTFS,initramfs,package busybox)
+	$(call MAKE_ROOTFS,initramfs,package busybox) KEEP_BUILD=1
 
 
 initramfs: $(INITRAMFS)
@@ -237,7 +233,7 @@ $(BOOT_BUILD)/boot.bin: $(BOOT_BUILD)/boot.bif $(FSBL_ELF) $(U_BOOT_ELF)
 	cd $(BOOT_BUILD)  &&  $(BOOTGEN) -w -image boot.bif -o i $@
 
 boot: $(BOOT_FILES)
-	mkdir -p $(BOOT)
-	cp $^ $(BOOT)
+	mkdir -p $(BOOT_IMAGE)
+	cp $^ $(BOOT_IMAGE)
 
 .PHONY: boot
