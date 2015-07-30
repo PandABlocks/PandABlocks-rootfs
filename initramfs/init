@@ -1,15 +1,6 @@
 #!/bin/sh
 
-panic()
-{
-    echo "$@"
-    echo Unable to continue
-    exit
-}
-
-
 IMAGEFILE=/boot/imagefile.cpio.gz
-
 
 
 # Get our basic working environment up.
@@ -20,7 +11,62 @@ mdev -s
 
 # ------------------------------------------------------------------------------
 #
-#   SPI configuration and MAC address
+#   Status Indicator
+#
+# We use an LED to indicate boot progress and whether there's been a problem.
+
+panic()
+{
+    echo "$@"
+    echo Unable to continue
+    touch /tmp/panic
+    exec /bin/sh
+}
+
+tick()
+{
+    echo 1 >/sys/class/gpio/gpio953/value
+    usleep ${1}000
+    echo 0 >/sys/class/gpio/gpio953/value
+    usleep ${2}000
+}
+
+ticker()
+{
+    while :; do
+        if [ -e /tmp/panic ]; then
+            # Urgent panic!
+            tick 100 100; tick 100 100; tick 100 300    # S
+            tick 300 100; tick 300 100; tick 300 300    # O
+            tick 100 100; tick 100 100; tick 100 700    # S
+        elif [ -e /tmp/mac ]; then
+            tick 600 200; tick 600 1000                 # M
+        else
+            # Default action: fast on/off ticks
+            tick 100 100
+        fi
+    done
+}
+
+stop_ticker()
+{
+    kill $TICKER_ID
+    wait $TICKER_ID
+    echo 0 >/sys/class/gpio/gpio953/value
+}
+
+
+# Enable the LED
+echo 953 >/sys/class/gpio/export
+echo out >/sys/class/gpio/gpio953/direction
+
+ticker &
+TICKER_ID=$!
+
+
+# ------------------------------------------------------------------------------
+#
+#   QSPI configuration and MAC address
 #
 # Here we ensure that the data partition on the QSPI flash is configured with a
 # JFFS2 file system and that the file /qspi/MAC has a valid MAC address.  If
@@ -43,31 +89,38 @@ check_mac_address()
 
 format_qspi()
 {
-    umount /qspi
+    mountpoint /qspi  &&  umount /qspi
+
+    echo Erasing QSPI
     flash_erase -j -q /dev/mtd2 0 0  &&
     mount /qspi
 }
 
 read_mac_address()
 {
+    touch /tmp/mac
     while :; do
+        echo
+        echo ------------------------------------
         read -p 'Enter MAC address: '
         if validate_mac_address "$REPLY"; then
-            echo "$REPLY" >/qspi/MAC
-            return
+            break
         else
             echo MAC address "$REPLY" failed validation
         fi
     done
+
+    echo "$REPLY" >/qspi/MAC
+    rm /tmp/mac
 }
 
+fdisk -l /dev/mmcblk0
 
 if ! check_mac_address; then
     format_qspi  &&
     read_mac_address
 fi
 umount /qspi
-
 
 
 # ------------------------------------------------------------------------------
@@ -77,67 +130,105 @@ umount /qspi
 # Here we check for the presence of the rootfs -- if present we assume that
 # partitioning is good unless the file /boot/repartition exists.
 
-# All partition sizes in units of "cylinders" of 128x32 512 byte blocks, or 2MB
-#
-P1_SIZE=64          # /boot     128MB
-P2_SIZE=256         # /         512MB
-# Remaining partition occupies rest of device
 
+mount_boot()
+{
+    mount /boot  ||
+    mount -t vfat /dev/mmcblk0 /boot  ||
+    panic 'Unable to mount boot partition!'
+}
 
 need_to_partition()
 {
     # Enable forced repartition, but only if a rootfs imagefile is present.
     [ -e /boot/repartition -a -e $IMAGEFILE ]  ||
-    # Otherwise try to mount the rootfs and check for the version file
+    # Otherwise try to mount the rootfs and check for the version file.
     ! mount /rootfs || ! [ -e /rootfs/etc/version ]
+
+    # Unmount the rootfs at this point to simplify later processing.
+    local result=$?
+    mountpoint /rootfs  &&  umount /rootfs
+    return $result
 }
 
+backup_sd_card()
+{
+    tar cf /tmp/boot.tar -C /boot .  &&
+    umount /boot  ||
+
+    panic 'SD card backup failed'
+}
 
 partition_sd_card()
 {
-    # First grab a copy of what's currently on the card and unmount it
-    echo Taking snapshot of existing boot partition
-    tar cf /tmp/boot.tar -C /boot .  &&
-    umount /boot  &&
+    # We need to partition in rather strange units: "cylinders" of 255*63
+    # blocks.  Discover the device size and convert to cylinders.
+    SIZE=$(cat /sys/block/mmcblk0/size)  &&
+    CYLINDERS=$((SIZE / 255 / 63))  &&
 
-    cat <<EOF | sed 's/ *#.*//' | fdisk -H128 -S32 /dev/mmcblk0  &&
-o       # Reset partition table
+    dd if=/dev/zero of=/dev/mmcblk0 count=2  &&
+    cat <<EOF | sed 's/ *#.*//' | fdisk -H255 -S63 /dev/mmcblk0  &&
+x       # Advanced menu
+c       # Force number of cylinders
+$CYLINDERS
+r
 n       # Create new partition
 p       # Primary
 1       # number 1
 
-$P1_SIZE
-t       # Set partition type
-b       # Win95 FAT32
++128M   # 128M for /boot
 n
 p
 2
 
-+$P2_SIZE
++512M   # 512M for /
 n
 p
 3
 
-
+        # The rest for /opt
+a       # Make first partition bootable
+1
+t       # Set partition types
+1
+c       # /boot             Win95 FAT32
+t
+2
+83      # / (or /rootfs)    Linux
+t
+3
+83      # /opt              Linux
 p
 w       # Write the new partition
 EOF
 
+    # Reload the partition table and refresh the devices
+    hdparm -z /dev/mmcblk0  &&
+    mdev -s  ||
+
+    panic 'SD card partitioning failed'
+}
+
+format_sd_card()
+{
     # Create FAT file system and restore the original data
-    mkfs.vfat -v -n BOOT /dev/mmcblk0p1  &&
+    mkfs.vfat -v -n boot /dev/mmcblk0p1  &&
     mount /boot  &&
     tar xf /tmp/boot.tar -C /boot  &&
 
     # Create the data file system -- the rootfs file system will be created at
     # the next step.
-    mkfs.ext4 -F /dev/mmcblk0p3
+    mkfs.ext4 -F /dev/mmcblk0p3  ||
+
+    panic 'SD card formatting failed'
 }
 
 
-mount /boot  ||  panic 'Unable to mount boot partition!'
+mount_boot
 if need_to_partition; then
-    umount /rootfs
+    backup_sd_card
     partition_sd_card
+    format_sd_card
 fi
 
 
@@ -149,20 +240,23 @@ fi
 
 install_rootfs()
 {
-    umount /rootfs
-
     mkfs.ext4 -F /dev/mmcblk0p2  &&
     mount /rootfs  &&
     cd /rootfs  &&
     gunzip -c $IMAGEFILE | cpio -i  &&
+    cd /  &&
+
     # This is best run once, here is a good time to do it.
     chroot /rootfs /sbin/ldconfig  &&
-    cd /
+    # Prevent reinstall on next reboot
+    rm $IMAGEFILE  ||
+
+    panic 'Unable to install rootfs'
 }
+
 
 if [ -e $IMAGEFILE ]; then
     install_rootfs
-    rm $IMAGEFILE
     mount -o remount,ro /rootfs
 else
     mount -o ro /rootfs
@@ -173,6 +267,8 @@ fi
 #
 #   Switch to rootfs
 #
+
+stop_ticker
 
 sync
 umount /boot

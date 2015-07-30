@@ -21,6 +21,7 @@ d 755 /qspi
 
 # fsck wants an fstab!
 f 644 /etc/fstab
+l 777 /etc/mtab /proc/mounts
 
 # Finally install our init script
 f 755 /init
