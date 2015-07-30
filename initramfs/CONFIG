@@ -4,16 +4,12 @@
 TOOLCHAIN = xlnx-zynq
 
 PACKAGES += busybox
-busybox_CONFIG = $(configdir)/busybox.config
 busybox_VERSION = 1.23.2
+busybox_CONFIG = $(configdir)/busybox.config
 
 PACKAGES += e2fsprogs
 e2fsprogs_VERSION = 1.42.13
-e2fsprogs_INSTALL_FILES = /sbin/fsck.ext4 /sbin/mkfs.ext4
-
-PACKAGES += dosfstools
-dosfstools_VERSION = 3.0.26
-dosfstools_INSTALL_FILES = fsck.fat fsck.vfat
+e2fsprogs_INSTALL_FILES = /sbin/mkfs.ext4
 
 PACKAGES += mtd-utils
 mtd-utils_VERSION = 1.5.1
