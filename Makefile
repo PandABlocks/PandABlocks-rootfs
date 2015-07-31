@@ -45,12 +45,6 @@ EXPORT = $(foreach var,$(1),$(var)=$(call SAFE_QUOTE,$($(var))))
 # Both kernel and u-boot builds need CROSS_COMPILE and ARCH to be exported
 EXPORTS = $(call EXPORT,CROSS_COMPILE ARCH)
 
-# Command for building rootfs.  Need to specify both action and target name.
-MAKE_ROOTFS = $(ROOTFS_TOP)/rootfs -r $(ZYNQ_ROOT) -t $(CURDIR)/$1 $2
-
-%.gz: %
-	gzip -c -1 $< >$@
-
 
 # ------------------------------------------------------------------------------
 # Basic rules
@@ -163,6 +157,28 @@ u-boot-src: $(U_BOOT_SRC)
 
 
 # ------------------------------------------------------------------------------
+# File system building
+#
+
+# Command for building rootfs.  Need to specify both action and target name.
+MAKE_ROOTFS = $(ROOTFS_TOP)/rootfs -r $(ZYNQ_ROOT) -t $(CURDIR)/$1 $2
+
+%.gz: %
+	gzip -c -1 $< >$@
+
+# The following targets are to make it easier to edit the busybox configuration.
+#
+%-menuconfig: phony
+	$(call MAKE_ROOTFS,$*,package busybox menuconfig)
+
+%-busybox: phony
+	$(call MAKE_ROOTFS,$*,package busybox) KEEP_BUILD=1
+
+.PHONY: phony
+
+
+
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 # Initial Ramfs image (initramfs)
 #
 # This is the first image loaded by the kernel on booting.
@@ -179,22 +195,12 @@ $(INITRAMFS): $(INITRAMFS_CPIO).gz $(U_BOOT_TOOLS)/mkimage
 	mkimage -A arm -T ramdisk -C gzip -d $< $@
 
 
-# The following targets are to make it easier to edit the busybox configuration.
-#
-initramfs-menuconfig:
-	$(call MAKE_ROOTFS,initramfs,package busybox menuconfig)
-
-initramfs-busybox:
-	$(call MAKE_ROOTFS,initramfs,package busybox) KEEP_BUILD=1
-
-
 initramfs: $(INITRAMFS)
 
-.PHONY: initramfs initramfs-menuconfig initramfs-save-config
+.PHONY: initramfs
 
 
-
-# ------------------------------------------------------------------------------
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 # Root file system
 #
 # This is the installed target file system
@@ -205,6 +211,10 @@ ROOTFS = $(ROOTFS_CPIO).gz
 
 $(ROOTFS_CPIO): $(wildcard rootfs/*)
 	$(call MAKE_ROOTFS,rootfs,make)
+
+rootfs: $(ROOTFS)
+
+.PHONY: rootfs
 
 
 # ------------------------------------------------------------------------------
