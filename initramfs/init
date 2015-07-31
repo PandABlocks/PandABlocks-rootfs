@@ -89,7 +89,7 @@ check_mac_address()
 
 format_qspi()
 {
-    mountpoint /qspi  &&  umount /qspi
+    mountpoint -q /qspi  &&  umount /qspi
 
     echo Erasing QSPI
     flash_erase -j -q /dev/mtd2 0 0  &&
@@ -147,7 +147,7 @@ need_to_partition()
 
     # Unmount the rootfs at this point to simplify later processing.
     local result=$?
-    mountpoint /rootfs  &&  umount /rootfs
+    mountpoint -q /rootfs  &&  umount /rootfs
     return $result
 }
 
@@ -246,8 +246,6 @@ install_rootfs()
     gunzip -c $IMAGEFILE | cpio -i  &&
     cd /  &&
 
-    # This is best run once, here is a good time to do it.
-    chroot /rootfs /sbin/ldconfig  &&
     # Prevent reinstall on next reboot
     rm $IMAGEFILE  ||
 

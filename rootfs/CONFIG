@@ -55,10 +55,8 @@ CONSOLE_TTY = ttyPS0
 
 ROOT_PASSWORD = Jungle
 
-# The ldconfig cache will be initialised by the initramfs immediately after
-# installing the rootfs.
 OPTIONS += ldconfig
-LDCONFIG = install
+LDCONFIG = once
 
 
 # vim: set filetype=make:
