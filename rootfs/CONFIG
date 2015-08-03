@@ -19,17 +19,23 @@ NTP_CONF = n
 # Useful debugging tools
 PACKAGES += strace lsof
 
+PACKAGES += zlib
+PACKAGES += ncurses
+PACKAGES += readline
+PACKAGES += nano
+
 PACKAGES += procServ conserver
 PACKAGES += ethtool
 
 PACKAGES += Python
 PACKAGES += numpy
+PACKAGES += ws4py
 
 PACKAGES += cothread
 EPICS_ARCH = linux-arm_el
 
 
-# TERMS = xterm xterm-color screen vt100 vt102
+ncurses_TERMS = xterm xterm-color screen vt100 vt102
 
 
 # -----------------------------------------------------------------------------

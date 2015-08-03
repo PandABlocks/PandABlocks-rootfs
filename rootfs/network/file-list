@@ -11,5 +11,4 @@ l 777 /etc/ntp.conf             /var/run/network/ntp.conf
 l 777 /etc/network/interfaces   /var/run/network/interfaces
 
 # Location for our own udhcpc script
-d 755 /usr/share
 d 755 /usr/share/udhcpc
