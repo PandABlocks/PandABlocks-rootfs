@@ -12,3 +12,4 @@ l 777 /etc/network/interfaces   /var/run/network/interfaces
 
 # Location for our own udhcpc script
 d 755 /usr/share/udhcpc
+f 755 /usr/share/udhcpc/default.script default.script

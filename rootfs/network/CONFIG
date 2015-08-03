@@ -2,7 +2,6 @@
 
 option:
 	$(install-files) $(optiondir)/file-list
-	$(install) $(optiondir)/default.script /usr/share/udhcpc
 	$(startup) $(optiondir)/parse-config S010
 	$(startup) $(optiondir)/network
 
