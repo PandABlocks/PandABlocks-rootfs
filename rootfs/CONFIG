@@ -16,7 +16,6 @@ SSH_AUTHORIZED_KEYS = $(configdir)/authorized_keys
 PACKAGES += ntp
 NTP_CONF = n
 
-ifdef UNDEF
 # Useful debugging tools
 PACKAGES += strace lsof
 
@@ -28,7 +27,6 @@ PACKAGES += numpy
 
 PACKAGES += cothread
 EPICS_ARCH = linux-arm_el
-endif
 
 
 # TERMS = xterm xterm-color screen vt100 vt102

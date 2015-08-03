@@ -7,8 +7,8 @@ default: boot
 
 
 
-SRC_ROOT = $(ZYNQ_ROOT)/src
-BUILD_ROOT = $(ZYNQ_ROOT)/build
+SRC_ROOT = $(ZEBRA2_ROOT)/src
+BUILD_ROOT = $(ZEBRA2_ROOT)/build
 
 U_BOOT_BUILD = $(BUILD_ROOT)/u-boot
 KERNEL_BUILD = $(BUILD_ROOT)/linux
@@ -55,7 +55,7 @@ clean:
 
 clean-all: clean
 	-chmod -R +w $(SRC_ROOT)
-	rm -rf $(ZYNQ_ROOT)
+	rm -rf $(ZEBRA2_ROOT)
 
 .PHONY: clean clean-all
 
@@ -161,7 +161,7 @@ u-boot-src: $(U_BOOT_SRC)
 #
 
 # Command for building rootfs.  Need to specify both action and target name.
-MAKE_ROOTFS = $(ROOTFS_TOP)/rootfs -r $(ZYNQ_ROOT) -t $(CURDIR)/$1 $2
+MAKE_ROOTFS = $(ROOTFS_TOP)/rootfs -r $(ZEBRA2_ROOT) -t $(CURDIR)/$1 $2
 
 %.gz: %
 	gzip -c -1 $< >$@
@@ -183,7 +183,7 @@ MAKE_ROOTFS = $(ROOTFS_TOP)/rootfs -r $(ZYNQ_ROOT) -t $(CURDIR)/$1 $2
 #
 # This is the first image loaded by the kernel on booting.
 
-INITRAMFS_O = $(ZYNQ_ROOT)/targets/initramfs
+INITRAMFS_O = $(ZEBRA2_ROOT)/targets/initramfs
 INITRAMFS_CPIO = $(INITRAMFS_O)/image/imagefile.cpio
 INITRAMFS = $(INITRAMFS_O)/image/uinitramfs
 
@@ -205,7 +205,7 @@ initramfs: $(INITRAMFS)
 #
 # This is the installed target file system
 
-ROOTFS_O = $(ZYNQ_ROOT)/targets/rootfs
+ROOTFS_O = $(ZEBRA2_ROOT)/targets/rootfs
 ROOTFS_CPIO = $(ROOTFS_O)/image/imagefile.cpio
 ROOTFS = $(ROOTFS_CPIO).gz
 

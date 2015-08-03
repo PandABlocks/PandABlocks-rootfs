@@ -22,10 +22,10 @@ TAR_REPO = /dls_sw/FPGA/Xilinx/OSLinux/tar-balls
 
 
 # Here is where the entire build occurs.
-ZYNQ_ROOT = /scratch/tmp/zynq-rootfs
+ZEBRA2_ROOT = /scratch/tmp/zebra2-rootfs
 
 # The final boot image is assembled here
-BOOT_IMAGE = $(ZYNQ_ROOT)/boot
+BOOT_IMAGE = $(ZEBRA2_ROOT)/boot
 
 
 # Allow local overrides of all the above.
