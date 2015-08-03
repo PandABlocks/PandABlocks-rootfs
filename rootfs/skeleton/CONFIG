@@ -1,0 +1,6 @@
+option:
+	$(install-files) $(optiondir)/file-list
+	cat $(optiondir)/fstab >> $(sysroot)/etc/fstab
+
+
+# vim: set filetype=make:

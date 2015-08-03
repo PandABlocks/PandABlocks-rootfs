@@ -1,0 +1,15 @@
+# Files required to be installed for a standard network installation
+d 755 /etc/network
+d 755 /etc/network/if-pre-up.d
+d 755 /etc/network/if-up.d
+d 755 /etc/network/if-down.d
+d 755 /etc/network/if-post-down.d
+
+# Linked networking files
+l 777 /etc/resolv.conf          /var/run/network/resolv.conf
+l 777 /etc/ntp.conf             /var/run/network/ntp.conf
+l 777 /etc/network/interfaces   /var/run/network/interfaces
+
+# Location for our own udhcpc script
+d 755 /usr/share
+d 755 /usr/share/udhcpc

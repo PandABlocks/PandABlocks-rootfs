@@ -4,43 +4,32 @@
 # Package definitions for Zynq
 TOOLCHAIN = xlnx-zynq
 
-
-# This one is essential, nothing builds without it.
 PACKAGES += busybox
-# Components required for normal operation.
-PACKAGES += ntp dropbear portmap
+busybox_VERSION = 1.23.2
+busybox_CONFIG = $(configdir)/busybox.config
+INSTALL_UDHCPC_SCRIPT = n
+
+PACKAGES += dropbear
+INETD_ENABLE = y
+SSH_AUTHORIZED_KEYS = $(configdir)/authorized_keys
+
+PACKAGES += ntp
+NTP_CONF = n
+
+ifdef UNDEF
 # Useful debugging tools
 PACKAGES += strace lsof
-# Useful
-# PACKAGES += nano
-PACKAGES += mtd-utils
-PACKAGES += libpcap tcpdump
-# PACKAGES += screen
+
 PACKAGES += procServ conserver
-PACKAGES += i2c-tools
-# PACKAGES += libnet arping
 PACKAGES += ethtool
 
-CFLAGS_portmap += -fPIC
+PACKAGES += Python
+PACKAGES += numpy
 
-# Miscellaneous extra components of variable utility.
-# PACKAGES += bash
-# PACKAGES += sudo
-# PACKAGES += procinfo procinfo-ng
-# PACKAGES += testing
+PACKAGES += cothread
+EPICS_ARCH = linux-arm_el
+endif
 
-# Alternative lightweight NTP clients, not actually recommended.
-# PACKAGES += openntpd
-# PACKAGES += ntpclient
-
-# Lua
-# PACKAGES += readline lua
-
-
-CFLAGS_dropbear = -O2
-INETD_ENABLE = y
-DROPBEAR_KEYS = y
-SSH_AUTHORIZED_KEYS = $(configdir)/authorized_keys
 
 # TERMS = xterm xterm-color screen vt100 vt102
 
@@ -48,15 +37,17 @@ SSH_AUTHORIZED_KEYS = $(configdir)/authorized_keys
 # -----------------------------------------------------------------------------
 # Rootfs options and configuration
 
-ROOTFS_VERSION = DLS Xilinx Zynq Rootfs 0.1
+ROOTFS_VERSION = DLS Zebra 2 0.0
 
 CONSOLE_BAUD = 115200
 CONSOLE_TTY = ttyPS0
 
-ROOT_PASSWORD = Jungle
+ROOT_PASSWORD = PandA
 
 OPTIONS += ldconfig
 LDCONFIG = once
 
+OPTIONS += $(configdir)/skeleton
+OPTIONS += $(configdir)/network
 
 # vim: set filetype=make:

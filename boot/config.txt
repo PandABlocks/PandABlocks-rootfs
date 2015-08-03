@@ -1,0 +1,27 @@
+# This file contains configuration settings.  In this file network and other
+# settings can be adjusted.
+
+# If no ADDRESS field is specified DHCP will be used instead.
+# The ADDRESS field can be set to a four part dotted IP address followed by a
+# network specification thus:
+#
+#   ADDRESS = 172.23.252.202:255.255.240.0
+#   NETMASK = 255.255.240.0
+
+# If the ADDRESS field has been set then the GATEWAY and DNS fields should be
+# set:
+#
+#   GATEWAY = 172.23.240.254
+#   DNS = 172.23.5.13
+
+# The NTP server can be specified here:
+#
+#   NTP = 172.23.240.2
+
+
+ADDRESS = 172.23.252.202
+NETMASK = 255.255.240.0
+GATEWAY = 172.23.240.254
+DNS = 172.23.5.13 172.23.4.1 130.246.8.13
+DNS_SEARCH = diamond.ac.uk cs.diamond.ac.uk
+NTP = 172.23.240.2 172.23.199.1

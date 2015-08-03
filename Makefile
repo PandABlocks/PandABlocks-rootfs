@@ -233,6 +233,7 @@ BOOT_FILES += $(UIMAGE)                 # Kernel image
 BOOT_FILES += $(DEVICE_TREE_DTB)        # Device tree for kernel
 BOOT_FILES += $(INITRAMFS)              # Initial ramfs image
 BOOT_FILES += $(ROOTFS)                 # Target root file system
+BOOT_FILES += boot/config.txt           # Configuration settings for target
 
 
 $(BOOT_BUILD)/boot.bif:

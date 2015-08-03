@@ -1,0 +1,6 @@
+# Extra directories and files for target
+
+# Mount points
+d 755 /boot
+d 755 /opt
+d 755 /qspi

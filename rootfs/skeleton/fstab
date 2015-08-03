@@ -1,0 +1,3 @@
+/dev/mmcblk0p1  /boot       vfat    defaults                            0   0
+/dev/mmcblk0p3  /opt        ext4    noatime                             0   0
+mtd2        /qspi           jffs2   noatime                             0   0

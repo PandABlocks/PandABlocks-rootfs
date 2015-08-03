@@ -7,6 +7,8 @@ ROOTFS_TOP = $(HOME)/targetOS/rootfs
 
 BOOTGEN = /dls_sw/apps/FPGA/Xilinx/SDK/2015.1/bin/bootgen
 
+export EPICS_BASE = /dls_sw/epics/R3.14.12.3/base
+
 ARCH = arm
 CROSS_COMPILE = arm-xilinx-linux-gnueabi-
 BINUTILS_DIR = /dls_sw/FPGA/Xilinx/SDK/2015.1/gnu/arm/lin/bin

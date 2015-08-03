@@ -1,0 +1,19 @@
+#!/bin/sh
+
+# Simple network startup using configuration in /etc/network/interface.
+
+. /etc/init.d/functions
+
+do_start()
+{
+    ifup lo
+    [ -e /etc/hostname ] && hostname $(cat /etc/hostname)
+    ifup -a
+}
+
+do_stop()
+{
+    ifdown -a
+}
+
+do_start_stop "$@" networking

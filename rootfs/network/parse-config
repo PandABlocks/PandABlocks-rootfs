@@ -1,0 +1,122 @@
+#!/bin/sh
+
+# This script is run at startup to parse /boot/config.txt and configure the
+# network settings accordingly.
+
+VAR=/var/run/network
+
+
+# Returns the corresponding config file entry, or an empty string if not
+# present.
+parse_config()
+{
+    local config="$(
+        sed -n "/^$1[ \t]*=[ \t]*/{s///;s/[ \t]*$//;p}" </boot/config.txt)"
+    printf %s "$config"
+    [ -n "$config" ]
+}
+
+
+# Converts a dotted IP address into the corresponding number
+dotted_to_ip()
+{
+    local ip=0
+    local IFS=.
+    local octet
+    for octet in $1; do
+        ip=$(((ip << 8) | (octet & 0xff)))
+    done
+    echo $ip
+}
+
+# Converts a number to the corresponding dotted IP address
+ip_to_dotted()
+{
+    local n
+    local sep=
+    for n in 24 16 8 0; do
+        printf %s%d "$sep" $((($1>>n) & 0xff))
+        sep=.
+    done
+}
+
+compute_network()   { ip_to_dotted $(($1 & $2)); }
+compute_broadcast() { ip_to_dotted $(($1 | ~$2)); }
+
+
+# First set the MAC address
+ifconfig eth0 hw ether $(cat /qspi/MAC)
+
+
+mkdir -p $VAR
+
+# Prepare the interfaces file.
+{
+    cat <<EOF
+auto lo
+iface lo inet loopback
+
+auto eth0
+EOF
+
+    if ADDRESS="$(parse_config ADDRESS)"  &&
+       NETMASK="$(parse_config NETMASK)"  &&
+       GATEWAY="$(parse_config GATEWAY)"
+    then
+        address=$(dotted_to_ip $ADDRESS)
+        netmask=$(dotted_to_ip $NETMASK)
+        cat <<EOF
+iface eth0 inet static
+    address $ADDRESS
+    netmask $NETMASK
+    gateway $GATEWAY
+    network $(compute_network $address $netmask)
+    broadcast $(compute_broadcast $address $netmask)
+EOF
+
+    else
+        echo 'iface eth0 inet dhcp'
+    fi
+} >$VAR/interfaces
+
+
+if HOSTNAME="$(parse_config HOSTNAME)"; then
+    hostname "$HOSTNAME"
+else
+    hostname panda
+fi
+
+
+{
+    if NTP="$(parse_config NTP)"; then
+        echo '# Using configured NTP server(s)'
+        for server in $NTP; do
+            echo server $server
+        done
+    else
+        cat <<EOF
+# Using pool.ntp.org NTP servers
+server 0.pool.ntp.org
+server 1.pool.ntp.org
+server 2.pool.ntp.org
+server 3.pool.ntp.org
+EOF
+    fi
+
+    cat <<EOF
+driftfile /tmp/ntp.drift
+pidfile /var/run/ntpd.pid
+logconfig -syncevents -sysevents
+EOF
+} >$VAR/ntp.conf
+
+
+DNS="$(parse_config DNS)"  &&
+{
+    DNS_SEARCH="$(parse_config DNS_SEARCH)"  &&
+    echo search $DNS_SEARCH
+
+    for server in $DNS; do
+        echo nameserver $server
+    done
+} >$VAR/resolv.conf
