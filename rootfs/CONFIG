@@ -11,6 +11,7 @@ INSTALL_UDHCPC_SCRIPT = n
 
 PACKAGES += dropbear
 INETD_ENABLE = y
+DROPBEAR_KEYS = n
 SSH_AUTHORIZED_KEYS = $(configdir)/authorized_keys
 
 PACKAGES += ntp

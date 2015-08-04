@@ -3,9 +3,9 @@
 
 # If no ADDRESS field is specified DHCP will be used instead.
 # The ADDRESS field can be set to a four part dotted IP address followed by a
-# network specification thus:
+# network mask specification thus:
 #
-#   ADDRESS = 172.23.252.202:255.255.240.0
+#   ADDRESS = 172.23.252.202
 #   NETMASK = 255.255.240.0
 
 # If the ADDRESS field has been set then the GATEWAY and DNS fields should be

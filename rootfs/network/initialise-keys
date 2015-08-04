@@ -1,0 +1,11 @@
+#!/bin/sh
+
+# Ensure the ssh server keys are generated.  These two keys are stored
+# permanently on the QSPI memory, so only really need to be generated on first
+# boot.
+
+[ -e /qspi/dropbear_rsa_host_key ]  ||
+dropbearkey -t rsa -f /qspi/dropbear_rsa_host_key
+
+[ -e /qspi/dropbear_dss_host_key ]  ||
+    dropbearkey -t dss -f /qspi/dropbear_dss_host_key

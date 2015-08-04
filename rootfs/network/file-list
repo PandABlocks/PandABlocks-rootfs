@@ -13,3 +13,7 @@ l 777 /etc/network/interfaces   /var/run/network/interfaces
 # Location for our own udhcpc script
 d 755 /usr/share/udhcpc
 f 755 /usr/share/udhcpc/default.script default.script
+
+# Dropbear keys stored in /qspi
+l 777 /etc/dropbear/dropbear_rsa_host_key /qspi/dropbear_rsa_host_key
+l 777 /etc/dropbear/dropbear_dss_host_key /qspi/dropbear_dss_host_key
