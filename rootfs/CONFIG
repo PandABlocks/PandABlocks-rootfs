@@ -28,6 +28,7 @@ PACKAGES += nano
 PACKAGES += procServ conserver
 PACKAGES += ethtool
 
+PACKAGES += libressl
 PACKAGES += Python
 PACKAGES += numpy
 PACKAGES += ws4py
