@@ -102,8 +102,6 @@ $(UIMAGE): $(KERNEL_BUILD)/.config $(U_BOOT_TOOLS)/mkimage
 
 kernel-menuconfig: $(KERNEL_BUILD)/.config
 	$(MAKE_KERNEL) menuconfig
-
-kernel-save-config: $(KERNEL_BUILD)/.config
 	cp $< kernel/dot.config
 
 
