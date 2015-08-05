@@ -1,7 +1,7 @@
 # This file contains configuration settings.  In this file network and other
 # settings can be adjusted.
 
-# If no ADDRESS field is specified DHCP will be used instead.
+# If ADDRESS and NETMASK are not both specified DHCP will be used instead.
 # The ADDRESS field can be set to a four part dotted IP address followed by a
 # network mask specification thus:
 #

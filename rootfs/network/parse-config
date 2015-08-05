@@ -60,8 +60,7 @@ auto eth0
 EOF
 
     if ADDRESS="$(parse_config ADDRESS)"  &&
-       NETMASK="$(parse_config NETMASK)"  &&
-       GATEWAY="$(parse_config GATEWAY)"
+       NETMASK="$(parse_config NETMASK)"
     then
         address=$(dotted_to_ip $ADDRESS)
         netmask=$(dotted_to_ip $NETMASK)
@@ -69,11 +68,13 @@ EOF
 iface eth0 inet static
     address $ADDRESS
     netmask $NETMASK
-    gateway $GATEWAY
     network $(compute_network $address $netmask)
     broadcast $(compute_broadcast $address $netmask)
 EOF
 
+        # Add gateway if specified
+        GATEWAY="$(parse_config GATEWAY)"  &&
+        echo "    gateway $GATEWAY"
     else
         echo 'iface eth0 inet dhcp'
     fi
