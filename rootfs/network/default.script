@@ -18,6 +18,11 @@ case "$1" in
         ifconfig $interface 0.0.0.0
         ;;
 
+    leasefail|nak)
+        echo "DHCP failed, falling back to ZeroConfig IP"
+        zcip -q -r 169.254.1.1 eth0 /usr/share/udhcpc/zcip.script
+        ;;
+
     renew|bound)
         echo "Setting IP address $ip on $interface"
         ifconfig $interface $ip $NETMASK $BROADCAST

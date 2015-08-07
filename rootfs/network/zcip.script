@@ -1,0 +1,30 @@
+#!/bin/sh
+
+Error() { echo >&2 "$@"; exit 1; }
+
+# only for use as a "zcip" callback script
+[ -n "$1" ] || Error "Error: should be called from zcip"
+
+# zcip should start on boot/resume and various media changes
+case "$1" in
+    init)
+        # for now, zcip requires the link to be already up, and it drops links
+        # when they go down.  that isn't the most robust model...
+        exit 0
+        ;;
+    config)
+        [ -n "$ip" ]  ||  Error "No IP specified"
+        # remember $ip for $interface, to use on restart
+        if [ "x$ip" != x -a -w "$ip.$interface" ]; then
+            echo $ip > "$ip.$interface"
+        fi
+        ip address add dev $interface scope link local "$ip/16" broadcast +
+        ;;
+    deconfig)
+        [ -n "$ip" ]  ||  Error "No IP specified"
+        ip address del dev $interface local $ip
+        ;;
+    *)
+        exit 1
+        ;;
+esac
