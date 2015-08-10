@@ -17,8 +17,8 @@ mdev -s
 
 panic()
 {
-    echo "$@"
-    echo Unable to continue
+    echo >&2 "$@"
+    echo >&2 Unable to continue
     touch /tmp/panic
     exec /bin/sh
 }
@@ -66,6 +66,19 @@ TICKER_ID=$!
 
 # ------------------------------------------------------------------------------
 #
+#   Mounting /boot, now ready to roll.
+
+set -x
+
+# Mounting /boot isn't altogether straightforward as the SD card may or may not
+# be partitioned, so we have to try both mmcblk0p1 and mmcblk0
+mount /boot  ||
+mount -t vfat /dev/mmcblk0 /boot  ||
+    panic 'Unable to mount boot partition!'
+
+
+# ------------------------------------------------------------------------------
+#
 #   QSPI configuration and MAC address
 #
 # Here we ensure that the data partition on the QSPI flash is configured with a
@@ -76,7 +89,7 @@ TICKER_ID=$!
 validate_mac_address()
 {
     [ "$(echo "$1" |
-         sed 's/OK/xx/g; s/[0-9A-Z][0-9A-Z]/OK/g')" = 'OK:OK:OK:OK:OK:OK' ]
+         sed 's/OK/xx/g; s/[0-9A-F][0-9A-F]/OK/g')" = 'OK:OK:OK:OK:OK:OK' ]
 }
 
 check_mac_address()
@@ -100,13 +113,13 @@ read_mac_address()
 {
     touch /tmp/mac
     while :; do
-        echo
-        echo ------------------------------------
+        echo >&2
+        echo >&2 ------------------------------------
         read -p 'Enter MAC address: '
         if validate_mac_address "$REPLY"; then
             break
         else
-            echo MAC address "$REPLY" failed validation
+            echo >&2 MAC address "$REPLY" failed validation
         fi
     done
 
@@ -114,12 +127,23 @@ read_mac_address()
     rm /tmp/mac
 }
 
+configure_mac_address()
+{
+    if [ -e /boot/MAC ]  &&  validate_mac_address "$(cat /boot/MAC)"; then
+        cp /boot/MAC /qspi/MAC
+    else
+        read_mac_address
+    fi
+}
+
+
 fdisk -l /dev/mmcblk0
 
 if ! check_mac_address; then
     format_qspi  &&
-    read_mac_address
+    configure_mac_address
 fi
+rm -f /boot/MAC
 umount /qspi
 
 
@@ -130,13 +154,6 @@ umount /qspi
 # Here we check for the presence of the rootfs -- if present we assume that
 # partitioning is good unless the file /boot/repartition exists.
 
-
-mount_boot()
-{
-    mount /boot  ||
-    mount -t vfat /dev/mmcblk0 /boot  ||
-    panic 'Unable to mount boot partition!'
-}
 
 need_to_partition()
 {
@@ -224,7 +241,6 @@ format_sd_card()
 }
 
 
-mount_boot
 if need_to_partition; then
     backup_sd_card
     partition_sd_card
@@ -254,6 +270,7 @@ install_rootfs()
 
 
 if [ -e $IMAGEFILE ]; then
+    echo Installing root filesystem
     install_rootfs
     mount -o remount,ro /rootfs
 else
