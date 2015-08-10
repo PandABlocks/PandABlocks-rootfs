@@ -2,8 +2,8 @@
 
 # The following are inputs required for the build.
 
-# ROOTFS_TOP = /dls_sw/prod/targetOS/rootfs/1-5
-ROOTFS_TOP = $(HOME)/targetOS/rootfs
+ROOTFS_TOP = /dls_sw/prod/targetOS/rootfs/1-5
+# ROOTFS_TOP = $(HOME)/targetOS/rootfs
 
 BOOTGEN = /dls_sw/apps/FPGA/Xilinx/SDK/2015.1/bin/bootgen
 
