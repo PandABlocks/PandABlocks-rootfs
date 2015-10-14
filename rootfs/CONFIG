@@ -34,7 +34,6 @@ PACKAGES += numpy
 PACKAGES += ws4py
 
 PACKAGES += cothread
-EPICS_ARCH = linux-arm_el
 
 
 ncurses_TERMS = xterm xterm-color screen vt100 vt102

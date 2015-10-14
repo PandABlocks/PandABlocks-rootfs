@@ -1,34 +1,6 @@
-# This file defines where all the key files are to be either found or placed.
+# Here we just define the build tags for the files we're building.
 
-# The following are inputs required for the build.
-
-ROOTFS_TOP = /dls_sw/prod/targetOS/rootfs/1-5
-# ROOTFS_TOP = $(HOME)/targetOS/rootfs
-
-BOOTGEN = /dls_sw/apps/FPGA/Xilinx/SDK/2015.1/bin/bootgen
-
-export EPICS_BASE = /dls_sw/epics/R3.14.12.3/base
-
-ARCH = arm
-CROSS_COMPILE = arm-xilinx-linux-gnueabi-
-BINUTILS_DIR = /dls_sw/FPGA/Xilinx/SDK/2015.1/gnu/arm/lin/bin
-
-U_BOOT_TAG = xlnx-xilinx-v2015.1
+U_BOOT_TAG = xilinx-v2015.1
 KERNEL_TAG = xilinx-v2015.1
-
-
-# Location of sources.
-TAR_REPO = /dls_sw/FPGA/Xilinx/OSLinux/tar-balls
-
-
-# Here is where the entire build occurs.
-ZEBRA2_ROOT = /scratch/tmp/zebra2-rootfs
-
-# The final boot image is assembled here
-BOOT_IMAGE = $(ZEBRA2_ROOT)/boot
-
-
-# Allow local overrides of all the above.
--include CONFIG.local
 
 # vim: set filetype=make:

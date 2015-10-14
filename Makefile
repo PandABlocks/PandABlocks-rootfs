@@ -1,11 +1,35 @@
 # Top level make file for building u-boot, kernel, rootfs.
 
+# Some definitions of source file checksums to try and ensure repeatability of
+# builds.
+MD5_SUM_u-boot-xlnx-xilinx-v2015.1 = d11fe491419c810d7a24190ff6899328
+MD5_SUM_linux-xilinx-v2015.1  = 917814e63857fdd44e9d35f7266a8881
+
+
+# Define settings that may need to be overridden before including CONFIG.
+
+# Locations of key files in the SDK
+BOOTGEN = $(SDK_ROOT)/bin/bootgen
+BINUTILS_DIR = $(SDK_ROOT)/gnu/arm/lin/bin
+# Cross-compilation tuple for toolkit
+CROSS_COMPILE = arm-xilinx-linux-gnueabi-
+
+# The final boot image is assembled here
+BOOT_IMAGE = $(ZEBRA2_ROOT)/boot
+
+
+# Configuration and local settings.
 include CONFIG
+include CONFIG.local
+
+# We'll check that these symbols have been defined.
+REQUIRED_SYMBOLS = ROOTFS_TOP SDK_ROOT TAR_FILES ZEBRA2_ROOT
 
 
 default: boot
 
 
+ARCH = arm
 
 SRC_ROOT = $(ZEBRA2_ROOT)/src
 BUILD_ROOT = $(ZEBRA2_ROOT)/build
@@ -21,7 +45,18 @@ export PATH := $(BINUTILS_DIR):$(U_BOOT_TOOLS):$(PATH)
 
 
 # ------------------------------------------------------------------------------
-# Helper code lifted from rootfs
+# Helper code lifted from rootfs and other miscellaneous functions
+
+# Perform a sanity check: make sure the user has defined all the symbols that
+# need to be defined.
+define _CHECK_SYMBOL
+    ifndef $1
+        $$(error Must define symbol $1 in CONFIG.local)
+    endif
+endef
+CHECK_SYMBOL = $(eval $(_CHECK_SYMBOL))
+$(foreach sym,$(REQUIRED_SYMBOLS),$(call CHECK_SYMBOL,$(sym)))
+
 
 # Function for safely quoting a string before exposing it to the shell.
 # Wraps string in quotes, and escapes all internal quotes.  Invoke as
@@ -44,6 +79,9 @@ EXPORT = $(foreach var,$(1),$(var)=$(call SAFE_QUOTE,$($(var))))
 
 # Both kernel and u-boot builds need CROSS_COMPILE and ARCH to be exported
 EXPORTS = $(call EXPORT,CROSS_COMPILE ARCH)
+
+# Use the rootfs extraction tool to decompress our source trees.
+EXTRACT_FILE = $(ROOTFS_TOP)/scripts/extract-tar $(SRC_ROOT) $1 $2 $(TAR_FILES)
 
 
 # ------------------------------------------------------------------------------
@@ -72,7 +110,8 @@ clean-all: clean
 #
 #    dtc -> u-boot -> uImage
 
-KERNEL_SRC = $(SRC_ROOT)/linux-$(KERNEL_TAG)
+KERNEL_NAME = linux-$(KERNEL_TAG)
+KERNEL_SRC = $(SRC_ROOT)/$(KERNEL_NAME)
 MAKE_KERNEL = $(EXPORTS) KBUILD_OUTPUT=$(KERNEL_BUILD) $(MAKE) -C $(KERNEL_SRC)
 UIMAGE_LOADADDR = 0x8000
 
@@ -84,7 +123,7 @@ DTC = $(KERNEL_BUILD)/scripts/dtc/dtc
 
 $(KERNEL_SRC):
 	mkdir -p $(SRC_ROOT)
-	tar xzf $(TAR_REPO)/linux-$(KERNEL_TAG).tgz -C $(SRC_ROOT)
+	$(call EXTRACT_FILE,$(KERNEL_NAME).tgz,$(MD5_SUM_$(KERNEL_NAME)))
 	chmod -R a-w $(KERNEL_SRC)
 
 $(KERNEL_BUILD)/.config: kernel/dot.config $(KERNEL_SRC)
@@ -116,7 +155,8 @@ kernel: $(UIMAGE)
 # Building u-boot
 #
 
-U_BOOT_SRC = $(SRC_ROOT)/u-boot-$(U_BOOT_TAG)
+U_BOOT_NAME = u-boot-xlnx-$(U_BOOT_TAG)
+U_BOOT_SRC = $(SRC_ROOT)/$(U_BOOT_NAME)
 U_BOOT_ELF = $(U_BOOT_BUILD)/u-boot.elf
 
 MAKE_U_BOOT = $(EXPORTS) KBUILD_OUTPUT=$(U_BOOT_BUILD) $(MAKE) -C $(U_BOOT_SRC)
@@ -135,7 +175,7 @@ $(DEVICE_TREE_DTB): boot/devicetree.dts $(DTC)
 
 $(U_BOOT_SRC):
 	mkdir -p $(SRC_ROOT)
-	unzip -q $(TAR_REPO)/u-boot-$(U_BOOT_TAG).zip -d $(SRC_ROOT)
+	$(call EXTRACT_FILE,$(U_BOOT_NAME).zip,$(MD5_SUM_$(U_BOOT_NAME)))
 	patch -p1 -d $(U_BOOT_SRC) < u-boot/u-boot.patch
 	ln -s $(PWD)/u-boot/PandA_defconfig $(U_BOOT_SRC)/configs
 	ln -s $(PWD)/u-boot/PandA.h $(U_BOOT_SRC)/include/configs
@@ -159,7 +199,8 @@ u-boot-src: $(U_BOOT_SRC)
 #
 
 # Command for building rootfs.  Need to specify both action and target name.
-MAKE_ROOTFS = $(ROOTFS_TOP)/rootfs -r $(ZEBRA2_ROOT) -t $(CURDIR)/$1 $2
+MAKE_ROOTFS = \
+    $(ROOTFS_TOP)/rootfs -f '$(TAR_FILES)' -r $(ZEBRA2_ROOT) -t $(CURDIR)/$1 $2
 
 %.gz: %
 	gzip -c -1 $< >$@

@@ -1,0 +1,19 @@
+# Personal customisations.
+#
+# Copy this file to CONFIG.local and edit the settings below to suit your
+# environment.
+
+# Location of rootfs builder.  This needs to be later than version 1.5 and can
+# be downloaded from https://github.com/araneidae/rootfs
+ROOTFS_TOP = /home/mga83/targetOS/rootfs
+
+# Location of SDK used to build target
+SDK_ROOT = /dls_sw/apps/FPGA/Xilinx/SDK/2015.1
+
+# Where to find source files
+TAR_FILES = /dls_sw/prod/targetOS/tar-files /dls_sw/work/targetOS/tar-files
+
+# Target location for build
+ZEBRA2_ROOT = /scratch/tmp/zebra2-rootfs
+
+# vim: set filetype=make:
