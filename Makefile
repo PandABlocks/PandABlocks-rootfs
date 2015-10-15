@@ -1,9 +1,14 @@
 # Top level make file for building u-boot, kernel, rootfs.
 
 # Some definitions of source file checksums to try and ensure repeatability of
-# builds.
-MD5_SUM_u-boot-xlnx-xilinx-v2015.1 = d11fe491419c810d7a24190ff6899328
-MD5_SUM_linux-xilinx-v2015.1  = 917814e63857fdd44e9d35f7266a8881
+# builds.  These releases are downloaded (as .tar.gz files) from:
+#      https://github.com/Xilinx/u-boot-xlnx
+#      https://github.com/Xilinx/linux-xlnx
+# Note: if these files have been downloaded through the releases directory then
+# they need to be renamed with the appropriate {u-boot,linux}-xlnx- prefix so
+# that the file name and contents match.
+MD5_SUM_u-boot-xlnx-xilinx-v2015.1 = b6d212208b7694f748727883eebaa74e
+MD5_SUM_linux-xlnx-xilinx-v2015.1  = 930d126df2113221e63c4ec4ce356f2c
 
 
 # Define settings that may need to be overridden before including CONFIG.
@@ -110,7 +115,7 @@ clean-all: clean
 #
 #    dtc -> u-boot -> uImage
 
-KERNEL_NAME = linux-$(KERNEL_TAG)
+KERNEL_NAME = linux-xlnx-$(KERNEL_TAG)
 KERNEL_SRC = $(SRC_ROOT)/$(KERNEL_NAME)
 MAKE_KERNEL = $(EXPORTS) KBUILD_OUTPUT=$(KERNEL_BUILD) $(MAKE) -C $(KERNEL_SRC)
 UIMAGE_LOADADDR = 0x8000
@@ -123,7 +128,7 @@ DTC = $(KERNEL_BUILD)/scripts/dtc/dtc
 
 $(KERNEL_SRC):
 	mkdir -p $(SRC_ROOT)
-	$(call EXTRACT_FILE,$(KERNEL_NAME).tgz,$(MD5_SUM_$(KERNEL_NAME)))
+	$(call EXTRACT_FILE,$(KERNEL_NAME).tar.gz,$(MD5_SUM_$(KERNEL_NAME)))
 	chmod -R a-w $(KERNEL_SRC)
 
 $(KERNEL_BUILD)/.config: kernel/dot.config $(KERNEL_SRC)
@@ -175,7 +180,7 @@ $(DEVICE_TREE_DTB): boot/devicetree.dts $(DTC)
 
 $(U_BOOT_SRC):
 	mkdir -p $(SRC_ROOT)
-	$(call EXTRACT_FILE,$(U_BOOT_NAME).zip,$(MD5_SUM_$(U_BOOT_NAME)))
+	$(call EXTRACT_FILE,$(U_BOOT_NAME).tar.gz,$(MD5_SUM_$(U_BOOT_NAME)))
 	patch -p1 -d $(U_BOOT_SRC) < u-boot/u-boot.patch
 	ln -s $(PWD)/u-boot/PandA_defconfig $(U_BOOT_SRC)/configs
 	ln -s $(PWD)/u-boot/PandA.h $(U_BOOT_SRC)/include/configs

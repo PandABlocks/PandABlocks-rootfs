@@ -4,7 +4,7 @@ PandA Root File System
 This project builds a complete system image for booting PandA.  The following
 components are built in turn:
 
-* The U-Boot boot loader is built and assembled together with the Zync stage-1
+* The U-Boot boot loader is built and assembled together with the Zynq stage-1
   boot loader.
 
 * The Linux kernel is built.
@@ -58,8 +58,8 @@ Sources
 The following sources, listed below with their MD5 checksums, are needed for
 building the system::
 
-    917814e63857fdd44e9d35f7266a8881  linux-xilinx-v2015.1.tgz
-    d11fe491419c810d7a24190ff6899328  u-boot-xlnx-xilinx-v2015.1.zip
+    930d126df2113221e63c4ec4ce356f2c linux-xilinx-v2015.1.tar.gz
+    b6d212208b7694f748727883eebaa74e u-boot-xlnx-xilinx-v2015.1.tar.gz
 
     82d05e03b93e45f5a39b828dc9c6c29b autoconf-2.69.tar.gz
     716946a105ca228ab545fc37a70df3a3 automake-1.15.tar.gz
