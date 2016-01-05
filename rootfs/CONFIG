@@ -32,6 +32,7 @@ PACKAGES += libressl
 PACKAGES += Python
 PACKAGES += numpy
 PACKAGES += ws4py
+PACKAGES += enum34
 
 PACKAGES += cothread
 
