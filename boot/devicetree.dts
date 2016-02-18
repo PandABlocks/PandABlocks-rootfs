@@ -456,9 +456,7 @@
 			compatible = "xlnx,panda-pcap-1.0";
 			interrupt-parent = <0x3>;
 			interrupts = <0x0 0x1d 0x1>;
-			reg = <0x43c10000 0x10000>;
-			xlnx,s00-axi-addr-width = <0x7>;
-			xlnx,s00-axi-data-width = <0x20>;
+			reg = <0x43c10000 0x20000>;
 		};
 	};
 };
