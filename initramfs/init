@@ -272,6 +272,7 @@ install_rootfs()
 if [ -e $IMAGEFILE ]; then
     echo Installing root filesystem
     install_rootfs
+    sync
     mount -o remount,ro /rootfs
 else
     mount -o ro /rootfs
