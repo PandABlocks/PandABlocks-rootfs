@@ -12,7 +12,6 @@ INSTALL_UDHCPC_SCRIPT = n
 PACKAGES += dropbear
 INETD_ENABLE = y
 DROPBEAR_KEYS = n
-SSH_AUTHORIZED_KEYS = $(configdir)/authorized_keys
 
 PACKAGES += ntp
 NTP_CONF = n
@@ -47,15 +46,19 @@ ncurses_TERMS = xterm xterm-color screen vt100 vt102
 
 ROOTFS_VERSION = DLS Zebra 2 0.0
 
-CONSOLE_BAUD = 115200
-CONSOLE_TTY = ttyPS0
-
-ROOT_PASSWORD = PandA
-
 OPTIONS += ldconfig
 LDCONFIG = once
 
 OPTIONS += $(configdir)/skeleton
 OPTIONS += $(configdir)/network
+
+final-install:
+	# Leave the serial console always connected to a shell
+	echo 'ttyPS0::respawn:/bin/login -f root' >>$(sysroot)/etc/inittab
+	# Allow ssh keys to be placed in /boot.  Turns out that dropbear is
+	# happy with this!
+	ln -s /boot/authorized_keys $(sysroot)/root/.ssh
+	# Want to disable password login: just delete the password.
+	sed -i '/^root:/s/root:[^:]*:/root:*:/' $(sysroot)/etc/shadow
 
 # vim: set filetype=make:
