@@ -1,0 +1,8 @@
+#!/bin/sh
+
+# On first boot move the passwd and shadow files over to /qspi and
+# replace them with links.  This allows the root password to be changed.
+mv /etc/passwd /etc/shadow /qspi
+ln -s /qspi/passwd /etc
+ln -s /qspi/shadow /etc
+rm /fixup-rootfs

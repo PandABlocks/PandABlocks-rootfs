@@ -12,6 +12,8 @@ INSTALL_UDHCPC_SCRIPT = n
 PACKAGES += dropbear
 INETD_ENABLE = y
 DROPBEAR_KEYS = n
+# Disable use of passwords for ssh login
+DROPBEAR_OPTS = -s
 
 PACKAGES += ntp
 NTP_CONF = n
@@ -44,7 +46,13 @@ ncurses_TERMS = xterm xterm-color screen vt100 vt102
 # -----------------------------------------------------------------------------
 # Rootfs options and configuration
 
-ROOTFS_VERSION = DLS Zebra 2 0.0
+ROOTFS_VERSION = \
+    DLS Zebra 2 $(shell git describe --abbrev=7 --dirty --always --tags)
+
+CONSOLE_BAUD = 115200
+CONSOLE_TTY = ttyPS0
+
+ROOT_PASSWORD = PandA
 
 OPTIONS += ldconfig
 LDCONFIG = once
@@ -54,9 +62,8 @@ OPTIONS += $(configdir)/network
 OPTIONS += $(configdir)/automount
 
 final-install:
-	# Leave the serial console always connected to a shell
-	echo 'ttyPS0::respawn:/bin/login -f root' >>$(sysroot)/etc/inittab
-	# Want to disable password login: just delete the password.
-	sed -i '/^root:/s/root:[^:]*:/root:*:/' $(sysroot)/etc/shadow
+	# Rootfs fixup after first boot
+	$(install) $(configdir)/fixup-rootfs /
+	$(first-time) /fixup-rootfs
 
 # vim: set filetype=make:
