@@ -1,0 +1,48 @@
+#!/bin/sh
+
+# Automount script for USB keys.  Mounts and unmounts USB keys.
+# The shape of this script was originally taken from
+#   https://wiki.gentoo.org/wiki/Mdev/Automount_USB/automount
+# but in the end the script is hugely simplified.
+
+# This script is entered with the following state set:
+#   current directory = /dev
+#   MDEV = device node being created or deleted
+#   ACTION = device action.  We're interested in add and remove
+#   DEVTYPE = device type.  We're interested in disk and partition
+
+# Execute only if the device already exists; otherwise exit
+if [ ! -b "$MDEV" ] ; then exit 0 ; fi
+
+mount=/mnt/$MDEV
+
+do_mount()
+{
+    mkdir $mount
+    mount /dev/$MDEV $mount  ||  rmdir $mount
+}
+
+
+case "$ACTION" in
+add)
+    # Identify whether we have a partition during "add".  In this case we need
+    # to check for the awkward case where the entire USB key is formatted as one
+    # partition, without the standard partition table.
+    if [ "$DEVTYPE" = partition ]; then
+        do_mount
+    elif [ "$DEVTYPE" = disk ]; then
+        # If device type is "disk", check for string "FAT" in first 512 bytes of
+        # device.  This test is really rather dodgy, and will definitely fail if
+        # the disk has been partitioned as something other than FAT.
+        if dd if=$MDEV bs=512 count=1 2>/dev/null | grep -q FAT; then
+            do_mount
+        fi
+    fi ;;
+remove)
+    if [ "$DEVTYPE" = partition -o "$DEVTYPE" = disk ]; then
+        # If the device is mounted then unmount it.
+        umount -f $mount
+        # Get rid of the mount point.
+        rm -rf $mount
+    fi ;;
+esac

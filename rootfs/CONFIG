@@ -51,6 +51,7 @@ LDCONFIG = once
 
 OPTIONS += $(configdir)/skeleton
 OPTIONS += $(configdir)/network
+OPTIONS += $(configdir)/automount
 
 final-install:
 	# Leave the serial console always connected to a shell
