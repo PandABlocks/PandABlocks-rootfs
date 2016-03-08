@@ -4,3 +4,10 @@
 d 755 /boot
 d 755 /opt
 d 755 /qspi
+
+# Some special links for ~root/.ssh.  Surprisingly enough, it seems that
+# dropbear doesn't mind this.
+l 777 /root/.ssh /boot/authorized_keys
+l 777 /root/.ssh /qspi/id_dropbear
+l 777 /root/.ssh /qspi/id_dropbear.pub
+l 777 /root/.ssh /qspi/known_hosts

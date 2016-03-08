@@ -9,3 +9,7 @@ dropbearkey -t rsa -f /qspi/dropbear_rsa_host_key
 
 [ -e /qspi/dropbear_dss_host_key ]  ||
     dropbearkey -t dss -f /qspi/dropbear_dss_host_key
+
+# Also generate a private key for this machine, in case we want to use it.
+[ -e /qspi/id_dropbear ]  ||
+    dropbearkey -t rsa -f /qspi/id_dropbear >/qspi/id_dropbear.pub

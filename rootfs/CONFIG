@@ -56,9 +56,6 @@ OPTIONS += $(configdir)/automount
 final-install:
 	# Leave the serial console always connected to a shell
 	echo 'ttyPS0::respawn:/bin/login -f root' >>$(sysroot)/etc/inittab
-	# Allow ssh keys to be placed in /boot.  Turns out that dropbear is
-	# happy with this!
-	ln -s /boot/authorized_keys $(sysroot)/root/.ssh
 	# Want to disable password login: just delete the password.
 	sed -i '/^root:/s/root:[^:]*:/root:*:/' $(sysroot)/etc/shadow
 
