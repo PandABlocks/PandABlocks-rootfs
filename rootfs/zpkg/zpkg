@@ -21,7 +21,6 @@
 #   var/
 #       The package database is stored under here
 
-
 ROOT_DIR=/opt
 
 VAR_ZPKG=$ROOT_DIR/var/zpkg
@@ -168,7 +167,7 @@ create_database_file()
     while read perm owner size date time filename to link; do
         filetype=${perm::1}
         if [ $filetype != d ]; then
-            md5sum $ROOT_DIR/${filename:2}  # Strip leading ./ from name
+            md5sum $ROOT_DIR/$filename
         fi
     done > "$DATABASE/$package_name@$package_version.zdb"
 
