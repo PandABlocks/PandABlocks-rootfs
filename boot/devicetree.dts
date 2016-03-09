@@ -110,6 +110,8 @@
 			emio-gpio-width = <0x40>;
 			gpio-mask-high = <0x0>;
 			gpio-mask-low = <0x5600>;
+			linux,phandle = <0x4>;
+			phandle = <0x4>;
 		};
 
 		i2c@e0004000 {
@@ -289,9 +291,10 @@
 			xlnx,has-mdio = <0x1>;
 			#address-cells = <0x1>;
 			#size-cells = <0x0>;
+			enet-reset = <0x4 0x2f 0x0>;
 			phy-mode = "rgmii-id";
 			xlnx,ptp-enet-clock = <0x69f6bcb>;
-			phy-handle = <0x4>;
+			phy-handle = <0x5>;
 
 			mdio {
 				#address-cells = <0x1>;
@@ -302,8 +305,8 @@
 					device_type = "ethernet-phy";
 					reg = <0x0>;
 					marvell,reg-init = <0x3 0x10 0xff00 0x1e 0x3 0x11 0xfff0 0x0>;
-					linux,phandle = <0x4>;
-					phandle = <0x4>;
+					linux,phandle = <0x5>;
+					phandle = <0x5>;
 				};
 			};
 		};
@@ -427,10 +430,13 @@
 		usb@e0002000 {
 			clocks = <0x1 0x1c>;
 			compatible = "xlnx,ps7-usb-1.00.a", "xlnx,zynq-usb-1.00.a";
-			status = "disabled";
+			status = "okay";
 			interrupt-parent = <0x3>;
 			interrupts = <0x0 0x15 0x4>;
 			reg = <0xe0002000 0x1000>;
+			dr_mode = "host";
+			phy_type = "ulpi";
+			usb-reset = <0x4 0x7 0x0>;
 		};
 
 		usb@e0003000 {
