@@ -61,6 +61,7 @@ OPTIONS += $(configdir)/skeleton
 OPTIONS += $(configdir)/network
 OPTIONS += $(configdir)/automount
 OPTIONS += $(configdir)/zpkg
+OPTIONS += $(configdir)/web-admin
 
 final-install:
 	# Rootfs fixup after first boot

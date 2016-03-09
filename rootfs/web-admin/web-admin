@@ -1,0 +1,14 @@
+#!/bin/sh
+
+do_start()
+{
+    start-stop-daemon -S -p /var/run/web-admin.pid \
+        -x /usr/share/web-admin/admin_webserver.py -m -b
+}
+
+do_stop()
+{
+    start-stop-daemon -K -p /var/run/web-admin.pid
+}
+
+do_start_stop "$1" web-admin

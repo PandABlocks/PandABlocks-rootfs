@@ -1,0 +1,10 @@
+# Administration interface for Panda packages
+
+option:
+	$(install) -d /usr/share/web-admin/htstatic
+	$(install) $(optiondir)/admin_webserver.py /usr/share/web-admin
+	$(install) $(wildcard $(optiondir)/htstatic/*) \
+             /usr/share/web-admin/htstatic
+	$(startup) $(optiondir)/web-admin S910 K090
+
+# vim: set filetype=make:
