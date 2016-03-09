@@ -1,0 +1,7 @@
+# Simple package manager
+
+option:
+	$(install) $(optiondir)/zpkg /usr/bin
+	$(startup) $(optiondir)/zpkg-daemon S900 K100
+
+# vim: set filetype=make:

@@ -1,0 +1,293 @@
+#!/bin/sh
+
+# Script for simple package management.  A package is simply a tgz file (with
+# extension .zpg) which is installed under /opt.  The naming convention for
+# packages is:
+#
+#       <package>@<version>.zpg
+#
+# The character @ should not occur in the package or version strings, and the
+# version string should not end in .zpg.  No comparisons of versions is done,
+# whenever a package is installed it will simply replace the existing install.
+
+# Under /opt we have the following directories:
+#
+#   etc/
+#       Startup scripts and top level configuration files go here.
+#
+#   lib/, bin/, share/
+#       Files are installed here
+#
+#   var/
+#       The package database is stored under here
+
+
+ROOT_DIR=/opt
+
+VAR_ZPKG=$ROOT_DIR/var/zpkg
+DATABASE=$VAR_ZPKG/db
+LOCK=$VAR_ZPKG/lock
+
+
+error()
+{
+    echo >&2 "$@"
+    exit 1
+}
+
+
+usage()
+{
+    cat <<EOF
+zpkg simple package manager.  Possible commands are:
+
+    zpkg list
+        Lists all installed packages
+
+    zpkg install package ...
+        Installs or replaces named packages
+
+    zpkg remove package ...
+        Removes named packages
+
+    zpkg show [package ...]
+        Verifys named packages or all packages if no package specified
+
+    zpkg help
+        Show this list of options
+EOF
+}
+
+
+list()
+{
+    ls $DATABASE/*.zdb |
+    sed 's:\.zdb$::; s:.*/::'
+}
+
+
+# Checks that the given package file is acceptable.
+check_package()
+{
+    :
+}
+
+
+count_args()
+{
+    echo $#
+}
+
+
+# Given a package name of the form
+#
+#   package "@" version ".zpg"
+#
+# sets the variables package_name and package_version.  Fails if the name is not
+# of this form.
+parse_package_name()
+{
+    [ $(count_args $2) -eq 1 ]  ||
+        error "Whitespace not allowed in package name"
+
+    local package="$(basename "$2")"
+    package_name="${package%%@*}"
+    package_version="${package##*@}"
+    package_version="${package_version%%$1}"
+
+    [ "$package_name@$package_version$1" = "$package" ] ||
+        error "Malformed package name: $package"
+}
+
+
+remove_package()
+{
+    zdb="$1"
+    zdd="${1%%.zdb}.zdd"
+
+    # Check the files we're about to remove.
+    md5sum -c "$zdb"
+
+    while read md5 file; do
+        rm $file
+    done <"$zdb"
+    while read dir; do
+        rmdir "$ROOT_DIR"/$dir 2>/dev/null
+    done <"$zdd"
+
+    rm "$zdb" "$zdd"
+}
+
+
+# Checks that the package is a valid tar file and that none of the files names
+# contain whitespace.
+check_package_format()
+{
+    set -o pipefail
+
+    # Check that the package is a valid tar file and no file names contain
+    # whitespace.
+    tar tzf "$1" |
+    if grep -q $' \|\t'; then false; else true; fi  ||
+        error 'Invalid zpkg file format'
+
+    # Now check that we're not installing any device nodes.  Alas, this requires
+    # rolling our own pipe so we can get the return code!
+    tar tzvf "$1" >"$LOCK" &
+    while read perm owner size date time filename to link; do
+        filetype=${perm::1}
+        # Only allow normal files, directories, and links
+        [ $filetype = - -o $filetype = d -o $filetype = l ]  ||
+            error File $filename not of valid type
+    done <"$LOCK"
+}
+
+
+# Check for any name collisions now we've removed the old package.
+check_package_content()
+{
+    # Again, we need our own pipe.
+    tar tzvf "$1" >"$LOCK" &
+    while read perm owner size date time filename to link; do
+        # Check that if the file already exists then it is already a directory
+        # and the incoming file is a directory.
+        filetype=${perm::1}
+        if [ -e "$ROOT_DIR/$filename" ]; then
+            [ -d "$ROOT_DIR/$filename" -a $filetype = d ]  ||
+                error "File $filename already exists"
+        fi
+    done <"$LOCK"
+}
+
+
+create_database_file()
+{
+    mkdir -p "$DATABASE"
+
+    tar tzvf "$1" |
+    while read perm owner size date time filename to link; do
+        filetype=${perm::1}
+        if [ $filetype != d ]; then
+            md5sum $ROOT_DIR/${filename:2}  # Strip leading ./ from name
+        fi
+    done > "$DATABASE/$package_name@$package_version.zdb"
+
+    # Create a separate list of the created directories ordered so that we can
+    # delete empty directories on uninstall.
+    tar tzvf "$1" |
+    while read perm owner size date time filename to link; do
+        filetype=${perm::1}
+        if [ $filetype = d ]; then
+            echo $filename
+        fi
+    done |
+    sort -r > "$DATABASE/$package_name@$package_version.zdd"
+}
+
+
+# Checks existence of argument or arguments.
+check_exists()
+{
+    [ -e "$1" ]
+}
+
+
+# Installs named package: must be given a full path to a package to install.
+install()
+{
+    # Decompose and validate the package name: this sets package_name and
+    # package_version.
+    parse_package_name .zpg "$1"
+
+    # Validate the package content as far as we can
+    check_package_format "$1"
+
+    # Remove any existing version of this package.
+    current_package="$DATABASE/$package_name"@*.zdb
+    if check_exists $current_package; then
+        echo Replacing package $(basename $current_package)
+        remove_package $current_package
+    fi
+
+    # Now check that none of the files collide with existing files
+    check_package_content "$1"
+
+    # Now go ahead with the install
+    tar xzf "$1" -C "$ROOT_DIR"  ||
+        error Error installing package "$1".
+    create_database_file "$1"
+}
+
+
+# Removes named package.  Fails if package does not exist.
+remove()
+{
+    package="$DATABASE/$1"@*.zdb
+    check_exists $package  ||
+        error "Package $1 not installed"
+    remove_package $package
+}
+
+
+show()
+{
+    package="$DATABASE/$1"@*.zdb
+    if check_exists $package; then
+        parse_package_name .zdb $package
+        echo $package_name $package_version:
+        md5sum -c $package
+    else
+        echo >&2 Package $package not installed
+    fi
+}
+
+
+# We lock by creating a lock file.  We use mkfifo rather than the traditional
+# mkdir because it turns out that we need a fifo for our own processing.
+mkdir -p $VAR_ZPKG
+if mkfifo "$LOCK"; then
+    trap 'rm $LOCK' EXIT
+else
+    error "Package database already in use"
+fi
+
+
+# Parse the available actions.
+action="$1"
+shift
+case "$action" in
+    list)
+        # List installed packages
+        [ $# -eq 0 ]  ||  error Unexpected arguments to list
+        list
+        ;;
+    install)
+        # Install or replace named packages
+        /etc/init.d/zpkg-daemon stop
+        for package; do
+            install "$package"  ||  break
+        done
+        /etc/init.d/zpkg-daemon start
+        ;;
+    remove)
+        # Remove named packages
+        /etc/init.d/zpkg-daemon stop
+        for package; do
+            remove "$package"
+        done
+        /etc/init.d/zpkg-daemon start
+        ;;
+    show)
+        # Show named packages
+        for package; do
+            show "$package"
+        done
+        ;;
+    help)
+        # Print available commands
+        usage
+        ;;
+    *)
+        error 'Unknown command.  Try help for usage.'
+        ;;
+esac

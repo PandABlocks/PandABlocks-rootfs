@@ -1,0 +1,21 @@
+#!/bin/sh
+
+# Starts and stops daemons installed in /opt
+
+. /etc/init.d/functions
+
+do_start()
+{
+    for script in /opt/etc/rc.d/S*; do
+        [ -x $script ]  &&  $script start
+    done
+}
+
+do_stop()
+{
+    for script in /opt/etc/rc.d/K*; do
+        [ -x $script ]  &&  $script stop
+    done
+}
+
+do_start_stop "$1" opt
