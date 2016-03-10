@@ -27,6 +27,24 @@ EOF
 }
 
 
+fail()
+{
+    header Action failed
+    echo "$@"
+    footer
+    exit
+}
+
+
+check_usb_device()
+{
+    for file in /mnt/*; do
+        [ -d $file ]  &&  return
+    done
+    fail Action not allowed
+}
+
+
 pre()
 {
     echo '<pre>'
@@ -43,35 +61,49 @@ do_list()
 }
 
 
-do_files()
+# The first argument is the navigation directory, the second is our current
+# location in the navigation, the third is the title.
+list_directories()
 {
-    header "Looking for packages in /mnt$1"
-
-    if ! [ -d "/mnt/$1" ]; then
-        echo 'Invalid directory'
-        footer
-        return
-    fi
-
-    dir_list="$(
-        find "/mnt$1" -xdev -mindepth 1 -maxdepth 1 -type d)"
-    zpg_list="$(
-        find "/mnt$1" -xdev -mindepth 1 -maxdepth 1 -type f -name *.zpg)"
+    dir_list="$(find "/mnt$2" -xdev -mindepth 1 -maxdepth 1 -type d)"
 
     if [ -n "$dir_list" ]; then
         cat <<EOF
-<h2>Select directory containing packages to install:</h2>
+<h2>Select directory containing $3:</h2>
 <ul class="dirlist">
 EOF
         echo "$dir_list" |
         while read -r; do
-        cat <<EOF
-<li><a href="/cgi-bin/admin$REPLY">${REPLY#/mnt/}</a></li>
+            dir=${REPLY#/mnt/}
+            cat <<EOF
+<li><a href="/cgi-bin/admin/$1/$dir">$dir</a></li>
 EOF
         done
         echo '</ul>'
     fi
+}
 
+
+show_back()
+{
+    if [ "$2" != '' -a "$2" != / ]; then
+        cat <<EOF
+<p>Up to <a href="/cgi-bin/admin/$1${2%/*}">/mnt$(dirname "$2")</a>
+EOF
+    fi
+}
+
+
+do_files()
+{
+    [ -d "/mnt$1" ]  ||  fail Invalid directory
+
+    header "Looking for packages in /mnt$1"
+
+    list_directories mnt "$1" 'packages to install'
+
+    zpg_list="$(
+        find "/mnt$1" -xdev -mindepth 1 -maxdepth 1 -type f -name *.zpg)"
     if [ -n "$zpg_list" ]; then
         cat <<EOF
 <h2>Select packages to install:</h2>
@@ -87,7 +119,7 @@ EOF
         done
         cat <<EOF
 </ul>
-<input type="submit" value="Install">
+<input type="submit" value="Install Selected">
 </form>
 EOF
     fi
@@ -96,13 +128,7 @@ EOF
         echo '<p>Nothing found'
     fi
 
-    up="$(dirname "$1")"
-    if [ "$up" != / -a "$up" != . ]; then
-        cat <<EOF
-<p>Up to <a href="/cgi-bin/admin/mnt/$up">$up</a>
-EOF
-    fi
-
+    show_back mnt "$1"
     footer
 }
 
@@ -113,29 +139,84 @@ urldecode()
 }
 
 
+# Computes a list of packages from $QUERY_STRING
+package_list()
+{
+    IFS=\&
+    for file in $QUERY_STRING; do
+        file="$(urldecode "$file")"
+        printf ' %s' "${file#zpg=}"
+    done
+    echo
+    IFS=' '
+}
+
+
 do_install()
 {
     header Installing
 
-    IFS=\&
-    install_args=''
-    for file in $QUERY_STRING; do
-        file="$(urldecode "$file")"
-        file="${file#zpg=}"
-        install_args="$install_args $file"
-    done
+    install_args="$(package_list)"
 
     # Now do the install.
     cat <<EOF
 <p>Running command:
-<pre>zpkg install$install_args</pre>
+<pre>zpkg install $install_args</pre>
 EOF
 
     echo '<pre>'
-    IFS=' '
     zpkg install $install_args  ||
         echo Install failed with error code $?
     echo '</pre>'
+    echo '<p>'Writing state to disk
+    sync
+    footer
+}
+
+
+do_delete()
+{
+    check_usb_device
+
+    header Delete packages
+    cat <<EOF
+<h2>Select packages to delete</h2>
+<form action="/cgi-bin/admin/remove" method="get">
+<ul class="zpglist">
+EOF
+    zpkg list |
+    sed '/^ /d' |
+    while read package version; do
+        cat <<EOF
+<li><input type="checkbox" name="zpg" value="$package">$package @ $version</li>
+EOF
+    done
+        cat <<EOF
+</ul>
+<input type="submit" value="Delete">
+</form>
+EOF
+    footer
+}
+
+
+do_remove()
+{
+    check_usb_device
+
+    header Removing packages
+    install_args="$(package_list)"
+    cat <<EOF
+<p>Running command:
+<pre>zpkg remove $install_args</pre>
+EOF
+
+    echo '<pre>'
+    zpkg remove $install_args  ||
+        echo Remove failed with error code $?
+    echo '</pre>'
+    echo '<p>'Writing state to disk
+    sync
     footer
 }
 
@@ -152,37 +233,65 @@ do_show_keys()
 }
 
 
+do_find_keys()
+{
+    header Add SSH key file
+    list_directories find-keys "$1" 'authorized_keys file'
+    if [ -e /mnt"$1"/authorized_keys ]; then
+        cat <<EOF
+<form action="/cgi-bin/admin/add-keys/$1">
+<input type="submit" value="Append keys from $1/authorized_keys">
+</form>
+EOF
+    elif [ -z "$dir_list" ]; then
+        echo '<p>Nothing found'
+    fi
+    show_back find-keys "$1"
+    footer
+}
+
+
 do_add_keys()
 {
-    echo add
+    header Added keys from $1
+    echo '<pre>'
+    cat /mnt/$1/authorized_keys >>/boot/authorized_keys
+    sync
+    echo '</pre>'
+    footer
 }
 
 
 do_reset_keys()
 {
-    echo reset
+    check_usb_device
+
+    header All SSH keys reset
+    echo '<pre>'
+    rm -f /boot/authorized_keys
+    echo '</pre>'
+    footer
 }
 
 
 do_invalid()
 {
-    cat <<EOF
-Content-type: text/html
-
-<html><head>
-<meta http-equiv="refresh" content="0;url=/">
-</head></html>
-EOF
+    echo Status: 404 Not Found
+    header Invalid command
+    footer
 }
 
 
 # Pick up the basic command and decode it.
 case "$PATH_INFO" in
 /list)          do_list ;;
-/mnt*)          do_files "${PATH_INFO:4}" ;;
+/mnt*)          do_files "${PATH_INFO#/mnt}" ;;
 /install)       do_install ;;
+/delete)        do_delete ;;
+/remove)        do_remove ;;
 /show-keys)     do_show_keys ;;
-/add-keys)      do_add_keys ;;
+/find-keys*)    do_find_keys "${PATH_INFO#/find-keys}" ;;
+/add-keys/*)    do_add_keys "${PATH_INFO#/add-keys}" ;;
 /reset-keys)    do_reset_keys ;;
 *)              do_invalid ;;
 esac
