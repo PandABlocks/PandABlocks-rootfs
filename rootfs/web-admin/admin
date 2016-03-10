@@ -1,0 +1,190 @@
+#!/bin/sh
+
+# Administration cgi interface.
+
+header()
+{
+    cat <<EOF
+Content-type: text/html
+
+<html>
+<head>
+<title>$@</title>
+<link rel="stylesheet" type="text/css" href="/style.css">
+</head>
+<body>
+<h1>$@</h1>
+EOF
+}
+
+footer()
+{
+    cat <<EOF
+<p><a href="/">Top</a>
+</body>
+</html>
+EOF
+}
+
+
+pre()
+{
+    echo '<pre>'
+    "$@"
+    echo '</pre>'
+}
+
+
+do_list()
+{
+    header Installed files
+    pre zpkg list
+    footer
+}
+
+
+do_files()
+{
+    header "Looking for packages in /mnt$1"
+
+    if ! [ -d "/mnt/$1" ]; then
+        echo 'Invalid directory'
+        footer
+        return
+    fi
+
+    dir_list="$(
+        find "/mnt$1" -xdev -mindepth 1 -maxdepth 1 -type d)"
+    zpg_list="$(
+        find "/mnt$1" -xdev -mindepth 1 -maxdepth 1 -type f -name *.zpg)"
+
+    if [ -n "$dir_list" ]; then
+        cat <<EOF
+<h2>Select directory containing packages to install:</h2>
+<ul class="dirlist">
+EOF
+        echo "$dir_list" |
+        while read -r; do
+        cat <<EOF
+<li><a href="/cgi-bin/admin$REPLY">${REPLY#/mnt/}</a></li>
+EOF
+        done
+        echo '</ul>'
+    fi
+
+    if [ -n "$zpg_list" ]; then
+        cat <<EOF
+<h2>Select packages to install:</h2>
+<form action="/cgi-bin/admin/install" method="get">
+<ul class="zpglist">
+EOF
+
+        echo "$zpg_list" |
+        while read -r; do
+        cat <<EOF
+<li><input type="checkbox" name="zpg" value="$REPLY">${REPLY##*/}</li>
+EOF
+        done
+        cat <<EOF
+</ul>
+<input type="submit" value="Install">
+</form>
+EOF
+    fi
+
+    if [ -z "$dir_list" -a -z "$zpg_list" ]; then
+        echo '<p>Nothing found'
+    fi
+
+    up="$(dirname "$1")"
+    if [ "$up" != / -a "$up" != . ]; then
+        cat <<EOF
+<p>Up to <a href="/cgi-bin/admin/mnt/$up">$up</a>
+EOF
+    fi
+
+    footer
+}
+
+
+urldecode()
+{
+    python -c 'import sys, urllib; print urllib.unquote(sys.argv[1])' "$@"
+}
+
+
+do_install()
+{
+    header Installing
+
+    IFS=\&
+    install_args=''
+    for file in $QUERY_STRING; do
+        file="$(urldecode "$file")"
+        file="${file#zpg=}"
+        install_args="$install_args $file"
+    done
+
+    # Now do the install.
+    cat <<EOF
+<p>Running command:
+<pre>zpkg install$install_args</pre>
+EOF
+
+    echo '<pre>'
+    IFS=' '
+    zpkg install $install_args  ||
+        echo Install failed with error code $?
+    echo '</pre>'
+    footer
+}
+
+
+do_show_keys()
+{
+    header Authorised SSH keys
+    if [ -e /boot/authorized_keys ]; then
+        pre cat /boot/authorized_keys
+    else
+        echo '<p>'No SSH keys authorised
+    fi
+    footer
+}
+
+
+do_add_keys()
+{
+    echo add
+}
+
+
+do_reset_keys()
+{
+    echo reset
+}
+
+
+do_invalid()
+{
+    cat <<EOF
+Content-type: text/html
+
+<html><head>
+<meta http-equiv="refresh" content="0;url=/">
+</head></html>
+EOF
+}
+
+
+# Pick up the basic command and decode it.
+case "$PATH_INFO" in
+/list)          do_list ;;
+/mnt*)          do_files "${PATH_INFO:4}" ;;
+/install)       do_install ;;
+/show-keys)     do_show_keys ;;
+/add-keys)      do_add_keys ;;
+/reset-keys)    do_reset_keys ;;
+*)              do_invalid ;;
+esac
+
+# pre env

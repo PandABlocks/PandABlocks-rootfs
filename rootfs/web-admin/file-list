@@ -1,0 +1,7 @@
+# List of files to install for web administration.
+
+d 755 /usr/share/web-admin
+d 755 /usr/share/web-admin/cgi-bin
+f 644 /usr/share/web-admin/httpd.conf httpd.conf
+f 644 /usr/share/web-admin/index.html index.html
+f 755 /usr/share/web-admin/cgi-bin/admin admin

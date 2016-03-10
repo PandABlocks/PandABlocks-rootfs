@@ -1,10 +1,10 @@
 # Administration interface for Panda packages
 
+INETD_CONF = 8080 stream tcp nowait root \
+    /usr/sbin/httpd httpd -i -c /usr/share/web-admin/httpd.conf
+
 option:
-	$(install) -d /usr/share/web-admin/htstatic
-	$(install) $(optiondir)/admin_webserver.py /usr/share/web-admin
-	$(install) $(wildcard $(optiondir)/htstatic/*) \
-             /usr/share/web-admin/htstatic
-	$(startup) $(optiondir)/web-admin S910 K090
+	$(install-files) $(optiondir)/file-list
+	echo '$(INETD_CONF)' >>$(sysroot)/etc/inetd.conf
 
 # vim: set filetype=make:

@@ -1,0 +1,23 @@
+<html>
+<head>
+    <title>Zebra2 admin page</title>
+    <link rel="stylesheet" type="text/css" href="/style.css">
+</head>
+<body>
+    <form action="cgi-bin/admin/list">
+        <input type="submit" value="List installed packages">
+    </form>
+    <form action="cgi-bin/admin/mnt">
+        <input type="submit" value="Install zpg files from USB">
+    </form>
+    <form action="cgi-bin/admin/show-keys">
+        <input type="submit" value="Show authorised SSH keys">
+    </form>
+    <form action="cgi-bin/admin/add-keys">
+        <input type="submit" value="Append SSH Keys from USB">
+    </form>
+    <form action="cgi-bin/admin/reset-keys">
+        <input type="submit" value="Remove all authorised keys">
+    </form>
+</body>
+</html>
