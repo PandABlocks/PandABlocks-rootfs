@@ -4,6 +4,26 @@
 # network settings accordingly.
 
 VAR=/var/run/network
+CONFIG_FILE=/boot/config.txt
+
+
+# As a network fallback measure, if there is a USB key containing a file named
+# panda-config.txt in its root, then use that instead of the default config
+# file.
+#   Unfortunately, it can take some time for the USB hot-plug process to finish
+# resolving, and all we can do is wait.  We start by checking the USB chain: if
+# there's more than the root hub then we'll wait and check.
+if [ -n "$(lsusb | grep -v '1d6b:000.')" ]; then
+    # Wait for hot-plug to finish.
+    sleep 4
+    for config in /mnt/*/panda-config.txt; do
+        if [ -e $config ]; then
+            echo Using alternate config file $config
+            CONFIG_FILE=$config
+            break
+        fi
+    done
+fi
 
 
 # Returns the corresponding config file entry, or an empty string if not
@@ -11,7 +31,7 @@ VAR=/var/run/network
 parse_config()
 {
     local config="$(
-        sed -n "/^$1[ \t]*=[ \t]*/{s///;s/[ \t]*$//;p}" </boot/config.txt)"
+        sed -n "/^$1[ \t]*=[ \t]*/{s///;s/[ \t]*$//;p}" <"$CONFIG_FILE")"
     printf %s "$config"
     [ -n "$config" ]
 }

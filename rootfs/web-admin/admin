@@ -226,6 +226,11 @@ do_show_keys()
     header Authorised SSH keys
     if [ -e /boot/authorized_keys ]; then
         pre cat /boot/authorized_keys
+        cat <<EOF
+<form action="/cgi-bin/admin/reset-keys">
+<input type="submit" value="Remove all authorised keys">
+</form>
+EOF
     else
         echo '<p>'No SSH keys authorised
     fi
@@ -237,16 +242,21 @@ do_find_keys()
 {
     header Add SSH key file
     list_directories find-keys "$1" 'authorized_keys file'
+    show_back find-keys "$1"
+
     if [ -e /mnt"$1"/authorized_keys ]; then
         cat <<EOF
+<h2>File $1/authorized_keys</h2>
+EOF
+        pre cat /mnt"$1"/authorized_keys
+        cat <<EOF
 <form action="/cgi-bin/admin/add-keys/$1">
-<input type="submit" value="Append keys from $1/authorized_keys">
+<input type="submit" value="Append to authorised keys">
 </form>
 EOF
     elif [ -z "$dir_list" ]; then
         echo '<p>Nothing found'
     fi
-    show_back find-keys "$1"
     footer
 }
 
@@ -274,6 +284,50 @@ do_reset_keys()
 }
 
 
+# Searches for alternate config.txt file in the location searched for on
+# startup, returns path to file or empty string.
+find_config()
+{
+    for config in /mnt/*/panda-config.txt; do
+        if [ -e $config ]; then
+            echo $config
+            return 0
+        fi
+    done
+    return 1
+}
+
+
+do_show_config()
+{
+    header Network configuration file
+    echo '<h2>Current configuration</h2>'
+    pre cat /boot/config.txt
+    if config="$(find_config)"; then
+        config_name=${config#/mnt/}
+        echo "<h2>Configuration in $config_name</h2>"
+        pre cat $config
+cat <<EOF
+<form action="/cgi-bin/admin/new-config/$config_name">
+<input type="submit" value="Replace configuration">
+</form>
+EOF
+    fi
+    footer
+}
+
+
+do_new_config()
+{
+    check_usb_device
+
+    header Network configuration updated
+    echo '<p>'/boot/config.txt replaced by $1
+    pre cp /mnt$1 /boot/config.txt
+    footer
+}
+
+
 do_invalid()
 {
     echo Status: 404 Not Found
@@ -293,6 +347,8 @@ case "$PATH_INFO" in
 /find-keys*)    do_find_keys "${PATH_INFO#/find-keys}" ;;
 /add-keys/*)    do_add_keys "${PATH_INFO#/add-keys}" ;;
 /reset-keys)    do_reset_keys ;;
+/show-config)   do_show_config ;;
+/new-config/*)  do_new_config "${PATH_INFO#/new-config}" ;;
 *)              do_invalid ;;
 esac
 
