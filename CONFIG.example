@@ -3,9 +3,9 @@
 # Copy this file to CONFIG.local and edit the settings below to suit your
 # environment.
 
-# Location of rootfs builder.  This needs to be later than version 1.5 and can
-# be downloaded from https://github.com/araneidae/rootfs
-ROOTFS_TOP = /home/mga83/targetOS/rootfs
+# Location of rootfs builder.  This needs to be at least version 1.6 and can be
+# downloaded from https://github.com/araneidae/rootfs
+ROOTFS_TOP = /dls_sw/prod/targetOS/rootfs/1-6
 
 # Location of SDK used to build target
 SDK_ROOT = /dls_sw/apps/FPGA/Xilinx/SDK/2015.1
