@@ -5,3 +5,29 @@ ul.dirlist {
 ul.zpglist {
     list-style-type: none;
 }
+
+pre {
+    white-space: pre-wrap;
+    word-wrap: break-word;
+    border: thin solid;
+    padding: 0.5em;
+}
+
+div {
+    min-height: 1em;
+}
+
+.ssh-keys {
+    white-space: pre-wrap;
+    word-wrap: break-word;
+    border: thin solid;
+    padding: 0em;
+}
+
+.ssh-keys > * {
+    padding: 0.5em;
+}
+
+pre > *:nth-child(even) {
+    background-color: beige;
+}

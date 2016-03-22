@@ -47,8 +47,13 @@ check_usb_device()
 
 pre()
 {
-    echo '<pre>'
-    "$@"
+    class=$1
+    shift
+    echo "<pre class=\"$class\">"
+    "$@" |
+    while read -r; do
+        printf '<div>%s</div>' "$REPLY"
+    done
     echo '</pre>'
 }
 
@@ -56,7 +61,7 @@ pre()
 do_list()
 {
     header Installed files
-    pre zpkg list
+    pre zpkg zpkg list
     footer
 }
 
@@ -160,11 +165,10 @@ do_install()
 
     # Now do the install.
     cat <<EOF
-<p>Running command:
-<pre>zpkg install $install_args</pre>
+<p>Running command: <samp>zpkg install $install_args</samp>
 EOF
 
-    echo '<pre>'
+    echo '<pre class="transcript">'
     zpkg install $install_args  ||
         echo Install failed with error code $?
     echo '</pre>'
@@ -207,11 +211,10 @@ do_remove()
     header Removing packages
     install_args="$(package_list)"
     cat <<EOF
-<p>Running command:
-<pre>zpkg remove $install_args</pre>
+<p>Running command: <samp>zpkg remove $install_args</samp>
 EOF
 
-    echo '<pre>'
+    echo '<pre class="transcript">'
     zpkg remove $install_args  ||
         echo Remove failed with error code $?
     echo '</pre>'
@@ -225,7 +228,7 @@ do_show_keys()
 {
     header Authorised SSH keys
     if [ -e /boot/authorized_keys ]; then
-        pre cat /boot/authorized_keys
+        pre ssh-keys cat /boot/authorized_keys
         cat <<EOF
 <form action="/cgi-bin/admin/reset-keys">
 <input type="submit" value="Remove all authorised keys">
@@ -248,7 +251,7 @@ do_find_keys()
         cat <<EOF
 <h2>File $1/authorized_keys</h2>
 EOF
-        pre cat /mnt"$1"/authorized_keys
+        pre ssh-keys cat /mnt"$1"/authorized_keys
         cat <<EOF
 <form action="/cgi-bin/admin/add-keys/$1">
 <input type="submit" value="Append to authorised keys">
@@ -264,7 +267,7 @@ EOF
 do_add_keys()
 {
     header Added keys from $1
-    echo '<pre>'
+    echo '<pre class="transcript">'
     cat /mnt/$1/authorized_keys >>/boot/authorized_keys
     sync
     echo '</pre>'
@@ -277,7 +280,7 @@ do_reset_keys()
     check_usb_device
 
     header All SSH keys reset
-    echo '<pre>'
+    echo '<pre class="transcript">'
     rm -f /boot/authorized_keys
     echo '</pre>'
     footer
@@ -301,12 +304,15 @@ find_config()
 do_show_config()
 {
     header Network configuration file
-    echo '<h2>Current configuration</h2>'
-    pre cat /boot/config.txt
+    cat <<EOF
+Configuration booted from <samp>$(cat /tmp/config_file)</samp>.
+<h2>Current configuration</h2>
+EOF
+    pre config cat /boot/config.txt
     if config="$(find_config)"; then
         config_name=${config#/mnt/}
-        echo "<h2>Configuration in $config_name</h2>"
-        pre cat $config
+        echo "<h2>Configuration in <samp>$config_name</samp></h2>"
+        pre config cat $config
 cat <<EOF
 <form action="/cgi-bin/admin/new-config/$config_name">
 <input type="submit" value="Replace configuration">
@@ -323,7 +329,15 @@ do_new_config()
 
     header Network configuration updated
     echo '<p>'/boot/config.txt replaced by $1
-    pre cp /mnt$1 /boot/config.txt
+    pre transcript cp /mnt$1 /boot/config.txt
+    footer
+}
+
+
+do_show_log()
+{
+    header 'Content of <samp>/var/log/messages</samp>'
+    pre log cat /var/log/messages
     footer
 }
 
@@ -349,6 +363,7 @@ case "$PATH_INFO" in
 /reset-keys)    do_reset_keys ;;
 /show-config)   do_show_config ;;
 /new-config/*)  do_new_config "${PATH_INFO#/new-config}" ;;
+/log)           do_show_log ;;
 *)              do_invalid ;;
 esac
 
