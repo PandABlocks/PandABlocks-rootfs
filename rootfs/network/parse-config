@@ -14,11 +14,8 @@ CONFIG_FILE=/boot/config.txt
 # resolving, and all we can do is wait.  We start by checking the USB chain: if
 # there's more than the root hub then we'll wait and check.
 if [ -n "$(lsusb | grep -v '1d6b:000.')" ]; then
-    # Wait for hot-plug to finish and give it a helping hand afterwards.  For
-    # some reason if we don't do both these steps we don't always see the USB
-    # device.
+    # Wait for hot-plug to finish mounting.
     sleep 4
-    mdev -s
 
     # Search for an alternative config.txt file.
     for config in /mnt/*/panda-config.txt; do
@@ -29,6 +26,7 @@ if [ -n "$(lsusb | grep -v '1d6b:000.')" ]; then
         fi
     done
 fi
+echo "$CONFIG_FILE" >/tmp/config_file
 
 
 # Returns the corresponding config file entry, or an empty string if not

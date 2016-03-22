@@ -5,6 +5,6 @@ option:
 	$(install) -x $(optiondir)/automount /usr/share/mdev
 	echo 'sd[a-z].* 0:0 660 */usr/share/mdev/automount' \
             >>$(sysroot)/etc/mdev.conf
-	cat $(optiondir)/fstab >>$(sysroot)/etc/fstab
+	cat $(optiondir)/fstab.mdev >>$(sysroot)/etc/fstab.mdev
 
 # vim: set filetype=make:
