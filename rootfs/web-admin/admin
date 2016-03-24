@@ -1,370 +1,310 @@
-#!/bin/sh
+#!/usr/bin/env python
 
-# Administration cgi interface.
+import sys
+import os
+import glob
+import cgi
+import cgitb
+import subprocess
+import pipes
+import urllib
 
-header()
-{
-    cat <<EOF
+cgitb.enable()
+
+
+def print_header(title):
+    title = cgi.escape(title)
+    print '''\
 Content-type: text/html
 
 <html>
 <head>
-<title>$@</title>
+<title>%(title)s</title>
 <link rel="stylesheet" type="text/css" href="/style.css">
 </head>
 <body>
-<h1>$@</h1>
-EOF
-}
+<h1>%(title)s</h1>''' % locals()
 
-footer()
-{
-    cat <<EOF
+
+def print_footer():
+    print '''\
 <p><a href="/">Top</a>
 </body>
-</html>
-EOF
-}
+</html>'''
 
 
-fail()
-{
-    header Action failed
-    echo "$@"
-    footer
-    exit
-}
+def print_action(action, title, path=None):
+    if path is not None:
+        action = '%s/%s' % (action, cgi.escape(path))
+    print '''\
+<form action="/cgi-bin/admin/%s">
+<input type="submit" value="%s">
+</form>''' % (action, title)
 
 
-check_usb_device()
-{
-    for file in /mnt/*; do
-        [ -d $file ]  &&  return
-    done
-    fail Action not allowed
-}
+def fail(message):
+    print_header('Action failed')
+    print '<p>', cgi.escape(message)
+    cgi.print_environ()
+    print_footer()
+    sys.exit()
 
 
-pre()
-{
-    class=$1
-    shift
-    echo "<pre class=\"$class\">"
-    "$@" |
-    while read -r; do
-        printf '<div>%s</div>' "$REPLY"
-    done
-    echo '</pre>'
-}
+def run_command(pre_class, *command):
+    print '<pre class="%s">' % pre_class
+    cmd = subprocess.Popen(command,
+        stderr = subprocess.STDOUT, stdout = subprocess.PIPE)
+    for line in cmd.stdout:
+        sys.stdout.write('<div>%s</div>' % cgi.escape(line[:-1]))
+    print '</pre>'
 
 
-do_list()
-{
-    header Installed files
-    pre zpkg zpkg list
-    footer
-}
+
+# Shows a list of installed packages and their files
+def do_list():
+    print_header('Installed files')
+    run_command('zpkg', 'zpkg', 'list')
+    print_footer()
 
 
-# The first argument is the navigation directory, the second is our current
-# location in the navigation, the third is the title.
-list_directories()
-{
-    dir_list="$(find "/mnt$2" -xdev -mindepth 1 -maxdepth 1 -type d)"
-
-    if [ -n "$dir_list" ]; then
-        cat <<EOF
-<h2>Select directory containing $3:</h2>
-<ul class="dirlist">
-EOF
-        echo "$dir_list" |
-        while read -r; do
-            dir=${REPLY#/mnt/}
-            cat <<EOF
-<li><a href="/cgi-bin/admin/$1/$dir">$dir</a></li>
-EOF
-        done
-        echo '</ul>'
-    fi
-}
+def is_dir(file):
+    return os.path.isdir(file) and not os.path.islink(file)
 
 
-show_back()
-{
-    if [ "$2" != '' -a "$2" != / ]; then
-        cat <<EOF
-<p>Up to <a href="/cgi-bin/admin/$1${2%/*}">/mnt$(dirname "$2")</a>
-EOF
-    fi
-}
+def list_directories(action, path, title):
+    # Enumerate true directories under /mnt
+    dirs = [
+        os.path.join(path, file)
+        for file in os.listdir(os.path.join('/mnt', path))
+        if is_dir(os.path.join('/mnt', path, file))]
+
+    if dirs:
+        print '<h2>Select directory containing %s:</h2>' % title
+        print '<ul class="dirlist">'
+        for dir in dirs:
+            print '<li><a href="/cgi-bin/admin/%s/%s">%s</a></li>' % (
+                action, urllib.quote(dir), cgi.escape(dir))
+        print '</ul>'
+
+    return dirs
 
 
-do_files()
-{
-    [ -d "/mnt$1" ]  ||  fail Invalid directory
+def show_back(action, path):
+    up, here = os.path.split(path)
+    if up:
+        print '''\
+<p>Up to <a href="/cgi-bin/admin/%s/%s">%s</a>''' % (
+            action, cgi.escape(up, True), cgi.escape(up))
 
-    header "Looking for packages in /mnt$1"
 
-    list_directories mnt "$1" 'packages to install'
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+# Package management
 
-    zpg_list="$(
-        find "/mnt$1" -xdev -mindepth 1 -maxdepth 1 -type f -name *.zpg)"
-    if [ -n "$zpg_list" ]; then
-        cat <<EOF
+def do_files(path):
+    print_header('Looking for packages in /mnt/%s' % path)
+    dirs = list_directories('mnt', path, 'packages to install')
+
+    # See if this directory contains any packages
+    zpkg_list = glob.glob(os.path.join('/mnt', path, '*@*.zpg'))
+    if zpkg_list:
+        print '''\
 <h2>Select packages to install:</h2>
 <form action="/cgi-bin/admin/install" method="get">
-<ul class="zpglist">
-EOF
-
-        echo "$zpg_list" |
-        while read -r; do
-        cat <<EOF
-<li><input type="checkbox" name="zpg" value="$REPLY">${REPLY##*/}</li>
-EOF
-        done
-        cat <<EOF
+<ul class="zpglist">'''
+        for file in zpkg_list:
+            print '''\
+<li><input type="checkbox" name="zpg" value="%s">%s</li>''' % (
+                cgi.escape(file, True), cgi.escape(os.path.split(file)[1]))
+        print '''\
 </ul>
 <input type="submit" value="Install Selected">
-</form>
-EOF
-    fi
+</form>'''
 
-    if [ -z "$dir_list" -a -z "$zpg_list" ]; then
-        echo '<p>Nothing found'
-    fi
+    if not dirs and not zpkg_list:
+        print '<p>Nothing found'
 
-    show_back mnt "$1"
-    footer
-}
+    show_back('mnt', path)
+    print_footer()
 
 
-urldecode()
-{
-    python -c 'import sys, urllib; print urllib.unquote(sys.argv[1])' "$@"
-}
+# Performs an install or remove transaction
+def transaction(title, action):
+    print_header(title + ' packages')
+    packages = cgi.FieldStorage().getlist('zpg')
+    if packages:
+        print '<p>%s: %s' % (title, ', '.join(map(cgi.escape, packages)))
+        run_command('transcript', 'zpkg', action, *packages)
+        print '<p>Writing state to disk'
+        subprocess.call('sync')
+    else:
+        print '<p>Nothing to %s' % action
+    print_footer()
 
 
-# Computes a list of packages from $QUERY_STRING
-package_list()
-{
-    IFS=\&
-    for file in $QUERY_STRING; do
-        file="$(urldecode "$file")"
-        printf ' %s' "${file#zpg=}"
-    done
-    echo
-    IFS=' '
-}
+def do_install():
+    transaction('Installing', 'install')
 
 
-do_install()
-{
-    header Installing
-
-    install_args="$(package_list)"
-
-    # Now do the install.
-    cat <<EOF
-<p>Running command: <samp>zpkg install $install_args</samp>
-EOF
-
-    echo '<pre class="transcript">'
-    zpkg install $install_args  ||
-        echo Install failed with error code $?
-    echo '</pre>'
-    echo '<p>'Writing state to disk
-    sync
-    footer
-}
+def check_usb_device():
+    if not [dir for dir in glob.glob('/mnt/*') if is_dir(dir)]:
+        fail('Action not allowed')
 
 
-do_delete()
-{
-    check_usb_device
+def do_delete():
+    check_usb_device()
 
-    header Delete packages
-    cat <<EOF
+    print_header('Delete packages')
+    print '''\
 <h2>Select packages to delete</h2>
 <form action="/cgi-bin/admin/remove" method="get">
-<ul class="zpglist">
-EOF
-    zpkg list |
-    sed '/^ /d' |
-    while read package version; do
-        cat <<EOF
-<li><input type="checkbox" name="zpg" value="$package">$package @ $version</li>
-EOF
-    done
-        cat <<EOF
+<ul class="zpglist">'''
+    cmd = subprocess.Popen(['zpkg', 'list'], stdout = subprocess.PIPE)
+    for line in cmd.stdout:
+        package, version = line.split()
+        print '''\
+<li><input type="checkbox" name="zpg" value="%s">%s @ %s</li>''' % (
+            cgi.escape(package, True), cgi.escape(package), cgi.escape(version))
+    print '''\
 </ul>
 <input type="submit" value="Delete">
-</form>
-EOF
-    footer
+</form>'''
+    print_footer()
+
+
+def do_remove():
+    check_usb_device()
+    transaction('Removing', 'remove')
+
+
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+# SSH key administration
+
+
+def do_show_keys():
+    print_header('Authorised SSH keys')
+    if os.path.isfile('/boot/authorized_keys'):
+        run_command('ssh-keys', 'cat', '/boot/authorized_keys')
+        print_action('reset-keys', 'Remove all authorized keys')
+    else:
+        print '<p>No SSH keys authorised'
+    print_footer()
+
+
+def do_find_keys(path):
+    print_header('Add SSH key file')
+    dirs = list_directories('find-keys', path, 'authorized_keys file')
+    show_back('find-keys', path)
+
+    keys = os.path.join('/mnt', path, 'authorized_keys')
+    if os.path.isfile(keys):
+        print '<h2>File %s</h2>' % cgi.escape(keys)
+        run_command('ssh-keys', 'cat', keys)
+        print_action('add-keys', 'Append to authorised keys', path)
+    elif not dirs:
+        print '<p>Nothing found'
+    print_footer()
+
+
+def do_add_keys(path):
+    keys = os.path.join('/mnt', path, 'authorized_keys')
+    print_header('Added keys from %s' % keys)
+    # We need to use the shell to do this.
+    subprocess.call(
+        'cat %s >>/boot/authorized_keys' % pipes.quote(keys), shell = True)
+    print_footer()
+
+
+def do_reset_keys():
+    check_usb_device()
+    print_header('All SSH keys reset')
+    os.unlink('/boot/authorized_keys')
+    print_footer()
+
+
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+# Network configuration etc
+
+
+def do_show_config():
+    boot_config = open('/tmp/config_file').read()[:-1]
+    print_header('Network configuration file')
+    print '''\
+Configuration booted from <samp>%s</samp>.
+<h2>Current configuration</h2>''' % cgi.escape(boot_config)
+    run_command('config', 'cat', '/boot/config.txt')
+
+    new_config = glob.glob('/mnt/*/panda-config.txt')
+    if new_config:
+        new_config = new_config[0]
+        print '<h2>Configuration in <samp>%s</samp></h2>' % \
+            cgi.escape(new_config)
+        run_command('config', 'cat', new_config)
+        print_action('new-config', 'Replace configuration', new_config[4:])
+    print_footer()
+
+
+def do_new_config(path):
+    check_usb_device()
+    print_header('Network configuration updated')
+    print '<p>/boot/config.txt replaced by %s' % cgi.escape(path)
+    subprocess.call(['cp', os.path.join('/mnt', path), '/boot/config.txt'])
+    print_footer()
+
+
+def do_show_log():
+    print_header('Content of /var/log/messages')
+    run_command('log', 'cat', '/var/log/messages')
+    print_footer()
+
+
+def do_invalid():
+    print 'Status: 404 Not Found'
+    print_header('Invalid command')
+    print_footer()
+
+
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+# Top level action parse and dispatch
+
+parse_actions = {
+    'list':         (do_list, False),
+    'mnt':          (do_files, True),
+    'install':      (do_install, False),
+    'delete':       (do_delete, False),
+    'remove':       (do_remove, False),
+    'show-keys':    (do_show_keys, False),
+    'find-keys':    (do_find_keys, True),
+    'add-keys':     (do_add_keys, True),
+    'reset-keys':   (do_reset_keys, False),
+    'show-config':  (do_show_config, False),
+    'new-config':   (do_new_config, True),
+    'show-log':     (do_show_log, False),
 }
 
 
-do_remove()
-{
-    check_usb_device
-
-    header Removing packages
-    install_args="$(package_list)"
-    cat <<EOF
-<p>Running command: <samp>zpkg remove $install_args</samp>
-EOF
-
-    echo '<pre class="transcript">'
-    zpkg remove $install_args  ||
-        echo Remove failed with error code $?
-    echo '</pre>'
-    echo '<p>'Writing state to disk
-    sync
-    footer
-}
+# Disable output buffering
+old_stdout = sys.stdout
+sys.stdout = os.fdopen(sys.stdout.fileno(), 'w', 0)
 
 
-do_show_keys()
-{
-    header Authorised SSH keys
-    if [ -e /boot/authorized_keys ]; then
-        pre ssh-keys cat /boot/authorized_keys
-        cat <<EOF
-<form action="/cgi-bin/admin/reset-keys">
-<input type="submit" value="Remove all authorised keys">
-</form>
-EOF
-    else
-        echo '<p>'No SSH keys authorised
-    fi
-    footer
-}
+# Parse request path.  This is of the form /<action>[/<path>] where the path
+# part may be unwanted.
+path_info = os.environ['PATH_INFO']
+split = path_info.split('/', 2)
+# At this point split may be anywhere from 1 to 3 elements in length, and we'll
+# be pretty put out if the first element isn't an empty string.
+if len(split) == 1:
+    fail('Need to to specify action')
+elif len(split) == 2:
+    action = split[1]
+    path = ''
+else:
+    action, path = split[1:3]
 
-
-do_find_keys()
-{
-    header Add SSH key file
-    list_directories find-keys "$1" 'authorized_keys file'
-    show_back find-keys "$1"
-
-    if [ -e /mnt"$1"/authorized_keys ]; then
-        cat <<EOF
-<h2>File $1/authorized_keys</h2>
-EOF
-        pre ssh-keys cat /mnt"$1"/authorized_keys
-        cat <<EOF
-<form action="/cgi-bin/admin/add-keys/$1">
-<input type="submit" value="Append to authorised keys">
-</form>
-EOF
-    elif [ -z "$dir_list" ]; then
-        echo '<p>Nothing found'
-    fi
-    footer
-}
-
-
-do_add_keys()
-{
-    header Added keys from $1
-    echo '<pre class="transcript">'
-    cat /mnt/$1/authorized_keys >>/boot/authorized_keys
-    sync
-    echo '</pre>'
-    footer
-}
-
-
-do_reset_keys()
-{
-    check_usb_device
-
-    header All SSH keys reset
-    echo '<pre class="transcript">'
-    rm -f /boot/authorized_keys
-    echo '</pre>'
-    footer
-}
-
-
-# Searches for alternate config.txt file in the location searched for on
-# startup, returns path to file or empty string.
-find_config()
-{
-    for config in /mnt/*/panda-config.txt; do
-        if [ -e $config ]; then
-            echo $config
-            return 0
-        fi
-    done
-    return 1
-}
-
-
-do_show_config()
-{
-    header Network configuration file
-    cat <<EOF
-Configuration booted from <samp>$(cat /tmp/config_file)</samp>.
-<h2>Current configuration</h2>
-EOF
-    pre config cat /boot/config.txt
-    if config="$(find_config)"; then
-        config_name=${config#/mnt/}
-        echo "<h2>Configuration in <samp>$config_name</samp></h2>"
-        pre config cat $config
-cat <<EOF
-<form action="/cgi-bin/admin/new-config/$config_name">
-<input type="submit" value="Replace configuration">
-</form>
-EOF
-    fi
-    footer
-}
-
-
-do_new_config()
-{
-    check_usb_device
-
-    header Network configuration updated
-    echo '<p>'/boot/config.txt replaced by $1
-    pre transcript cp /mnt$1 /boot/config.txt
-    footer
-}
-
-
-do_show_log()
-{
-    header 'Content of <samp>/var/log/messages</samp>'
-    pre log cat /var/log/messages
-    footer
-}
-
-
-do_invalid()
-{
-    echo Status: 404 Not Found
-    header Invalid command
-    footer
-}
-
-
-# Pick up the basic command and decode it.
-case "$PATH_INFO" in
-/list)          do_list ;;
-/mnt*)          do_files "${PATH_INFO#/mnt}" ;;
-/install)       do_install ;;
-/delete)        do_delete ;;
-/remove)        do_remove ;;
-/show-keys)     do_show_keys ;;
-/find-keys*)    do_find_keys "${PATH_INFO#/find-keys}" ;;
-/add-keys/*)    do_add_keys "${PATH_INFO#/add-keys}" ;;
-/reset-keys)    do_reset_keys ;;
-/show-config)   do_show_config ;;
-/new-config/*)  do_new_config "${PATH_INFO#/new-config}" ;;
-/log)           do_show_log ;;
-*)              do_invalid ;;
-esac
-
-# pre env
+action, expect_path = parse_actions.get(action, (do_invalid, False))
+if expect_path:
+    action(path)
+elif path:
+    fail('Did not expect path')
+else:
+    action()
