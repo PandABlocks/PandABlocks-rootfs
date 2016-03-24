@@ -2,11 +2,21 @@
 <head>
     <title>Zebra2 admin page</title>
     <link rel="stylesheet" type="text/css" href="/style.css">
+    <style>
+    form { display: inline-block; }
+    </style>
 </head>
 <body>
     <h1>Zebra2 Administration</h1>
+    <h2>System Admin</h2>
     <form action="cgi-bin/admin/show-log">
         <input type="submit" value="Show system log">
+    </form>
+    <form action="cgi-bin/admin/restart">
+        <input type="submit" value="Restart services">
+    </form>
+    <form action="cgi-bin/admin/reboot">
+        <input type="submit" value="Reboot machine">
     </form>
     <h2>Installed Packages</h2>
     <form action="cgi-bin/admin/list">

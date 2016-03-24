@@ -220,7 +220,7 @@ def do_show_config():
     boot_config = open('/tmp/config_file').read()[:-1]
     print_header('Network configuration file')
     print '''\
-Configuration booted from <samp>%s</samp>.
+Configuration loaded from <samp>%s</samp>.
 <h2>Configuration in <samp>/boot/config.txt</samp></h2>''' % \
         cgi.escape(boot_config)
     run_command('config', 'cat', '/boot/config.txt')
@@ -248,7 +248,26 @@ def do_show_log():
     print_footer()
 
 
-def do_invalid():
+def do_restart():
+    print_header('Restarting installed services')
+    run_command('restart', '/etc/init.d/zpkg-daemon', 'restart')
+    print_footer()
+
+
+def do_reboot(path):
+    if path == 'confirm':
+        print_header('Rebooting')
+        print '<p>Wait at least 15 seconds for reboot to complete'
+        print_footer()
+        subprocess.call(['sync'])
+        subprocess.call(['reboot'])
+    else:
+        print_header('Confirm machine reboot')
+        print_action('reboot', 'Reboot', 'confirm')
+        print_footer()
+
+
+def do_invalid(path):
     print 'Status: 404 Not Found'
     print_header('Invalid command')
     print_footer()
@@ -273,7 +292,10 @@ parse_actions = {
     'show-config':  (do_show_config,    False,  False),
     'new-config':   (do_new_config,     True,   True),
     'show-log':     (do_show_log,       False,  False),
+    'restart':      (do_restart,        False,  True),
+    'reboot':       (do_reboot,         True,   True),
 }
+default_action =    (do_invalid,        True,   False)
 
 
 # Disable output buffering
@@ -295,7 +317,7 @@ elif len(split) == 2:
 else:
     action, path = split[1:3]
 
-action, expect_path, validate = parse_actions.get(action, (do_invalid, False))
+action, expect_path, validate = parse_actions.get(action, default_action)
 if validate and not check_usb_device():
     fail('Action not allowed')
 elif expect_path:
