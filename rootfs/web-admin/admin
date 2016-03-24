@@ -59,14 +59,6 @@ def run_command(pre_class, *command):
     print '</pre>'
 
 
-
-# Shows a list of installed packages and their files
-def do_list():
-    print_header('Installed files')
-    run_command('zpkg', 'zpkg', 'list')
-    print_footer()
-
-
 def is_dir(file):
     return os.path.isdir(file) and not os.path.islink(file)
 
@@ -97,8 +89,35 @@ def show_back(action, path):
             action, cgi.escape(up, True), cgi.escape(up))
 
 
+# Simple validation: just check for presence of mounted usb device
+def check_usb_device():
+    return subprocess.call(['grep', '-q', ' /mnt/sd.*', '/proc/mounts']) == 0
+
+
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 # Package management
+
+
+def do_list():
+    print_header('Installed packages')
+    print '''\
+<form action="/cgi-bin/admin/remove" method="get">
+<div class="zpglist">'''
+    cmd = subprocess.Popen(['zpkg', 'list'], stdout = subprocess.PIPE)
+    for line in cmd.stdout:
+        package, version = line.split()
+        print '''\
+<label>
+<input class="zpglist" type="checkbox" name="zpg" value="%s">%s @ %s''' % (
+            cgi.escape(package, True), cgi.escape(package), cgi.escape(version))
+        run_command('zpglist', 'zpkg', 'show', package)
+        print '</label>'
+    print '''\
+</div>
+<input type="submit" value="Delete selected packages">
+</form>'''
+    print_footer()
+
 
 def do_files(path):
     print_header('Looking for packages in /mnt/%s' % path)
@@ -145,34 +164,7 @@ def do_install():
     transaction('Installing', 'install')
 
 
-def check_usb_device():
-    if not [dir for dir in glob.glob('/mnt/*') if is_dir(dir)]:
-        fail('Action not allowed')
-
-
-def do_delete():
-    check_usb_device()
-
-    print_header('Delete packages')
-    print '''\
-<h2>Select packages to delete</h2>
-<form action="/cgi-bin/admin/remove" method="get">
-<ul class="zpglist">'''
-    cmd = subprocess.Popen(['zpkg', 'list'], stdout = subprocess.PIPE)
-    for line in cmd.stdout:
-        package, version = line.split()
-        print '''\
-<li><input type="checkbox" name="zpg" value="%s">%s @ %s</li>''' % (
-            cgi.escape(package, True), cgi.escape(package), cgi.escape(version))
-    print '''\
-</ul>
-<input type="submit" value="Delete">
-</form>'''
-    print_footer()
-
-
 def do_remove():
-    check_usb_device()
     transaction('Removing', 'remove')
 
 
@@ -215,7 +207,6 @@ def do_add_keys(path):
 
 
 def do_reset_keys():
-    check_usb_device()
     print_header('All SSH keys reset')
     os.unlink('/boot/authorized_keys')
     print_footer()
@@ -230,7 +221,8 @@ def do_show_config():
     print_header('Network configuration file')
     print '''\
 Configuration booted from <samp>%s</samp>.
-<h2>Current configuration</h2>''' % cgi.escape(boot_config)
+<h2>Configuration in <samp>/boot/config.txt</samp></h2>''' % \
+        cgi.escape(boot_config)
     run_command('config', 'cat', '/boot/config.txt')
 
     new_config = glob.glob('/mnt/*/panda-config.txt')
@@ -244,7 +236,6 @@ Configuration booted from <samp>%s</samp>.
 
 
 def do_new_config(path):
-    check_usb_device()
     print_header('Network configuration updated')
     print '<p>/boot/config.txt replaced by %s' % cgi.escape(path)
     subprocess.call(['cp', os.path.join('/mnt', path), '/boot/config.txt'])
@@ -266,19 +257,22 @@ def do_invalid():
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 # Top level action parse and dispatch
 
+# Arguments are:
+#   Action to perform
+#   Whether path can be passed as argument
+#   Whether we need to check for presence of USB key
 parse_actions = {
-    'list':         (do_list, False),
-    'mnt':          (do_files, True),
-    'install':      (do_install, False),
-    'delete':       (do_delete, False),
-    'remove':       (do_remove, False),
-    'show-keys':    (do_show_keys, False),
-    'find-keys':    (do_find_keys, True),
-    'add-keys':     (do_add_keys, True),
-    'reset-keys':   (do_reset_keys, False),
-    'show-config':  (do_show_config, False),
-    'new-config':   (do_new_config, True),
-    'show-log':     (do_show_log, False),
+    'list':         (do_list,           False,  False),
+    'mnt':          (do_files,          True,   False),
+    'install':      (do_install,        False,  False),
+    'remove':       (do_remove,         False,  True),
+    'show-keys':    (do_show_keys,      False,  False),
+    'find-keys':    (do_find_keys,      True,   False),
+    'add-keys':     (do_add_keys,       True,   False),
+    'reset-keys':   (do_reset_keys,     False,  True),
+    'show-config':  (do_show_config,    False,  False),
+    'new-config':   (do_new_config,     True,   True),
+    'show-log':     (do_show_log,       False,  False),
 }
 
 
@@ -301,8 +295,10 @@ elif len(split) == 2:
 else:
     action, path = split[1:3]
 
-action, expect_path = parse_actions.get(action, (do_invalid, False))
-if expect_path:
+action, expect_path, validate = parse_actions.get(action, (do_invalid, False))
+if validate and not check_usb_device():
+    fail('Action not allowed')
+elif expect_path:
     action(path)
 elif path:
     fail('Did not expect path')

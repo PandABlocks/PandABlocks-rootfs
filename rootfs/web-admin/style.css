@@ -1,9 +1,20 @@
-ul.dirlist {
+ul.dirlist, ul.zpglist {
     list-style-type: none;
 }
 
-ul.zpglist {
-    list-style-type: none;
+div.zpglist {
+    display: block;
+    margin-left: 2em;
+}
+
+.zpglist input {
+    float: left;
+    margin-left: -2em;
+}
+
+pre.zpglist {
+    border: unset;
+    padding: 0pt;
 }
 
 pre {
@@ -29,5 +40,5 @@ div {
 }
 
 pre > *:nth-child(even) {
-    background-color: beige;
+    background-color: #E3EEC8;
 }
