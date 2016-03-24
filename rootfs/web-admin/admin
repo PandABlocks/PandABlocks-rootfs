@@ -100,22 +100,27 @@ def check_usb_device():
 
 def do_list():
     print_header('Installed packages')
-    print '''\
+    zpkg_list = subprocess.Popen(
+        ['zpkg', 'list'], stdout = subprocess.PIPE).stdout.readlines()
+    if zpkg_list:
+        print '''\
 <form action="/cgi-bin/admin/remove" method="get">
 <div class="zpglist">'''
-    cmd = subprocess.Popen(['zpkg', 'list'], stdout = subprocess.PIPE)
-    for line in cmd.stdout:
-        package, version = line.split()
-        print '''\
+        for line in zpkg_list:
+            package, version = line.split()
+            print '''\
 <label>
 <input class="zpglist" type="checkbox" name="zpg" value="%s">%s @ %s''' % (
-            cgi.escape(package, True), cgi.escape(package), cgi.escape(version))
-        run_command('zpglist', 'zpkg', 'show', package)
-        print '</label>'
-    print '''\
+                cgi.escape(package, True), cgi.escape(package),
+                cgi.escape(version))
+            run_command('zpglist', 'zpkg', 'show', package)
+            print '</label>'
+        print '''\
 </div>
 <input type="submit" value="Delete selected packages">
 </form>'''
+    else:
+        print '<p>No packages installed'
     print_footer()
 
 
