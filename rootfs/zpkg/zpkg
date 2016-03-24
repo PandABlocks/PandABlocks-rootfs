@@ -50,7 +50,10 @@ zpkg simple package manager.  Possible commands are:
         Removes named packages
 
     zpkg show [package ...]
-        Verifys named packages or all packages if no package specified
+        Shows files in named packages
+
+    zpkg verify [package ...]
+        Verifies files in named packages
 
     zpkg help
         Show this list of options
@@ -61,10 +64,10 @@ EOF
 list()
 {
     for zpg in $DATABASE/*.zdb; do
-        echo $zpg |
-        sed 's:\.zdb$::; s:@: :; s:.*/::'
-        cat $zpg |
-        sed 's/^/ /'
+        if [ -e "$zpg" ]; then
+            echo "$zpg" |
+            sed 's:\.zdb$::; s:@: :; s:.*/::'
+        fi
     done
 }
 
@@ -107,6 +110,8 @@ remove_package()
 {
     zdb="$1"
     zdd="${1%%.zdb}.zdd"
+
+    logger -t zpkg Removing package "$zdb"
 
     # Check the files we're about to remove.
     echo Removing files:
@@ -219,6 +224,7 @@ install()
     check_package_content "$1"
 
     # Now go ahead with the install
+    logger -t zpkg Installing package "$package_name@$package_version"
     tar xzf "$1" -C "$ROOT_DIR"  ||
         error Error installing package "$1".
     create_database_file "$1"
@@ -236,6 +242,17 @@ remove()
 
 
 show()
+{
+    package="$DATABASE/$1"@*.zdb
+    if check_exists $package; then
+        cat $package
+    else
+        echo >&2 Package $package not installed
+    fi
+}
+
+
+verify()
 {
     package="$DATABASE/$1"@*.zdb
     if check_exists $package; then
@@ -289,6 +306,12 @@ case "$action" in
         # Show named packages
         for package; do
             show "$package"
+        done
+        ;;
+    verify)
+        # Verify named packages
+        for package; do
+            verify "$package"
         done
         ;;
     help)
