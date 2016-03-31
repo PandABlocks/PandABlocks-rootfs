@@ -11,3 +11,6 @@ l 777 /root/.ssh /boot/authorized_keys
 l 777 /root/.ssh /qspi/id_dropbear
 l 777 /root/.ssh /qspi/id_dropbear.pub
 l 777 /root/.ssh /qspi/known_hosts
+
+# Link python into /opt
+f 644 /usr/lib/python2.7/site-packages/defaults.pth defaults.pth
