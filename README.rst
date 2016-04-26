@@ -68,7 +68,9 @@ building the system::
     6af6c226638dc3ee10d6e73ed5d84cfa cothread-2.13.tar.gz
     e967e320344cd4bfebe321e3ab8514d6 dropbear-2015.67.tar.bz2
     bc759fc62666786f5436e2075beb3265 e2fsprogs-1.42.13.tar.gz
+    ac80f432ac9373e7d162834b264034b6 enum34-1.0.4.tar.gz
     3b2322695e9ee7bf447ebcdb85f93e83 ethtool-2.6.36.tar.gz
+    5154c00201d599acc00194c6c278ca23 iperf-3.0.2.tar.gz
     277e4bd258fd4fb2aadaed760320c566 libressl-2.2.0.tar.gz
     addf44b646ddb4e3919805aa88fa7c5e libtool-2.4.6.tar.gz
     1b29c10db4aa88afcaeeaabeef6790db lsof_4.88.tar.bz2
@@ -82,6 +84,7 @@ building the system::
     bbf052e7fcc6fa403d2514219346da04 procServ-2.6.0.tar.gz
     d7547558fd673bd9d38e2108c6b42521 Python-2.7.10.tgz
     33c8fb279e981274f485fd91da77e94a readline-6.3.tar.gz
+    419a0594e2b25039239af8b90eda7d92 screen-4.2.1.tar.gz
     107a5be455493861189e9b57a3a51912 strace-4.10.tar.xz
     6b47e33cbd13f5c134b04f2a44a480ad ws4py-0.3.4.tar.gz
     44d667c142d7cda120332623eab69f40 zlib-1.2.8.tar.gz
@@ -101,14 +104,14 @@ dropbear, ntp:
     These provide fundamental target resources: dropbear provides an ssh server,
     ntp is used for accurate timestamps.
 
-Python, libressl, numpy, cothread, ws4py:
+Python, enum34, libressl, numpy, cothread, ws4py:
     Python and a variety of supporting libraries will be used for running a
     number of system components.
 
-conserver, procServ:
-    It is likely that these may be used for server management.
+conserver, procServ, screen:
+    It is possible that these may be used for server management.
 
-ethtool, lsof, strace, nano:
+ethtool, iperf, lsof, strace, nano:
     These are useful debugging utilities, together with an easy to use editor.
 
 ncurses, readline, zlib:
