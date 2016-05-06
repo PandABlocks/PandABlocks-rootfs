@@ -242,8 +242,9 @@ Configuration loaded from <samp>%s</samp>.
 
 def do_new_config(path):
     print_header('Network configuration updated')
-    print '<p>/boot/config.txt replaced by %s' % cgi.escape(path)
     subprocess.call(['cp', os.path.join('/mnt', path), '/boot/config.txt'])
+    subprocess.call(['sync'])
+    print '<p>/boot/config.txt replaced by %s' % cgi.escape(path)
     print_footer()
 
 
