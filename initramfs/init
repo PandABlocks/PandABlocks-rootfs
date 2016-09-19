@@ -9,59 +9,14 @@ mount -t sysfs sysfs /sys
 mdev -s
 
 
-# ------------------------------------------------------------------------------
-#
-#   Status Indicator
-#
-# We use an LED to indicate boot progress and whether there's been a problem.
-
+# This is called if something goes horribly wrong.
 panic()
 {
     echo >&2 "$@"
     echo >&2 Unable to continue
-    touch /tmp/panic
+    set-led SYSTEM_ERR
     exec /bin/sh
 }
-
-tick()
-{
-    echo 1 >/sys/class/gpio/gpio953/value
-    usleep ${1}000
-    echo 0 >/sys/class/gpio/gpio953/value
-    usleep ${2}000
-}
-
-ticker()
-{
-    while :; do
-        if [ -e /tmp/panic ]; then
-            # Urgent panic!
-            tick 100 100; tick 100 100; tick 100 300    # S
-            tick 300 100; tick 300 100; tick 300 300    # O
-            tick 100 100; tick 100 100; tick 100 700    # S
-        elif [ -e /tmp/mac ]; then
-            tick 600 200; tick 600 1000                 # M
-        else
-            # Default action: fast on/off ticks
-            tick 100 100
-        fi
-    done
-}
-
-stop_ticker()
-{
-    kill $TICKER_ID
-    wait $TICKER_ID
-    echo 0 >/sys/class/gpio/gpio953/value
-}
-
-
-# Enable the LED
-echo 953 >/sys/class/gpio/export
-echo out >/sys/class/gpio/gpio953/direction
-
-ticker &
-TICKER_ID=$!
 
 
 # ------------------------------------------------------------------------------
@@ -69,6 +24,11 @@ TICKER_ID=$!
 #   Mounting /boot, now ready to roll.
 
 set -x
+
+# Start the LED daemon
+/sbin/led-daemon &
+LED_DAEMON_PID=$!
+
 
 # Mounting /boot isn't altogether straightforward as the SD card may or may not
 # be partitioned, so we have to try both mmcblk0p1 and mmcblk0
@@ -111,7 +71,7 @@ format_qspi()
 
 read_mac_address()
 {
-    touch /tmp/mac
+    set-led ATTENTION
     while :; do
         echo >&2
         echo >&2 ------------------------------------
@@ -124,7 +84,7 @@ read_mac_address()
     done
 
     echo "$REPLY" >/qspi/MAC
-    rm /tmp/mac
+    set-led BOOTING
 }
 
 configure_mac_address()
@@ -284,7 +244,7 @@ fi
 #   Switch to rootfs
 #
 
-stop_ticker
+kill $LED_DAEMON_PID
 
 sync
 umount /boot

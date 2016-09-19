@@ -1,0 +1,121 @@
+#!/bin/sh
+
+# This script creates a ZPKG file from a definition script.
+
+
+error() { echo >&2 "$@"; exit 1; }
+
+set -e
+
+
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+usage()
+{
+    cat <<EOF
+Usage: make-zpkg [options] package.list <version>
+
+Options can be any of:
+    -b: System build path, used for b options in list file.
+    -t: Source top path, used for t options in list file.
+    -d: Destination directory
+        The above three options default to the current directory if not
+        specified.
+    -w: Workspace for building package.  Defaults to temporary directory if not
+        specified.
+    -n: Package name.  If not specified the name is extracted from the
+        package.list filename.
+    -h  Show this help text
+
+The package.list file specifies all of the files that will be placed in the
+generated zpgk.  Each line consists of three fields:
+
+    option target source
+
+The target specifies the location in the zpgk where the file will be installed,
+while the option and source together specify where the file comes from,
+according to the following options:
+
+    d   target directory is created, source is ignored
+    t   source is relative to the directory specified by -t
+    b   source is relative to the directory specified by -b
+    l   source is a soft link path, a soft link is created in target
+EOF
+    exit 0
+}
+
+
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+# Argument processing.
+
+# Path to build directory, used for b options, defaults to current directory
+BUILD_DIR="$PWD"
+# Top directory, used for t options, defaults to current directory
+TOP_DIR="$PWD"
+# Work directory for building intermedate files, will default to temporary dir
+WORK_DIR=
+# Destination directory for result, defaults to current directory
+DEST_DIR="$PWD"
+# Package name, by default is computed from file list name
+PKG_NAME=
+
+while getopts 'b:t:w:d:n:h' option; do
+    case "$option" in
+    b)  BUILD_DIR="$OPTARG" ;;
+    t)  TOP_DIR="$OPTARG" ;;
+    w)  WORK_DIR="$OPTARG" ;;
+    d)  DEST_DIR="$OPTARG" ;;
+    n)  PKG_NAME="$OPTARG" ;;
+    h)  usage ;;
+    *)  error 'Invalid option: try -h for help' ;;
+    esac
+done
+shift $((OPTIND-1))
+(( $# == 2 )) || error 'Missing arguments: try -h for help'
+
+FILE_LIST="$1"
+VERSION="$2"
+
+[ -r "$FILE_LIST" ]  ||  error 'Package definition file not found'
+
+
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+# Now sort out the defaults.
+
+# If no workspace specified, use a temporary directory.
+if [[ -z $WORK_DIR ]]; then
+    WORK_DIR="$(mktemp -d)"
+    trap 'rm -rf "$WORK_DIR"' EXIT
+fi
+
+# If no package name specified, extract it from the FILE_LIST name.
+if [[ -z $PKG_NAME ]]; then
+    PKG_NAME="$(basename "$FILE_LIST")"
+    PKG_NAME="${PKG_NAME%.list}"
+fi
+
+# Ensure our workspace is clean
+ZPKG_DIR="$WORK_DIR/zpkg-$PKG_NAME"
+rm -rf "$ZPKG_DIR"
+
+# Configure final package to build
+ZPKG="$DEST_DIR/$PKG_NAME@$VERSION.zpg"
+
+
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+# Assemble all the components as required and build target package.
+
+# Process the file list
+while read action target source; do
+    case $action in
+        \#) ;;
+        d)  mkdir -p "$ZPKG_DIR"/$target ;;
+        t)  cp "$TOP_DIR"/$source "$ZPKG_DIR"/$target ;;
+        b)  cp "$BUILD_DIR"/$source "$ZPKG_DIR"/$target ;;
+        l)  ln -s $source "$ZPKG_DIR"/$target ;;
+        *)  error Invalid action ;;
+    esac
+done <"$FILE_LIST"
+
+# Assemble final package
+tar czf "$ZPKG" -C "$ZPKG_DIR" $(cd "$ZPKG_DIR"; echo *) --owner=0 --group=0

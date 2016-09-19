@@ -1,6 +1,0 @@
-# Here we just define the build tags for the files we're building.
-
-U_BOOT_TAG = xilinx-v2015.1
-KERNEL_TAG = xilinx-v2015.1
-
-# vim: set filetype=make:

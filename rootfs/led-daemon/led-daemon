@@ -1,0 +1,104 @@
+#!/bin/sh
+
+# This daemon script manages the two user LEDs via commands sent through a
+# socket interface.
+
+LED_COMMAND=/var/run/led-command
+LED_PIDFILE=/var/run/led-daemon.pid
+
+rm -f $LED_COMMAND $LED_PIDFILE
+echo $$ >$LED_PIDFILE
+
+
+GRAIN=100000        # Our timing granularity: 100ms in microseconds
+
+
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+# LED initialisation
+
+# The LED GPIO numbers are determined from the physical GPIO numbers (50 for the
+# STA status LED, 51 for the DIA diagnostic LED), but an offset of 906 is added
+# for somewhat mysterious reasons.
+GPIO_BASE=906
+STA_LED_GPIO=$((GPIO_BASE + 50))
+DIA_LED_GPIO=$((GPIO_BASE + 51))
+
+STA_LED=/sys/class/gpio/gpio$STA_LED_GPIO
+DIA_LED=/sys/class/gpio/gpio$DIA_LED_GPIO
+
+[ -e $STA_LED ]  ||  echo $STA_LED_GPIO >/sys/class/gpio/export
+[ -e $DIA_LED ]  ||  echo $DIA_LED_GPIO >/sys/class/gpio/export
+
+echo out >$STA_LED/direction
+echo out >$DIA_LED/direction
+
+
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+# Parses action into three components: sta dia delay
+#
+#   parse_action <sta>-<dia>-<delay>
+parse_action()
+{
+    read sta dia delay <<END
+$(echo $1 | sed 's/-/ /g')
+END
+}
+
+
+# Pauses for the given number of ticks, and checks for a new command which can
+# interrupt the delay.
+#
+#   do_delay <delay>
+do_delay()
+{
+    local delay="$1"
+    if [ "$delay" -gt 0 ]; then
+        while [ $delay -gt 0 ]; do
+            usleep $GRAIN
+            delay=$((delay - 1))
+            # If we detect a new command then abort the delay.
+            if [ -e $LED_COMMAND ]; then
+                return 1
+            fi
+        done
+    else
+        # If there is no delay then reset the command so that we remain in the
+        # given state.
+        COMMAND=''
+        return 1
+    fi
+}
+
+
+update_command()
+{
+    # Check for new command
+    if [ -e $LED_COMMAND ]; then
+        mv $LED_COMMAND $LED_COMMAND.new
+        COMMAND="$(cat $LED_COMMAND.new)"
+        rm $LED_COMMAND.new
+    elif [ $command_seen == 0 ]; then
+        # If we currently have nothing to do then just sleep.
+        usleep $GRAIN
+    fi
+}
+
+
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+# Command loop
+
+COMMAND='1-0-1 0-0-1'       # Booting status on start
+while :; do
+    command_seen=0
+    for action in $COMMAND; do
+        command_seen=1
+        parse_action $action
+        echo $sta >$STA_LED/value
+        echo $dia >$DIA_LED/value
+
+        do_delay $delay  ||  break
+    done
+
+    update_command
+done

@@ -22,10 +22,13 @@ CROSS_COMPILE = arm-xilinx-linux-gnueabi-
 # The final boot image is assembled here
 BOOT_IMAGE = $(ZEBRA2_ROOT)/boot
 
+# Tags for versions of u-boot and kernel
+U_BOOT_TAG = xilinx-v2015.1
+KERNEL_TAG = xilinx-v2015.1
 
 # Configuration and local settings.
 include CONFIG
-include CONFIG.local
+
 
 # We'll check that these symbols have been defined.
 REQUIRED_SYMBOLS = ROOTFS_TOP SDK_ROOT TAR_FILES ZEBRA2_ROOT

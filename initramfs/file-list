@@ -23,5 +23,11 @@ d 755 /qspi
 f 644 /etc/fstab fstab
 l 777 /etc/mtab /proc/mounts
 
+# The LED server needs the init skeleton and /var/run
+d 755 /etc/init.d
+d 755 /etc/rc.d
+d 755 /var
+d 755 /var/run
+
 # Finally install our init script
 f 755 /init
