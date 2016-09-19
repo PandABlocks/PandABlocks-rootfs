@@ -6,16 +6,31 @@
 
 do_start()
 {
+    loaded=0
+    failed=0
     for script in /opt/etc/rc.d/S*; do
-        [ -x $script ]  &&  $script start
+        if [ -x $script ]; then
+            loaded=$((loaded + 1))
+            $script start  ||  failed=$((failed + 1))
+        fi
     done
+
+    if [ $loaded = 0 ]; then
+        # If no zpgk files found then report attention needed
+        set-led ATTENTION
+    elif [ $failed -gt 0 ]; then
+        set-led ZPKG_ERR
+    else
+        set-led SYSTEM_OK
+    fi
 }
 
 do_stop()
 {
+    set-led ATTENTION
     for script in /opt/etc/rc.d/K*; do
         [ -x $script ]  &&  $script stop
     done
 }
 
-do_start_stop "$1" opt
+do_start_stop "$1" zpgk
