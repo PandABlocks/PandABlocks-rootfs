@@ -29,10 +29,10 @@ The following must be installed before building this project:
 * Sources needed for rootfs build.  This list is quite long, see below.
 
 
-Configuring ``CONFIG.local``
--------------------------------------------
+Configuring ``CONFIG``
+----------------------
 
-All of the build dependencies are configured in the file ``CONFIG.local``.  This
+All of the build dependencies are configured in the file ``CONFIG``.  This
 is designed to not be under version control.  Copy the file ``CONFIG.example``
 and modify the following fields as required:
 

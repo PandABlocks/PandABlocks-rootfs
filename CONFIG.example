@@ -1,17 +1,17 @@
 # Personal customisations.
 #
-# Copy this file to CONFIG.local and edit the settings below to suit your
+# Copy this file to CONFIG and edit the settings below to suit your
 # environment.
 
 # Location of rootfs builder.  This needs to be at least version 1.7 and can be
 # downloaded from https://github.com/araneidae/rootfs
-ROOTFS_TOP = /dls_sw/prod/targetOS/rootfs/1-7
+ROOTFS_TOP = /dls_sw/prod/targetOS/rootfs/1-8
 
 # Location of SDK used to build target
 SDK_ROOT = /dls_sw/apps/FPGA/Xilinx/SDK/2015.1
 
 # Where to find source files
-TAR_FILES = /dls_sw/prod/targetOS/tar-files /dls_sw/work/targetOS/tar-files
+TAR_FILES = /dls_sw/prod/targetOS/tar-files
 
 # Target location for build
 ZEBRA2_ROOT = /scratch/tmp/zebra2-rootfs
