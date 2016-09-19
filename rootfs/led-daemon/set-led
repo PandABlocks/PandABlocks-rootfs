@@ -1,0 +1,21 @@
+#!/bin/sh
+
+# Script for controlling user LED
+
+COMMAND_FILE=/var/run/led-command
+
+# Interpret the requested LED command
+case $1 in
+    BOOTING)    COMMAND='1-0-1 0-0-1' ;;    # STA=B DIA=0
+    SYSTEM_OK)  COMMAND='1-0-0' ;;          # STA=1 DIA=0
+    ATTENTION)  COMMAND='0-1-1 0-0-1' ;;    # STA=0 DIA=B
+    NW_ERR)     COMMAND='1-1-1 0-0-1' ;;    # STA=B DIA=B
+    ZPKG_ERR)   COMMAND='0-1-0' ;;          # STA=0 DIA=1
+    SYSTEM_ERR) COMMAND='1-1-1 0-1-1' ;;    # STA=B DIA=1
+    *)  echo >&2 Unrecognised LED command
+        exit 1 ;;
+esac
+
+# Command the LED daemon
+echo "$COMMAND" >$COMMAND_FILE.tmp  &&
+mv $COMMAND_FILE.tmp $COMMAND_FILE

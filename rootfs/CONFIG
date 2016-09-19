@@ -39,7 +39,6 @@ PACKAGES += enum34
 
 PACKAGES += cothread
 
-
 ncurses_TERMS = xterm xterm-color screen vt100 vt102
 
 
@@ -62,6 +61,8 @@ OPTIONS += $(configdir)/network
 OPTIONS += $(configdir)/automount
 OPTIONS += $(configdir)/zpkg
 OPTIONS += $(configdir)/web-admin
+OPTIONS += $(configdir)/led-daemon
+
 
 final-install:
 	# Rootfs fixup after first boot

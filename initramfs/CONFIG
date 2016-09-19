@@ -21,4 +21,7 @@ SKELETON = $(configdir)/file-list
 OPTIONS =
 EXTRA_LIBS =
 
+# We use the led-daemon during startup
+OPTIONS += $(configdir)/../rootfs/led-daemon
+
 # vim: set filetype=make:

@@ -1,0 +1,8 @@
+# Simple LED daemon for managing user LEDs
+
+option:
+	$(install) $(optiondir)/led-daemon /sbin
+	$(install) $(optiondir)/set-led /bin
+	$(startup) $(optiondir)/start-led-daemon S001
+
+# vim: set filetype=make:
