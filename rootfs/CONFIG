@@ -34,10 +34,15 @@ PACKAGES += iperf
 PACKAGES += libressl
 PACKAGES += Python
 PACKAGES += numpy
-PACKAGES += ws4py
-PACKAGES += enum34
 
 PACKAGES += cothread
+
+PACKAGES += enum34
+
+PACKAGES += backports.ssl_match_hostname
+PACKAGES += backports_abc
+PACKAGES += singledispatch
+PACKAGES += tornado
 
 ncurses_TERMS = xterm xterm-color screen vt100 vt102
 
