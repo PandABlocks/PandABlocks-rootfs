@@ -20,8 +20,8 @@ GRAIN=100000        # Our timing granularity: 100ms in microseconds
 # STA status LED, 51 for the DIA diagnostic LED), but an offset of 906 is added
 # for somewhat mysterious reasons.
 GPIO_BASE=906
-STA_LED_GPIO=$((GPIO_BASE + 50))
-DIA_LED_GPIO=$((GPIO_BASE + 51))
+STA_LED_GPIO=$((GPIO_BASE + 51))
+DIA_LED_GPIO=$((GPIO_BASE + 50))
 
 STA_LED=/sys/class/gpio/gpio$STA_LED_GPIO
 DIA_LED=/sys/class/gpio/gpio$DIA_LED_GPIO
