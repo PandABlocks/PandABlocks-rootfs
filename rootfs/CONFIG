@@ -37,7 +37,9 @@ PACKAGES += numpy
 
 PACKAGES += cothread
 
+# Temporary until the malcolm2 webserver is ready
 PACKAGES += enum34
+PACKAGES += ws4py
 
 PACKAGES += backports.ssl_match_hostname
 PACKAGES += backports_abc
