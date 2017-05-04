@@ -73,7 +73,7 @@ def list_directories(action, path, title):
     if dirs:
         print '<h2>Select directory containing %s:</h2>' % title
         print '<ul class="dirlist">'
-        for dir in dirs:
+        for dir in sorted(dirs):
             print '<li><a href="/cgi-bin/admin/%s/%s">%s</a></li>' % (
                 action, urllib.quote(dir), cgi.escape(dir))
         print '</ul>'
@@ -106,7 +106,7 @@ def do_list():
         print '''\
 <form action="/cgi-bin/admin/remove" method="get">
 <div class="zpglist">'''
-        for line in zpkg_list:
+        for line in sorted(zpkg_list):
             package, version = line.split()
             print '''\
 <label>
@@ -135,7 +135,7 @@ def do_files(path):
 <h2>Select packages to install:</h2>
 <form action="/cgi-bin/admin/install" method="get">
 <ul class="zpglist">'''
-        for file in zpkg_list:
+        for file in sorted(zpkg_list):
             print '''\
 <li><input type="checkbox" name="zpg" value="%s">%s</li>''' % (
                 cgi.escape(file, True), cgi.escape(os.path.split(file)[1]))
