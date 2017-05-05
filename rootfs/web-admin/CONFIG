@@ -1,4 +1,4 @@
-# Administration interface for Panda packages
+# Administration interface for PandA packages
 
 INETD_CONF = 8080 stream tcp nowait root \
     /usr/sbin/httpd httpd -i -c /usr/share/web-admin/httpd.conf
