@@ -36,7 +36,7 @@ All of the build dependencies are configured in the file ``CONFIG``.  This
 is designed to not be under version control.  Copy the file ``CONFIG.example``
 and modify the following fields as required:
 
-``ZEBRA2_ROOT``:
+``TARGET_ROOT``:
     This is where the entire build occurs.  At least 2GB of storage must be free
     in this area.
 
