@@ -22,13 +22,16 @@ CROSS_COMPILE = arm-xilinx-linux-gnueabi-
 # The final boot image is assembled here
 BOOT_IMAGE = $(PANDA_ROOT)/boot
 
+# The zipped file will be called this
+GIT_VERSION_SUFFIX = $(shell git describe --abbrev=7 --dirty --always --tags)
+BOOT_ZIP = $(PANDA_ROOT)/boot-$(GIT_VERSION_SUFFIX).zip
+
 # Tags for versions of u-boot and kernel
 U_BOOT_TAG = xilinx-v2015.1
 KERNEL_TAG = xilinx-v2015.1
 
 # Configuration and local settings.
 include CONFIG
-
 
 # We'll check that these symbols have been defined.
 REQUIRED_SYMBOLS = ROOTFS_TOP SDK_ROOT TAR_FILES PANDA_ROOT
@@ -293,5 +296,6 @@ $(BOOT_BUILD)/boot.bin: $(BOOT_BUILD)/boot.bif $(FSBL_ELF) $(U_BOOT_ELF)
 boot: $(BOOT_FILES)
 	mkdir -p $(BOOT_IMAGE)
 	cp $^ $(BOOT_IMAGE)
+	zip -j $(BOOT_ZIP) $^
 
 .PHONY: boot
