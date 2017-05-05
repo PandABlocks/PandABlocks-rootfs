@@ -20,7 +20,7 @@ BINUTILS_DIR = $(SDK_ROOT)/gnu/arm/lin/bin
 CROSS_COMPILE = arm-xilinx-linux-gnueabi-
 
 # The final boot image is assembled here
-BOOT_IMAGE = $(TARGET_ROOT)/boot
+BOOT_IMAGE = $(ZEBRA2_ROOT)/boot
 
 # Tags for versions of u-boot and kernel
 U_BOOT_TAG = xilinx-v2015.1
@@ -31,7 +31,7 @@ include CONFIG
 
 
 # We'll check that these symbols have been defined.
-REQUIRED_SYMBOLS = ROOTFS_TOP SDK_ROOT TAR_FILES TARGET_ROOT
+REQUIRED_SYMBOLS = ROOTFS_TOP SDK_ROOT TAR_FILES ZEBRA2_ROOT
 
 
 default: boot
@@ -39,8 +39,8 @@ default: boot
 
 ARCH = arm
 
-SRC_ROOT = $(TARGET_ROOT)/src
-BUILD_ROOT = $(TARGET_ROOT)/build
+SRC_ROOT = $(ZEBRA2_ROOT)/src
+BUILD_ROOT = $(ZEBRA2_ROOT)/build
 
 U_BOOT_BUILD = $(BUILD_ROOT)/u-boot
 KERNEL_BUILD = $(BUILD_ROOT)/linux
@@ -101,7 +101,7 @@ clean:
 
 clean-all: clean
 	-chmod -R +w $(SRC_ROOT)
-	rm -rf $(TARGET_ROOT)
+	rm -rf $(ZEBRA2_ROOT)
 
 .PHONY: clean clean-all
 
@@ -208,7 +208,7 @@ u-boot-src: $(U_BOOT_SRC)
 
 # Command for building rootfs.  Need to specify both action and target name.
 MAKE_ROOTFS = \
-    $(ROOTFS_TOP)/rootfs -f '$(TAR_FILES)' -r $(TARGET_ROOT) -t $(CURDIR)/$1 $2
+    $(ROOTFS_TOP)/rootfs -f '$(TAR_FILES)' -r $(ZEBRA2_ROOT) -t $(CURDIR)/$1 $2
 
 %.gz: %
 	gzip -c -1 $< >$@
@@ -230,7 +230,7 @@ MAKE_ROOTFS = \
 #
 # This is the first image loaded by the kernel on booting.
 
-INITRAMFS_O = $(TARGET_ROOT)/targets/initramfs
+INITRAMFS_O = $(ZEBRA2_ROOT)/targets/initramfs
 INITRAMFS_CPIO = $(INITRAMFS_O)/image/imagefile.cpio
 INITRAMFS = $(INITRAMFS_O)/image/uinitramfs
 
@@ -252,7 +252,7 @@ initramfs: $(INITRAMFS)
 #
 # This is the installed target file system
 
-ROOTFS_O = $(TARGET_ROOT)/targets/rootfs
+ROOTFS_O = $(ZEBRA2_ROOT)/targets/rootfs
 ROOTFS_CPIO = $(ROOTFS_O)/image/imagefile.cpio
 ROOTFS = $(ROOTFS_CPIO).gz
 

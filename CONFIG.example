@@ -14,6 +14,6 @@ SDK_ROOT = /dls_sw/apps/FPGA/Xilinx/SDK/2015.1
 TAR_FILES = /dls_sw/prod/targetOS/tar-files
 
 # Target location for build
-TARGET_ROOT = /scratch/tmp/PandABlocks-target-rootfs
+ZEBRA2_ROOT = /scratch/tmp/zebra2-rootfs
 
 # vim: set filetype=make:
