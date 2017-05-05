@@ -55,8 +55,12 @@ and modify the following fields as required:
 Sources
 -------
 
-The following sources, listed below with their MD5 checksums, are needed for
-building the system::
+The rootfs requires a long list of dependencies that are freely available on the web. 
+They have been gathered together in one tar file here:
+
+http://www.ohwr.org/attachments/download/5133/rootfs-tarfiles-0.6.tar
+
+They consist of the following sources, listed below with their MD5 checksums::
 
     930d126df2113221e63c4ec4ce356f2c linux-xilinx-v2015.1.tar.gz
     b6d212208b7694f748727883eebaa74e u-boot-xlnx-xilinx-v2015.1.tar.gz
@@ -86,10 +90,11 @@ building the system::
     bbf052e7fcc6fa403d2514219346da04 procServ-2.6.0.tar.gz
     d7547558fd673bd9d38e2108c6b42521 Python-2.7.10.tgz
     33c8fb279e981274f485fd91da77e94a readline-6.3.tar.gz
-    af2fc6a3d6cc5a02d0bf54d909785fcb singledispatch-3.4.0.3.tar.gz
     419a0594e2b25039239af8b90eda7d92 screen-4.2.1.tar.gz
+    af2fc6a3d6cc5a02d0bf54d909785fcb singledispatch-3.4.0.3.tar.gz
     107a5be455493861189e9b57a3a51912 strace-4.10.tar.xz
     d13a99dc0b60ba69f5f8ec1235e5b232 tornado-4.3.tar.gz
+    6b47e33cbd13f5c134b04f2a44a480ad ws4py-0.3.4.tar.gz
     44d667c142d7cda120332623eab69f40 zlib-1.2.8.tar.gz
 
 These packages are used as follows in the build:
