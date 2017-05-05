@@ -52,8 +52,8 @@ ncurses_TERMS = xterm xterm-color screen vt100 vt102
 # -----------------------------------------------------------------------------
 # Rootfs options and configuration
 
-ROOTFS_VERSION = \
-    DLS PandA $(shell git describe --abbrev=7 --dirty --always --tags)
+GIT_VERSION_SUFFIX = $(shell git describe --abbrev=7 --dirty --always --tags)
+ROOTFS_VERSION = PandA $(GIT_VERSION_SUFFIX)
 
 CONSOLE_BAUD = 115200
 CONSOLE_TTY = ttyPS0

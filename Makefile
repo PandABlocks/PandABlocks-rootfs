@@ -62,7 +62,7 @@ export PATH := $(BINUTILS_DIR):$(U_BOOT_TOOLS):$(PATH)
 # need to be defined.
 define _CHECK_SYMBOL
     ifndef $1
-        $$(error Must define symbol $1 in CONFIG.local)
+        $$(error Must define symbol $1 in PandaBlocks-rootfs/CONFIG)
     endif
 endef
 CHECK_SYMBOL = $(eval $(_CHECK_SYMBOL))
