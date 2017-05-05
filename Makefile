@@ -23,7 +23,8 @@ CROSS_COMPILE = arm-xilinx-linux-gnueabi-
 BOOT_IMAGE = $(PANDA_ROOT)/boot
 
 # The zipped file will be called this
-GIT_VERSION_SUFFIX = $(shell git describe --abbrev=7 --dirty --always --tags)
+export GIT_VERSION_SUFFIX = \
+    $(shell git describe --abbrev=7 --dirty --always --tags)
 BOOT_ZIP = $(PANDA_ROOT)/boot-$(GIT_VERSION_SUFFIX).zip
 
 # Tags for versions of u-boot and kernel
@@ -62,7 +63,7 @@ export PATH := $(BINUTILS_DIR):$(U_BOOT_TOOLS):$(PATH)
 # need to be defined.
 define _CHECK_SYMBOL
     ifndef $1
-        $$(error Must define symbol $1 in PandaBlocks-rootfs/CONFIG)
+        $$(error Must define symbol $1 in CONFIG)
     endif
 endef
 CHECK_SYMBOL = $(eval $(_CHECK_SYMBOL))
