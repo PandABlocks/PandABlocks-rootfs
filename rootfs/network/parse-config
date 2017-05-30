@@ -100,6 +100,11 @@ EOF
         echo "    gateway $GATEWAY"
     else
         echo 'iface eth0 inet dhcp'
+        if NTP="$(parse_config NTP)"; then
+            echo '    udhcpc_opts -O search'
+        else
+            echo '    udhcpc_opts -O timesrv -O search'
+        fi
     fi
 } >$VAR/interfaces
 

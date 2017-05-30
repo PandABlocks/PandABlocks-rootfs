@@ -42,13 +42,17 @@ case "$1" in
 
         mkdir -p $VAR
 
-        echo "Recreating /etc/resolv.conf"
-        echo -n > $VAR/resolv.conf-$$
-        [ -n "$domain" ] && echo "search $domain" >> $VAR/resolv.conf-$$
-        for i in $dns; do
-            echo " Adding DNS server $i"
-            echo "nameserver $i" >> $VAR/resolv.conf-$$
-        done
+        echo "Recreating /etc/resolv.conf from $dns"
+        {
+            if [ -n "$search" ]; then
+                echo "search $search"
+            elif [ -n "$domain" ]; then
+                echo "search $domain"
+            fi
+            for i in $dns; do
+                echo "nameserver $i"
+            done
+        } > $VAR/resolv.conf-$$
         mv $VAR/resolv.conf-$$ $VAR/resolv.conf
 
         if [ -n "$hostname" ]; then
@@ -56,6 +60,31 @@ case "$1" in
             echo Hostname set to $(hostname)
         elif [ -e /etc/hostname ]; then
             hostname "$(cat /etc/hostname)"
+        elif [ "$(hostname -s)" == "panda" ]; then
+            # Set hostname from ip addr entry in DNS
+            cmd="import socket; print socket.gethostbyaddr('$ip')[0]"
+            hostname="$(python -c "$cmd")"
+            if [ -n "$hostname" ]; then
+                hostname "$hostname"
+            else
+                echo "Cannot lookup hostname from $ip in DNS"
+            fi
+        fi
+
+        if [ -n "$timesrv" ]; then
+            echo "Recreating /etc/ntp.conf from $timesrv"
+            {
+                for i in $timesrv; do
+                    echo "server $i"
+                done
+                echo "driftfile /tmp/ntp.drift"
+                echo "pidfile /var/run/ntpd.pid"
+                echo "logconfig -syncevents -sysevents"
+            } > $VAR/ntp.conf-$$
+            mv $VAR/ntp.conf-$$ $VAR/ntp.conf
+            if [ -f "/var/run/ntpd.pid" ]; then
+                /etc/init.d/ntpd restart
+            fi
         fi
         ;;
 esac
