@@ -102,9 +102,9 @@ EOF
         echo 'iface eth0 inet dhcp'
         echo -n '    udhcpc_opts -t 10 -O search'
         if NTP="$(parse_config NTP)"; then
-            echo '-O timesrv'
-        else
             echo
+        else
+            echo ' -O timesrv'
         fi
     fi
 } >$VAR/interfaces
