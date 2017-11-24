@@ -96,10 +96,28 @@ configure_mac_address()
     fi
 }
 
+validate_imagefile()
+{
+    if [ -e $IMAGEFILE ]; then
+        # Check image file is good, report if not and fail
+        if gunzip -t $IMAGEFILE; then
+            true
+        else
+            echo >&2 Invalid image file, not proceeding with rootfs install
+            false
+        fi
+    else
+        # No image file, just fail quietly
+        false
+    fi
+}
+
 
 fdisk -l /dev/mmcblk0
 
 if ! check_mac_address; then
+    # We can't safely erase the QSPI unless we're going to reinstall the rootfs
+    validate_imagefile  ||  panic "No MAC address and no valid rootfs image"
     format_qspi  &&
     configure_mac_address
 fi
@@ -117,15 +135,21 @@ umount /qspi
 
 need_to_partition()
 {
-    # Enable forced repartition, but only if a rootfs imagefile is present.
-    [ -e /boot/repartition -a -e $IMAGEFILE ]  ||
-    # Otherwise try to mount the rootfs and check for the version file.
-    ! mount /rootfs || ! [ -e /rootfs/etc/version ]
+    local repartition;
+    if [ -e /boot/repartition ]  &&  validate_imagefile; then
+        # Enable forced repartition, but only if a rootfs imagefile is present.
+        repartition=true
+    elif mount /rootfs  &&  [ -e /rootfs/etc/version ]; then
+        # If rootfs present with valid version don't repartition
+        repartition=false
+    else
+        # Otherwise repartition and install system
+        repartition=true
+    fi
 
     # Unmount the rootfs at this point to simplify later processing.
-    local result=$?
     mountpoint -q /rootfs  &&  umount /rootfs
-    return $result
+    $repartition
 }
 
 backup_sd_card()
@@ -229,7 +253,7 @@ install_rootfs()
 }
 
 
-if [ -e $IMAGEFILE ]; then
+if validate_imagefile; then
     echo Installing root filesystem
     install_rootfs
     sync
