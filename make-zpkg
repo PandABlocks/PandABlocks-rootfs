@@ -39,6 +39,8 @@ according to the following options:
     d   target directory is created, source is ignored
     t   source is relative to the directory specified by -t
     b   source is relative to the directory specified by -b
+    b   source is relative to the directory specified by -b, entire directory
+        tree is copied
     l   source is a soft link path, a soft link is created in target
 EOF
     exit 0
@@ -112,6 +114,7 @@ while read action target source; do
         d)  mkdir -p "$ZPKG_DIR"/$target ;;
         t)  cp "$TOP_DIR"/$source "$ZPKG_DIR"/$target ;;
         b)  cp "$BUILD_DIR"/$source "$ZPKG_DIR"/$target ;;
+        r)  cp -a "$BUILD_DIR"/$source "$ZPKG_DIR"/$target ;;
         l)  ln -s $source "$ZPKG_DIR"/$target ;;
         *)  error Invalid action ;;
     esac
