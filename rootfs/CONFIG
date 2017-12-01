@@ -69,10 +69,4 @@ OPTIONS += $(configdir)/zpkg
 OPTIONS += $(configdir)/web-admin
 OPTIONS += $(configdir)/led-daemon
 
-
-final-install:
-	# Rootfs fixup after first boot
-	$(install) $(configdir)/fixup-rootfs /
-	$(first-time) /fixup-rootfs
-
 # vim: set filetype=make:
