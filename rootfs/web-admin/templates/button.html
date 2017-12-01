@@ -1,0 +1,6 @@
+<form action="/admin/{{ path }}" method="post">
+  <button class="primary-button" type="submit" name="value"
+          value="{{ globals().get('value', '') }}">
+    {{ label }}
+  </button>
+</form>

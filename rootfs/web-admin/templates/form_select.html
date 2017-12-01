@@ -1,0 +1,25 @@
+<form action="{{ path }}" method="post">
+  {% for title in titles %}
+  <label class="selectable">
+    <input type="checkbox" name="value" value="{{ title }}">
+    {% if title in globals().get("details", {}) %}
+    <div class="collapsible">
+      <input type="checkbox" id="collapsible-{{ title }}">
+      <label for="collapsible-{{ title }}">{{ title }}</label>
+      <div class="collapsible-{{ title }}-area">
+        <div class="command">
+          {% for line in details[title] %}
+          <div class="command-row">{{ line }}</div>
+          {% end %}
+        </div>
+      </div>
+    </div>
+    {% else %}
+    {{ title }}
+    {% end %}
+  </label>
+  {% end %}
+  <button class="primary-button" type="submit">
+    {{ label }}
+  </button>
+</form>

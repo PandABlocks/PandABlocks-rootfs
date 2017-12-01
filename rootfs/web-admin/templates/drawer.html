@@ -1,0 +1,16 @@
+<aside class="drawer shadow">
+  <div class="header">
+    <h1>Admin Commands</h1>
+  </div>
+  {% for section, (title, links) in drawer.items() %}
+  <div class="collapsible">
+    <input type="checkbox" id="collapsible-{{ section }}" {{ checked[section] }}>
+    <label for="collapsible-{{ section }}">{{ title }}</label>
+    <div class="collapsible-links">
+    {% for path, text in links.items() %}
+      <a href="/admin/{{ section }}/{{ path }}">{{ text }}</a>
+    {% end %}
+    </div>
+  </div>
+  {% end %}
+</aside>

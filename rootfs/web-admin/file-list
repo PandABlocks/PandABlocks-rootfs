@@ -1,8 +1,18 @@
 # List of files to install for web administration.
 
 d 755 /usr/share/web-admin
-d 755 /usr/share/web-admin/cgi-bin
-f 644 /usr/share/web-admin/httpd.conf httpd.conf
-f 644 /usr/share/web-admin/index.html index.html
-f 644 /usr/share/web-admin/style.css style.css
-f 755 /usr/share/web-admin/cgi-bin/admin admin
+f 755 /usr/share/web-admin/admin-server.py admin-server.py
+f 755 /usr/share/web-admin/admin-pipe.sh admin-pipe.sh
+f 755 /usr/share/web-admin/rootfs-version.sh rootfs-version.sh
+d 755 /usr/share/web-admin/static
+f 644 /usr/share/web-admin/static/style.css static/style.css
+f 644 /usr/share/web-admin/static/PandA-logo-min.svg static/PandA-logo-min.svg
+d 755 /usr/share/web-admin/templates
+f 644 /usr/share/web-admin/templates/button.html templates/button.html
+f 644 /usr/share/web-admin/templates/docs.html templates/docs.html
+f 644 /usr/share/web-admin/templates/drawer.html templates/drawer.html
+f 644 /usr/share/web-admin/templates/footer.html templates/footer.html
+f 644 /usr/share/web-admin/templates/form_select.html templates/form_select.html
+f 644 /usr/share/web-admin/templates/header.html templates/header.html
+f 644 /usr/share/web-admin/templates/index.html templates/index.html
+f 644 /usr/share/web-admin/templates/nav.html templates/nav.html

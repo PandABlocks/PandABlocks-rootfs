@@ -1,0 +1,33 @@
+<div class="shadow nav">
+  <a href="/"><img class="logo" src="/static/PandA-logo-min.svg" width="60px" height="60px"></a>
+  <ul class="tab-bar">
+    {% if "docs" == active %}
+      <li class="tab tab-active">
+    {% else %}
+      <li class="tab">
+    {% end %}
+        <a href="/docs.html">Docs</a>
+      </li>
+    {% import os %}
+    {% if os.path.isdir(etc_loader.root) %}
+      {% for f in sorted(os.listdir(etc_loader.root)) %}
+        {% if f.endswith(".nav.html") %}
+          {% if f[:-9] == active %}
+            <li class="tab tab-active">
+          {% else %}
+            <li class="tab">
+          {% end %}
+          {% raw etc_loader.load(f).generate() %}
+            </li>
+        {% end %}
+      {% end %}
+    {% end %}
+    {% if "admin" == active %}
+      <li class="tab tab-active">
+    {% else %}
+      <li class="tab">
+    {% end %}
+        <a href="/admin.html">Admin</a>
+      </li>
+  </ul>
+</div>
