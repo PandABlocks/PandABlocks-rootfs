@@ -260,7 +260,7 @@ ROOTFS_O = $(PANDA_ROOT)/targets/rootfs
 ROOTFS_CPIO = $(ROOTFS_O)/image/imagefile.cpio
 ROOTFS = $(ROOTFS_CPIO).gz
 
-$(ROOTFS_CPIO): $(wildcard rootfs/*)
+$(ROOTFS_CPIO): $(shell find rootfs -type f)
 	$(call MAKE_ROOTFS,rootfs,make)
 
 rootfs: $(ROOTFS)
@@ -294,9 +294,11 @@ $(BOOT_BUILD)/boot.bif:
 $(BOOT_BUILD)/boot.bin: $(BOOT_BUILD)/boot.bif $(FSBL_ELF) $(U_BOOT_ELF)
 	cd $(BOOT_BUILD)  &&  $(BOOTGEN) -w -image boot.bif -o i $@
 
-boot: $(BOOT_FILES)
+$(BOOT_ZIP): $(BOOT_FILES)
 	mkdir -p $(BOOT_IMAGE)
 	cp $^ $(BOOT_IMAGE)
 	zip -j $(BOOT_ZIP) $^
+
+boot: $(BOOT_ZIP)
 
 .PHONY: boot
