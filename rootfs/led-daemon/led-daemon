@@ -4,11 +4,8 @@
 # socket interface.
 
 LED_COMMAND=/var/run/led-command
-LED_PIDFILE=/var/run/led-daemon.pid
 
-rm -f $LED_COMMAND $LED_PIDFILE
-echo $$ >$LED_PIDFILE
-
+rm -f $LED_COMMAND
 
 GRAIN=100000        # Our timing granularity: 100ms in microseconds
 
