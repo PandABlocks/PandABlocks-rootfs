@@ -430,7 +430,6 @@ class CommandHandler(RequestHandler):
 
 class TemplateHandler(RequestHandler):
     def get(self, path):
-        self.get_template_namespace()
         if not path:
             path = "index.html"
         self.render(path, etc_loader=etc_loader)

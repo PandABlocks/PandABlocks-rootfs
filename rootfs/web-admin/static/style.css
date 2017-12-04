@@ -84,11 +84,11 @@ body {
     color: white;
 }
 
-.dark a, .tab a, .drawer label {
+.dark a, .drawer label {
     color: #CFCFCF;
 }
 
-.dark a:hover, .tab a:hover {
+.dark a:hover {
     color: white;
     text-decoration: underline;
 }
@@ -105,6 +105,11 @@ body {
     margin-bottom: 45px;
     left: 0;
     top: 0;
+}
+
+.drawer a {
+  font-size: 14px;
+  text-decoration: none;
 }
 
 .selectable {
@@ -197,52 +202,3 @@ h2 {
     padding-left: 360px;
 }
 
-.nav {
-    height: 45px;
-    width: 100vw;
-    left: 0;
-    bottom: 0;
-    background-color: #404040;
-    position: fixed;
-    padding-left: 80px;
-    padding-right: 30px;
-    box-sizing: border-box;
-    z-index: 2000;
-}
-
-.logo {
-    position: fixed;
-    left: 10px;
-    right: 0;
-    bottom: -3px;
-}
-
-.tab-bar {
-    display: table;
-    width: 100%;
-    table-layout: fixed;
-    padding-left: 0;
-    margin: 0;
-}
-
-.tab {
-    padding-top: 7px;
-    line-height: 31px;
-    display: table-cell;
-    text-align: center;
-    text-transform: uppercase;
-    font-family: Arial, sans-serif;
-}
-
-.tab a, .drawer a {
-    font-size: 14px;
-    text-decoration: none;
-}
-
-.tab-active {
-    border-bottom: 2px solid #90CAF9; /* Blue[200] */
-}
-
-.tab-active a {
-    color: #BBDEFB; /* Blue[100] */
-}

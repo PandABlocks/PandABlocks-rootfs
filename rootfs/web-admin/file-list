@@ -6,7 +6,6 @@ f 755 /usr/share/web-admin/admin-pipe.sh admin-pipe.sh
 f 755 /usr/share/web-admin/rootfs-version.sh rootfs-version.sh
 d 755 /usr/share/web-admin/static
 f 644 /usr/share/web-admin/static/style.css static/style.css
-f 644 /usr/share/web-admin/static/PandA-logo-min.svg static/PandA-logo-min.svg
 d 755 /usr/share/web-admin/templates
 f 644 /usr/share/web-admin/templates/button.html templates/button.html
 f 644 /usr/share/web-admin/templates/docs.html templates/docs.html
