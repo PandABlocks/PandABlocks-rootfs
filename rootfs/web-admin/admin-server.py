@@ -284,9 +284,9 @@ class CommandHandler(RequestHandler):
     def post_reboot(self):
         """Rebooting System"""
         yield self.sync()
-        self.p(
-            "Rebooting now, please wait at least 30 seconds for completion "
-            "then refresh this page...")
+        self.p("Rebooting now, please wait. "
+               "This page will refresh in 30 seconds...")
+        self.write('<meta http-equiv="refresh" content="30;url=/admin.html">')
         yield self.run_command('reboot')
 
     @add_post_page("system/restart")
