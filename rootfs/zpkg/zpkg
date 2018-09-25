@@ -208,7 +208,7 @@ install()
 {
     # Decompose and validate the package name: this sets package_name and
     # package_version.
-    parse_package_name .zpg "$1"
+    parse_package_name .zpg "${1/__at__/@}"
 
     # Validate the package content as far as we can
     check_package_format "$1"
