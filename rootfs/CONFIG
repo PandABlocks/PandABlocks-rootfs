@@ -30,6 +30,7 @@ PACKAGES += screen
 PACKAGES += procServ conserver
 PACKAGES += ethtool
 PACKAGES += iperf
+PACKAGES += i2c-tools
 
 PACKAGES += libressl
 PACKAGES += Python
