@@ -1,0 +1,19 @@
+<!doctype html>
+{% set adminhost = request.host.split(":")[0] %}
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="theme-color" content="#000000">
+    <title>{{ title }}</title>
+    <link href="//{{ adminhost }}/static/style.css" rel="stylesheet" type="text/css" />
+  </head>
+  <body class="dark">
+    {% if globals().get('indented', False) %}
+      {% set header_cls = "header indented" %}
+    {% else %}
+      {% set header_cls = "header" %}
+    {% end %}
+    <div class="{{ header_cls }}">
+      <h1>{{ title }}</h1>
+    </div>

@@ -55,8 +55,8 @@ and modify the following fields as required:
 Sources
 -------
 
-The rootfs requires a long list of dependencies that are freely available on the web. 
-They have been gathered together in one tar file here:
+The rootfs requires a long list of dependencies that are freely available on the
+web. They have been gathered together in one tar file here:
 
 http://www.ohwr.org/attachments/download/5133/rootfs-tarfiles-0.6.tar
 
@@ -71,7 +71,7 @@ They consist of the following sources, listed below with their MD5 checksums::
     788214f20214c64631f0859dc79f23c6 backports.ssl_match_hostname-3.4.0.2.tar.gz
     7925683d7dd105aabe9b6b618d48cc73 busybox-1.23.2.tar.bz2
     bb13834970c468f73415618437f3feac conserver-8.2.0.tar.gz
-    6af6c226638dc3ee10d6e73ed5d84cfa cothread-2.13.tar.gz
+    5d69a1b712fb8fec6ad461e676bf1097 cothread-2.14.tar.gz
     e967e320344cd4bfebe321e3ab8514d6 dropbear-2015.67.tar.bz2
     bc759fc62666786f5436e2075beb3265 e2fsprogs-1.42.13.tar.gz
     ac80f432ac9373e7d162834b264034b6 enum34-1.0.4.tar.gz
@@ -94,7 +94,6 @@ They consist of the following sources, listed below with their MD5 checksums::
     af2fc6a3d6cc5a02d0bf54d909785fcb singledispatch-3.4.0.3.tar.gz
     107a5be455493861189e9b57a3a51912 strace-4.10.tar.xz
     d13a99dc0b60ba69f5f8ec1235e5b232 tornado-4.3.tar.gz
-    6b47e33cbd13f5c134b04f2a44a480ad ws4py-0.3.4.tar.gz
     44d667c142d7cda120332623eab69f40 zlib-1.2.8.tar.gz
 
 These packages are used as follows in the build:

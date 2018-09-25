@@ -1,0 +1,29 @@
+{% module Template("header.html", title="PandA") %}
+{% module Template("nav.html", active="", etc_loader=etc_loader) %}
+
+<div class="content">
+  <p>
+    Welcome to the PandA web interface.
+  </p>
+
+  <p>
+    Documentation on the hardware, firmware and software is contained in the
+    <a href="/docs.html">Docs</a> section.
+  </p>
+
+  {% import os %}
+  {% if os.path.isdir(etc_loader.root) %}
+    {% for f in sorted(os.listdir(etc_loader.root)) %}
+      {% if f.endswith(".index.html") %}
+        {% raw etc_loader.load(f).generate(request=request) %}
+      {% end %}
+    {% end %}
+  {% end %}
+
+  <p>
+    The <a href="/admin.html">Admin</a> interface allows installation of packages
+    from a USB key, setting up SSH keys, and other remote administration.
+  </p>
+</div>
+
+{% module Template("footer.html") %}
