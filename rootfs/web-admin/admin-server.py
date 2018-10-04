@@ -50,6 +50,10 @@ drawer["ssh"] = ("SSH Keys", OrderedDict())
 get_pages = OrderedDict()
 
 
+class PrintableError(Exception):
+    pass
+
+
 def add_get_page(p):
     def decorator(func):
         get_pages[p] = func
@@ -73,8 +77,12 @@ def add_post_page(p):
 
 
 # Simple validation: just check for presence of mounted usb device
-def usb_key_inserted():
-    return subprocess.call(['grep', '-q', ' /mnt/sd.*', '/proc/mounts']) == 0
+def ensure_usb_key_inserted():
+    if subprocess.call(['grep', '-q', ' /mnt/sd.*', '/proc/mounts']) != 0:
+        raise PrintableError(
+            "A USB stick must be inserted into the device to perform this "
+            "operation. This is for security reasons so physical access to "
+            "the device is ensured.")
 
 
 def tt(text):
@@ -300,18 +308,18 @@ class CommandHandler(RequestHandler):
         filenames = self.get_arguments('value')
         if len(filenames) != 1:
             if filenames:
-                self.p("Cannot proceed, more than one %s selected" % text)
+                raise PrintableError(
+                    "Cannot proceed, more than one %s selected" % text)
             else:
-                self.p("No %s selected to install" % text)
+                raise PrintableError("No %s selected to install" % text)
         else:
             return filenames[0]
 
     @add_post_page("system/replace_network")
     def post_replace_network(self):
         """Replacing Network Configuration"""
+        ensure_usb_key_inserted()
         new_config = self.single_filename_argument("network configuration")
-        if not new_config:
-            return
         self.p("Replacing %s with %s..." % (tt("/boot/config.txt"),
                                             tt(new_config)))
         yield self.run_command('cp', new_config, '/boot/config.txt')
@@ -321,12 +329,14 @@ class CommandHandler(RequestHandler):
     @add_post_page("packages/remove")
     def post_packages_remove(self):
         """Removing packages"""
+        ensure_usb_key_inserted()
         packages = [x.split()[0] for x in self.get_arguments('value')]
         yield self.zpkg("remove", *packages)
 
     @add_post_page("packages/install")
     def post_packages_install(self, *path_suffix):
         """Installing packages"""
+        ensure_usb_key_inserted()
         root = os.path.join(MNT, *path_suffix)
         packages = [os.path.join(root, f) for f in self.get_arguments('value')]
         yield self.zpkg("install", *packages)
@@ -334,9 +344,8 @@ class CommandHandler(RequestHandler):
     @add_post_page("packages/rootfs")
     def post_rootfs_install(self, *path_suffix):
         """Preparing Updated Rootfs"""
+        ensure_usb_key_inserted()
         new_rootfs = self.single_filename_argument("rootfs")
-        if not new_rootfs:
-            return
         path_suffix += (new_rootfs,)
         source_path = os.path.join(MNT, *path_suffix)
         self.p("Checking new rootfs version...")
@@ -360,8 +369,9 @@ class CommandHandler(RequestHandler):
                    path='system/reboot')
 
     @add_post_page("packages/delete_rootfs")
-    def post_remove_keys(self):
+    def post_delete_rootfs(self):
         """Delete the new Rootfs from the SD Card and Cancel"""
+        ensure_usb_key_inserted()
         self.p("Removing %s" % tt(ROOTFS))
         yield self.run_command('rm', ROOTFS)
         yield self.sync()
@@ -370,6 +380,7 @@ class CommandHandler(RequestHandler):
     @add_post_page("ssh/remove")
     def post_remove_keys(self):
         """Removing SSH keys"""
+        ensure_usb_key_inserted()
         self.p("Removing %s" % tt(AUTHORIZED_KEYS))
         yield self.run_command('rm', AUTHORIZED_KEYS)
         yield self.sync()
@@ -378,6 +389,7 @@ class CommandHandler(RequestHandler):
     @add_post_page("ssh/append")
     def post_append_keys(self, *path_suffix):
         """Appending SSH keys"""
+        ensure_usb_key_inserted()
         path_suffix += (self.get_argument('value'),)
         new_keys = os.path.join(MNT, *path_suffix)
         self.p("Adding keys from %s" % tt(new_keys))
@@ -421,10 +433,11 @@ class CommandHandler(RequestHandler):
 
     @coroutine
     def post(self, path):
-        if not usb_key_inserted():
-            raise HTTPError(403)
         func, args = self.start_admin_page(path, post_pages)
-        yield func(self, *args)
+        try:
+            yield func(self, *args)
+        except PrintableError as e:
+            self.p(str(e))
         self.end_admin_page()
 
 
