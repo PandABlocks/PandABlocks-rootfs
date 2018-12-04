@@ -39,7 +39,7 @@ according to the following options:
     d   target directory is created, source is ignored
     t   source is relative to the directory specified by -t
     b   source is relative to the directory specified by -b
-    b   source is relative to the directory specified by -b, entire directory
+    r   source is relative to the directory specified by -b, entire directory
         tree is copied
     l   source is a soft link path, a soft link is created in target
 EOF
@@ -109,6 +109,7 @@ ZPKG="$DEST_DIR/$PKG_NAME@$VERSION.zpg"
 
 # Process the file list
 while read action target source; do
+    [ -z "$action" ]  ||
     case $action in
         \#) ;;
         d)  mkdir -p "$ZPKG_DIR"/$target ;;
