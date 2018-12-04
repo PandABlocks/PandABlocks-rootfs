@@ -184,6 +184,9 @@ $(DEVICE_TREE_DTB): boot/devicetree.dts $(DTC)
 # %.dts: %.dtb
 # 	$(DTC) -o $@ -O dts -I dtb $<
 
+devicetree_dtb: $(DEVICE_TREE_DTB)
+.PHONY: devicetree_dtb
+
 
 $(U_BOOT_SRC):
 	mkdir -p $(SRC_ROOT)
