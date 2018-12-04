@@ -125,7 +125,7 @@
 			#size-cells = <0x0>;
 			clock-frequency = <0x61a80>;
 			eeprom: eeprom@50 {
-				compatible = "a24,24c02";
+				compatible = "a24,24c64";
 				reg = <0x50>;
 			};
 		};
