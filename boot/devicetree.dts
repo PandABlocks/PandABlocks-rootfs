@@ -124,10 +124,6 @@
 			#address-cells = <0x1>;
 			#size-cells = <0x0>;
 			clock-frequency = <0x61a80>;
-			eeprom: eeprom@50 {
-				compatible = "a24,24c64";
-				reg = <0x50>;
-			};
 		};
 
 		i2c@e0005000 {
