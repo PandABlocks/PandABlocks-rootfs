@@ -110,6 +110,7 @@ remove_package()
 {
     zdb="$1"
     zdd="${1%%.zdb}.zdd"
+    zdl="${1%%.zdb}.zdl"
 
     logger -t zpkg Removing package "$zdb"
 
@@ -120,6 +121,9 @@ remove_package()
     while read md5 file; do
         rm $file
     done <"$zdb"
+    while read link target; do
+        rm $link
+    done <"$zdl"
     while read dir; do
         rmdir "$ROOT_DIR"/$dir 2>/dev/null
     done <"$zdd"
@@ -177,7 +181,7 @@ create_database_file()
     tar tzvf "$1" |
     while read perm owner size date time filename to link; do
         filetype=${perm::1}
-        if [ $filetype != d ]; then
+        if [ $filetype = - ]; then
             md5sum $ROOT_DIR/$filename
         fi
     done |
@@ -193,6 +197,16 @@ create_database_file()
         fi
     done |
     sort -r > "$DATABASE/$package_name@$package_version.zdd"
+
+    # Similarly create a list of links which also need to be separately deleted
+    tar tzvf "$1" |
+    while read perm owner size date time filename to link; do
+        filetype=${perm::1}
+        if [ $filetype = l ]; then
+            echo $filename $link
+        fi
+    done |
+    tee "$DATABASE/$package_name@$package_version.zdl"
 }
 
 
