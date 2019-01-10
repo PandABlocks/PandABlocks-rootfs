@@ -4,16 +4,25 @@
 
 . /etc/init.d/functions
 
+check_zpkg_disable()
+{
+    grep -q '^NO_ZPKG' $(cat /tmp/config_file)
+}
+
 do_start()
 {
     loaded=0
     failed=0
-    for script in /opt/etc/rc.d/S*; do
-        if [ -x $script ]; then
-            loaded=$((loaded + 1))
-            $script start  ||  failed=$((failed + 1))
-        fi
-    done
+    if check_zpkg_disable; then
+        echo ZPKG startup disabled
+    else
+        for script in /opt/etc/rc.d/S*; do
+            if [ -x $script ]; then
+                loaded=$((loaded + 1))
+                $script start  ||  failed=$((failed + 1))
+            fi
+        done
+    fi
 
     if [ $loaded = 0 ]; then
         # If no zpgk files found then report attention needed
