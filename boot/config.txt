@@ -25,3 +25,8 @@
 # The machine hostname can be specified here:
 #
 #   HOSTNAME = panda
+
+# To skip loading any zpackages at startup, either for testing or as an
+# override to recover from a faulty zpkg install:
+#
+#   NO_ZPKG
