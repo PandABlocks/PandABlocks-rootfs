@@ -25,6 +25,7 @@ Options can be any of:
         specified.
     -n: Package name.  If not specified the name is extracted from the
         package.list filename.
+    -a: Filename will have __at__ in instead of @ character
     -h  Show this help text
 
 The package.list file specifies all of the files that will be placed in the
@@ -63,14 +64,17 @@ WORK_DIR=
 DEST_DIR="$PWD"
 # Package name, by default is computed from file list name
 PKG_NAME=
+# Separator for output zpkg filename, defaults to @ character
+SEP=@
 
-while getopts 'b:t:w:d:n:h' option; do
+while getopts 'b:t:w:d:n:ah' option; do
     case "$option" in
     b)  BUILD_DIR="$OPTARG" ;;
     t)  TOP_DIR="$OPTARG" ;;
     w)  WORK_DIR="$OPTARG" ;;
     d)  DEST_DIR="$OPTARG" ;;
     n)  PKG_NAME="$OPTARG" ;;
+    a)  SEP="__at__" ;;
     h)  usage ;;
     *)  error 'Invalid option: try -h for help' ;;
     esac
@@ -104,7 +108,7 @@ ZPKG_DIR="$WORK_DIR/zpkg-$PKG_NAME"
 rm -rf "$ZPKG_DIR"
 
 # Configure final package to build
-ZPKG="$DEST_DIR/$PKG_NAME@$VERSION.zpg"
+ZPKG="$DEST_DIR/$PKG_NAME$SEP$VERSION.zpg"
 
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
