@@ -7,6 +7,7 @@ The SD card inside a PandA contains a ``config.txt`` file that allows control
 of networking and other configuration settings
 
 .. include:: default_config.txt
+   :code: bash
 
 During startup the network will be configured as follows:
 
@@ -63,14 +64,19 @@ Web Admin
 This allows the following functions:
 
 - System
+
   - Reboot/Restart
   - Show /var/log/messages
   - Show Network Configuration
+
 - Packages
+
   - List Installed Packages
   - Install Packages from USB
   - Install Rootfs from USB
+
 - SSH Keys
+
   - Show Authorised SSH Keys
   - Append SSH keys from USB
 

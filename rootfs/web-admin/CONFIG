@@ -6,5 +6,7 @@ INETD_CONF = 80 stream tcp nowait root \
 option:
 	$(install-files) $(optiondir)/file-list
 	echo '$(INETD_CONF)' >>$(sysroot)/etc/inetd.conf
+	rst2pdf $(optiondir)/../../docs/quickstart.rst \
+	    -o $(sysroot)/usr/share/web-admin/static/network-quickstart.pdf
 
 # vim: set filetype=make:
