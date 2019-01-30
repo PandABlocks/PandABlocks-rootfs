@@ -241,7 +241,7 @@ class CommandHandler(RequestHandler):
     def get_packages_install(self, *path_suffix):
         """Install Packages from USB"""
         self.ensure_trailing_slash()
-        root, glob_list = glob_dir('*@*.zpg', *path_suffix)
+        root, glob_list = glob_dir('*.zpg', *path_suffix)
         if glob_list:
             self.h2("Available in %s:" % tt(root))
             self.t("form_select.html", label="Install Selected Packages",
