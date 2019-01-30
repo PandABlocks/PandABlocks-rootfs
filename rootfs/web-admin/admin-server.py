@@ -162,14 +162,17 @@ class CommandHandler(RequestHandler):
         for repo in ("PandABlocks-FPGA", "PandABlocks-server",
                      "PandABlocks-webcontrol"):
             link = "https://github.com/PandABlocks/%s/releases" % repo
+            self.write("<li>")
             self.popup(link, repo)
+            self.write("</li>")
         self.write("</ul>")
 
     def show_ssh_help(self):
-        self.p("SSH keys need to be installed to SSH access to this device. "
-               "Password authentication is disabled for security reasons. ")
-        self.p("https://www.ssh.com/ssh/authorized-key",
-               "Help on SSH authorized key format")
+        self.write("<p>")
+        self.write("SSH access is only allowed to users who have placed their ")
+        self.popup("https://www.ssh.com/ssh/authorized-key", "Authorized key")
+        self.write(" on this device")
+        self.write("</p>")
 
     def list_dir(self, *path_suffix):
         root = os.path.join(MNT, *path_suffix)
@@ -246,6 +249,7 @@ class CommandHandler(RequestHandler):
     def get_packages_list(self):
         """List Installed Packages"""
         self.list_package_instructions()
+        self.p("The following packages are already installed")
         zpkg_list = sorted(blocking_cmd_lines('zpkg', 'list'))
         if zpkg_list:
             details = {}
@@ -263,6 +267,7 @@ class CommandHandler(RequestHandler):
         """Install Packages from USB"""
         self.ensure_trailing_slash()
         self.list_package_instructions()
+        self.p("Packages placed on the USB stick can be navigated to below.")
         root, glob_list = glob_dir('*.zpg', *path_suffix)
         if glob_list:
             self.h2("Available in %s:" % tt(root))
@@ -276,11 +281,13 @@ class CommandHandler(RequestHandler):
     def get_rootfs_install(self, *path_suffix):
         """Install Rootfs from USB"""
         self.ensure_trailing_slash()
-        self.p("Updated rootfs images can be installed by placing the "
-               "imagefile.cpio.gz file from the boot.zip file of a rootfs "
-               "release onto the USB stick.")
+        self.write("<p>")
+        self.write("Updated rootfs images can be installed by placing the "
+                   "imagefile.cpio.gz file from the boot.zip ")
         link = "https://github.com/PandABlocks/PandABlocks-rootfs/releases"
-        self.popup(link, "Download rootfs release")
+        self.popup(link, "rootfs release")
+        self.write(" onto the USB stick, and navigating to it below.")
+        self.write("</p>")
         root, glob_list = glob_dir('*.cpio.gz', *path_suffix)
         if glob_list:
             self.h2("Available in %s:" % tt(root))
