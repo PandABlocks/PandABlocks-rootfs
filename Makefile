@@ -12,6 +12,7 @@ MD5_SUM_linux-xlnx-xilinx-v2015.1  = 930d126df2113221e63c4ec4ce356f2c
 
 
 # Define settings that may need to be overridden before including CONFIG.
+SPHINX_BUILD = sphinx-build
 
 # Locations of key files in the SDK
 BOOTGEN = $(SDK_ROOT)/bin/bootgen
@@ -303,5 +304,23 @@ $(BOOT_ZIP): $(BOOT_FILES)
 	zip -j $(BOOT_ZIP) $^
 
 boot: $(BOOT_ZIP)
-
 .PHONY: boot
+
+github-release: $(BOOT_ZIP)
+	./make-github-release.py PandABlocks-rootfs $(GIT_VERSION_SUFFIX) \
+		$(BOOT_ZIP)
+
+
+# ------------------------------------------------------------------------------
+# Documentation
+
+DOCS_BUILD_DIR = $(BUILD_ROOT)/html
+
+$(DOCS_BUILD_DIR)/index.html: $(wildcard docs/*.rst docs/conf.py)
+	$(SPHINX_BUILD) -b html docs $(DOCS_BUILD_DIR)
+
+docs: $(DOCS_BUILD_DIR)/index.html
+
+clean-docs:
+	rm -rf $(DOCS_BUILD_DIR)
+
