@@ -117,6 +117,10 @@ class CommandHandler(RequestHandler):
     def command_row(self, text):
         self.write('<div class="command-row">%s</div>' % xhtml_escape(text))
 
+    def popup(self, href, text):
+        self.write('<a target="_blank" rel="noopener noreferrer" href="%s">%s'
+                   '</a>' % (href, text))
+
     @coroutine
     def run_command(self, *command):
         got_output = False
@@ -150,6 +154,22 @@ class CommandHandler(RequestHandler):
             self.p("Package %s operation complete." % action)
         else:
             self.p("Nothing to %s." % action)
+
+    def list_package_instructions(self):
+        self.p("Packages have file extension .zpg and are downloaded from a "
+               "GitHub release of the relevant repository:")
+        self.write("<ul>")
+        for repo in ("PandABlocks-FPGA", "PandABlocks-server",
+                     "PandABlocks-webcontrol"):
+            link = "https://github.com/PandABlocks/%s/releases" % repo
+            self.popup(link, repo)
+        self.write("</ul>")
+
+    def show_ssh_help(self):
+        self.p("SSH keys need to be installed to SSH access to this device. "
+               "Password authentication is disabled for security reasons. ")
+        self.p("https://www.ssh.com/ssh/authorized-key",
+               "Help on SSH authorized key format")
 
     def list_dir(self, *path_suffix):
         root = os.path.join(MNT, *path_suffix)
@@ -225,6 +245,7 @@ class CommandHandler(RequestHandler):
     @add_get_page("packages/list")
     def get_packages_list(self):
         """List Installed Packages"""
+        self.list_package_instructions()
         zpkg_list = sorted(blocking_cmd_lines('zpkg', 'list'))
         if zpkg_list:
             details = {}
@@ -241,6 +262,7 @@ class CommandHandler(RequestHandler):
     def get_packages_install(self, *path_suffix):
         """Install Packages from USB"""
         self.ensure_trailing_slash()
+        self.list_package_instructions()
         root, glob_list = glob_dir('*.zpg', *path_suffix)
         if glob_list:
             self.h2("Available in %s:" % tt(root))
@@ -254,6 +276,11 @@ class CommandHandler(RequestHandler):
     def get_rootfs_install(self, *path_suffix):
         """Install Rootfs from USB"""
         self.ensure_trailing_slash()
+        self.p("Updated rootfs images can be installed by placing the "
+               "imagefile.cpio.gz file from the boot.zip file of a rootfs "
+               "release onto the USB stick.")
+        link = "https://github.com/PandABlocks/PandABlocks-rootfs/releases"
+        self.popup(link, "Download rootfs release")
         root, glob_list = glob_dir('*.cpio.gz', *path_suffix)
         if glob_list:
             self.h2("Available in %s:" % tt(root))
@@ -266,6 +293,7 @@ class CommandHandler(RequestHandler):
     @add_get_page("ssh/list")
     def get_ssh_list(self):
         """Show Authorised SSH Keys"""
+        self.show_ssh_help()
         if os.path.isfile(AUTHORIZED_KEYS):
             self.list_file(AUTHORIZED_KEYS)
             self.t('button.html', label='Remove all authorized keys',
@@ -277,6 +305,7 @@ class CommandHandler(RequestHandler):
     def get_ssh_append(self, *path_suffix):
         """Append SSH keys from USB"""
         self.ensure_trailing_slash()
+        self.show_ssh_help()
         root, glob_list = glob_dir('authorized_keys', *path_suffix)
         if glob_list:
             self.h2("Available in %s:" % tt(root))
