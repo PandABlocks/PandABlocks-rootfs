@@ -267,7 +267,7 @@ class CommandHandler(RequestHandler):
         """Install Packages from USB"""
         self.ensure_trailing_slash()
         self.list_package_instructions()
-        self.p("Packages placed on the USB stick can be navigated to below.")
+        self.p("Packages placed on the USB stick can be navigated to below:")
         root, glob_list = glob_dir('*.zpg', *path_suffix)
         if glob_list:
             self.h2("Available in %s:" % tt(root))
@@ -286,7 +286,7 @@ class CommandHandler(RequestHandler):
                    "imagefile.cpio.gz file from the boot.zip ")
         link = "https://github.com/PandABlocks/PandABlocks-rootfs/releases"
         self.popup(link, "rootfs release")
-        self.write(" onto the USB stick, and navigating to it below.")
+        self.write(" onto the USB stick, and navigating to it below:")
         self.write("</p>")
         root, glob_list = glob_dir('*.cpio.gz', *path_suffix)
         if glob_list:
@@ -313,6 +313,7 @@ class CommandHandler(RequestHandler):
         """Append SSH keys from USB"""
         self.ensure_trailing_slash()
         self.show_ssh_help()
+        self.p("Select SSH keys to append below:")
         root, glob_list = glob_dir('authorized_keys', *path_suffix)
         if glob_list:
             self.h2("Available in %s:" % tt(root))
