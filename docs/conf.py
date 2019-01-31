@@ -12,8 +12,6 @@
 # All configuration values have a default; values that are commented out
 # serve to show the default.
 
-import sys
-import os
 import subprocess
 
 # If extensions (or modules to document with autodoc) are in another directory,
@@ -84,7 +82,7 @@ exclude_patterns = ['_build']
 
 # The reST default role (used for this markup: `text`) to use for all
 # documents.
-#default_role = None
+default_role = "any"
 
 # If true, '()' will be appended to :func: etc. cross-reference text.
 #add_function_parentheses = True
@@ -109,6 +107,8 @@ pygments_style = 'sphinx'
 # If true, `todo` and `todoList` produce output, else they produce nothing.
 todo_include_todos = False
 
+# If true, Sphinx will warn about all references where the target can't be found
+nitpicky = True
 
 # -- Options for HTML output ----------------------------------------------
 

@@ -2,8 +2,8 @@ PandABlocks-rootfs
 ==================
 
 PandABlocks-rootfs contains the sources to build the root filesystem that
-will boot Linux on the Zynq module that is the heart of a `pandablocks_device_`
-like `pandabox_`.
+will boot Linux on the Zynq module that is the heart of a PandABlocks enabled
+device like PandABox.
 
 What does the rootfs do?
 ------------------------
