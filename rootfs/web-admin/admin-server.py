@@ -104,6 +104,12 @@ class RedirectError(Exception):
     pass
 
 
+MAYBE_SCROLL_TO_BOTTOM = """
+if (window.scrollY + window.innerHeight + 60 > document.body.scrollHeight)
+    window.scrollTo(0, document.body.scrollHeight);
+"""
+
+
 class CommandHandler(RequestHandler):
     def t(self, template, **kwargs):
         self.write(self.render_string(template, **kwargs))
@@ -121,6 +127,9 @@ class CommandHandler(RequestHandler):
         self.write('<a target="_blank" rel="noopener noreferrer" href="%s">%s'
                    '</a>' % (href, text))
 
+    def maybe_scroll_to_bottom(self):
+        self.write('<script>' + MAYBE_SCROLL_TO_BOTTOM + '</script>')
+
     @coroutine
     def run_command(self, *command):
         got_output = False
@@ -134,6 +143,7 @@ class CommandHandler(RequestHandler):
                     got_output = True
                     self.write('<div class="shadow command">')
                 self.command_row(line)
+                self.maybe_scroll_to_bottom()
                 self.flush()
         except StreamClosedError:
             if got_output:
@@ -151,7 +161,9 @@ class CommandHandler(RequestHandler):
             self.p("About to %s %s..." % (action, package_strings))
             yield self.run_command("zpkg", action, *packages)
             yield self.sync()
+            self.maybe_scroll_to_bottom()
             self.p("Package %s operation complete." % action)
+            self.maybe_scroll_to_bottom()
         else:
             self.p("Nothing to %s." % action)
 
