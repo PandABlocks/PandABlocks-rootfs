@@ -152,6 +152,8 @@ class CommandHandler(RequestHandler):
     @coroutine
     def sync(self):
         self.p('Writing state to disk...')
+        self.maybe_scroll_to_bottom()
+        self.flush()
         yield self.run_command('sync')
 
     @coroutine
@@ -161,7 +163,6 @@ class CommandHandler(RequestHandler):
             self.p("About to %s %s..." % (action, package_strings))
             yield self.run_command("zpkg", action, *packages)
             yield self.sync()
-            self.maybe_scroll_to_bottom()
             self.p("Package %s operation complete." % action)
             self.maybe_scroll_to_bottom()
         else:
