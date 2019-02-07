@@ -25,7 +25,7 @@ do_start()
     fi
 
     if [ $loaded = 0 ]; then
-        # If no zpgk files found then report attention needed
+        # If no zpkg files found then report attention needed
         set-led ATTENTION
     elif [ $failed -gt 0 ]; then
         set-led ZPKG_ERR
@@ -42,4 +42,4 @@ do_stop()
     done
 }
 
-do_start_stop "$1" zpgk
+do_start_stop "$1" zpkg

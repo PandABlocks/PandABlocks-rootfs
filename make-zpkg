@@ -29,11 +29,11 @@ Options can be any of:
     -h  Show this help text
 
 The package.list file specifies all of the files that will be placed in the
-generated zpgk.  Each line consists of three fields:
+generated zpkg.  Each line consists of three fields:
 
     option target source
 
-The target specifies the location in the zpgk where the file will be installed,
+The target specifies the location in the zpkg where the file will be installed,
 while the option and source together specify where the file comes from,
 according to the following options:
 
