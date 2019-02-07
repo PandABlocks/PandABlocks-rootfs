@@ -122,7 +122,7 @@ remove_package()
         rm $file
     done <"$zdb"
     while read link target; do
-        rm $link
+        rm "$ROOT_DIR"/$link
     done <"$zdl"
     while read dir; do
         rmdir "$ROOT_DIR"/$dir 2>/dev/null
