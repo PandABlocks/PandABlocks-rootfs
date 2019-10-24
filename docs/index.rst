@@ -24,5 +24,5 @@ How is the documentation structured?
 ------------------------------------
 
 The documentation is structured into a `quickstart_doc` guide that will
-get the PandA on the network, and a `building_doc` guide that will allow
-the rootfs to be rebuilt.
+get the PandA on the network, a `ssh_doc` guide, and a `building_doc` guide
+that will allow the rootfs to be rebuilt from source.
