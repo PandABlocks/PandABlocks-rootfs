@@ -317,7 +317,7 @@ github-release: $(BOOT_ZIP)
 DOCS_BUILD_DIR = $(BUILD_ROOT)/html
 
 $(DOCS_BUILD_DIR)/index.html: $(wildcard docs/*.rst docs/conf.py)
-	$(SPHINX_BUILD) -b html docs $(DOCS_BUILD_DIR)
+	$(SPHINX_BUILD) -nEW -b html docs $(DOCS_BUILD_DIR)
 
 docs: $(DOCS_BUILD_DIR)/index.html
 
