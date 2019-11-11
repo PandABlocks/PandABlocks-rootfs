@@ -44,6 +44,9 @@ PACKAGES += backports_abc
 PACKAGES += singledispatch
 PACKAGES += tornado
 
+PACKAGES += libffi
+PACKAGES += Python3
+
 ncurses_TERMS = xterm xterm-color screen vt100 vt102
 
 
