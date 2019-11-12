@@ -12,7 +12,7 @@ or load it from USB via the Admin interface.
 
 It is then possible to log in remotely and perform operations on the PandA
 
-.. warning:
+.. warning::
 
     PandA only has a single user, root, and remote access is done as this user.
     Root has privileges to break the system, so be careful when running the
@@ -46,4 +46,22 @@ Download a new zpkg files from the appropriate GitHub repositories, then::
 
 This will install the appropriate packages and restart the services to on the
 box to use them.
+
+.. note::
+
+    Release 1.0 of the rootfs contained a bug which means that if 1.0 or later
+    versions of the FPGA zpkg were installed, then any subsequent installations
+    of the FPGA zpkg with **ANY** version of the rootfs would fail with 
+    message::
+
+        File lib/python2.7/site-packages/malcolm/modules/web/www/fpga_docs already exists
+
+    Once you have seen this error, run::
+
+        rm /opt/lib/python2.7/site-packages/malcolm/modules/web/www/fpga_docs
+
+    and then retry the ``zpkg`` command and it should succeed. Release 1.1 of
+    the rootfs fixes this, but you will still have to follow the steps above to
+    correct the error.
+
 
