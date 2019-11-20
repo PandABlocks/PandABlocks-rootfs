@@ -32,20 +32,15 @@ PACKAGES += ethtool
 PACKAGES += iperf
 PACKAGES += i2c-tools
 
+SYSTEM_PYTHON = 3
+PACKAGES += libffi
 PACKAGES += libressl
-PACKAGES += Python
+PACKAGES += Python3
+PACKAGES += setuptools
 PACKAGES += numpy
-PACKAGES += enum34
-
 PACKAGES += cothread
-
-PACKAGES += backports.ssl_match_hostname
-PACKAGES += backports_abc
-PACKAGES += singledispatch
 PACKAGES += tornado
 
-PACKAGES += libffi
-PACKAGES += Python3
 
 ncurses_TERMS = xterm xterm-color screen vt100 vt102
 
