@@ -53,6 +53,25 @@ and modify the following fields as required:
     This needs to point to the root directory of the Diamond rootfs builder,
     download from the github location given above.
 
+Three files and directories are taken from ``SDK_ROOT``, and they can instead be
+specified directly.  Note that in this case ``SDK_ROOT`` must *not* be set.
+
+``BOOTGEN``
+    This is the path to a Xilinx toolchain tool used to build the ``boot.bin``
+    file.  By default this is set to ``$(SDK_ROOT)/bin/bootgen``.
+
+``BINUTILS_DIR``
+    This is the path to the gcc cross-compiler toolchain to use.  By default
+    this is set to ``$(SDK_ROOT)/gnu/arm/lin``.  The directory
+    ``$(BINUTILS_DIR)/bin`` will be added to the path during the build.
+
+``SYSROOT``
+    This is the path to the compiled system root (derived from libc).  Normally
+    this is part of the installed toolchain, and if not set elsewhere this is
+    set to ``$(BINUTILS_DIR)/$(COMPILER_PREFIX)/libc``.
+
+Note that the ``COMPILER_PREFIX`` symbol can also be overwritten if required.
+The default value is ``arm-xilinx-linux-gnueabi``.
 
 Sources
 ~~~~~~~

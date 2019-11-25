@@ -1,8 +1,6 @@
 # Kernel initramfs definition.  This is a minimal image with just enough to do
 # what we need to prepare to run the true system.
 
-TOOLCHAIN = xlnx-zynq
-
 PACKAGES += busybox
 busybox_VERSION = 1.23.2
 busybox_CONFIG = $(configdir)/busybox.config

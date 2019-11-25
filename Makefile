@@ -15,10 +15,8 @@ MD5_SUM_linux-xlnx-xilinx-v2015.1  = 930d126df2113221e63c4ec4ce356f2c
 SPHINX_BUILD = sphinx-build
 
 # Locations of key files in the SDK
-BOOTGEN = $(SDK_ROOT)/bin/bootgen
-BINUTILS_DIR = $(SDK_ROOT)/gnu/arm/lin/bin
 # Cross-compilation tuple for toolkit
-CROSS_COMPILE = arm-xilinx-linux-gnueabi-
+COMPILER_PREFIX = arm-xilinx-linux-gnueabi
 
 # The final boot image is assembled here
 BOOT_IMAGE = $(PANDA_ROOT)/boot
@@ -35,8 +33,20 @@ KERNEL_TAG = xilinx-v2015.1
 # Configuration and local settings.
 include CONFIG
 
+
+CROSS_COMPILE = $(COMPILER_PREFIX)-
+
+ifdef SDK_ROOT
+    BOOTGEN ?= $(SDK_ROOT)/bin/bootgen
+    BINUTILS_DIR ?= $(SDK_ROOT)/gnu/arm/lin
+endif
+
+ifdef BINUTILS_DIR
+    SYSROOT ?= $(BINUTILS_DIR)/$(COMPILER_PREFIX)/libc
+endif
+
 # We'll check that these symbols have been defined.
-REQUIRED_SYMBOLS = ROOTFS_TOP SDK_ROOT TAR_FILES PANDA_ROOT
+REQUIRED_SYMBOLS = ROOTFS_TOP BOOTGEN BINUTILS_DIR SYSROOT TAR_FILES PANDA_ROOT
 
 
 default: boot
@@ -54,7 +64,7 @@ BOOT_BUILD = $(BUILD_ROOT)/boot
 
 U_BOOT_TOOLS = $(U_BOOT_BUILD)/tools
 
-export PATH := $(BINUTILS_DIR):$(U_BOOT_TOOLS):$(PATH)
+export PATH := $(BINUTILS_DIR)/bin:$(U_BOOT_TOOLS):$(PATH)
 
 
 # ------------------------------------------------------------------------------
@@ -216,6 +226,7 @@ u-boot-src: $(U_BOOT_SRC)
 
 # Command for building rootfs.  Need to specify both action and target name.
 MAKE_ROOTFS = \
+    $(call EXPORT,COMPILER_PREFIX SYSROOT) \
     $(ROOTFS_TOP)/rootfs -f '$(TAR_FILES)' -r $(PANDA_ROOT) -t $(CURDIR)/$1 $2
 
 %.gz: %

@@ -3,12 +3,14 @@
 # Copy this file to CONFIG and edit the settings below to suit your
 # environment.
 
-# Location of rootfs builder.  This needs to be at least version 1.10 and can be
+# Location of rootfs builder.  This needs to be at least version 1.13 and can be
 # downloaded from https://github.com/araneidae/rootfs
-ROOTFS_TOP = /dls_sw/prod/targetOS/rootfs/1-10
+ROOTFS_TOP = /dls_sw/prod/targetOS/rootfs/1.13
 
-# Location of SDK used to build target
-SDK_ROOT = /dls_sw/apps/FPGA/Xilinx/SDK/2015.1
+# Location of SDK used to build target.  There are a couple of ways that this
+# can be specified, depending on precisely where the toolchain is installed.
+# The simplest option is to specify SDK_ROOT.
+SDK_ROOT = /dls_sw/apps/FPGA/Xilinx/SDK/2016.4
 
 # Where to find source files
 TAR_FILES = /dls_sw/prod/targetOS/tar-files

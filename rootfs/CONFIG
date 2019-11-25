@@ -2,7 +2,6 @@
 
 # -----------------------------------------------------------------------------
 # Package definitions for Zynq
-TOOLCHAIN = xlnx-zynq
 
 PACKAGES += busybox
 busybox_VERSION = 1.23.2
