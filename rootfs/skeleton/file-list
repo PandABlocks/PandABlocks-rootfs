@@ -13,4 +13,4 @@ l 777 /root/.ssh /qspi/id_dropbear.pub
 l 777 /root/.ssh /qspi/known_hosts
 
 # Link python into /opt
-f 644 /usr/lib/python2.7/site-packages/defaults.pth defaults.pth
+f 644 /usr/lib/python3.8/site-packages/defaults.pth defaults.pth
