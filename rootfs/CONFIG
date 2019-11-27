@@ -31,8 +31,10 @@ PACKAGES += ethtool
 PACKAGES += iperf
 PACKAGES += i2c-tools
 
+PACKAGES += libffi
 PACKAGES += libressl
 PACKAGES += Python
+PACKAGES += setuptools
 PACKAGES += numpy
 PACKAGES += enum34
 
