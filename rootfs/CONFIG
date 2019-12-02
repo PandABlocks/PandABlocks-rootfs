@@ -40,8 +40,6 @@ PACKAGES += numpy
 PACKAGES += cothread
 PACKAGES += tornado
 
-ncurses_TERMS = xterm xterm-color screen vt100 vt102
-
 
 # -----------------------------------------------------------------------------
 # Rootfs options and configuration
