@@ -137,6 +137,7 @@ DTC = $(KERNEL_BUILD)/scripts/dtc/dtc
 $(KERNEL_SRC):
 	mkdir -p $(SRC_ROOT)
 	$(call EXTRACT_FILE,$(KERNEL_NAME).tar.gz,$(MD5_SUM_$(KERNEL_NAME)))
+	cp -R -f $(CURDIR)/kernel/patches/* $(KERNEL_SRC)
 	chmod -R a-w $(KERNEL_SRC)
 
 $(KERNEL_BUILD)/.config: kernel/dot.config $(KERNEL_SRC)
@@ -193,8 +194,9 @@ $(U_BOOT_SRC):
 	mkdir -p $(SRC_ROOT)
 	$(call EXTRACT_FILE,$(U_BOOT_NAME).tar.gz,$(MD5_SUM_$(U_BOOT_NAME)))
 	patch -p1 -d $(U_BOOT_SRC) < u-boot/u-boot.patch
-	ln -s $(PWD)/u-boot/PandA_defconfig $(U_BOOT_SRC)/configs
-	ln -s $(PWD)/u-boot/PandA.h $(U_BOOT_SRC)/include/configs
+	ln -s $(CURDIR)/u-boot/PandA_defconfig $(U_BOOT_SRC)/configs
+	ln -s $(CURDIR)/u-boot/PandA.h $(U_BOOT_SRC)/include/configs
+	cp -R -f $(CURDIR)/u-boot/patches/* $(U_BOOT_SRC)
 	chmod -R a-w $(U_BOOT_SRC)
 
 $(U_BOOT_ELF) $(U_BOOT_TOOLS)/mkimage: $(U_BOOT_SRC) $(DEVICE_TREE_DTB)
@@ -279,7 +281,7 @@ rootfs: $(ROOTFS)
 # The first stage bootloader image is managed here under source control, despite
 # being a binary, because it will never change and is build as part of the
 # Xilinx build process.
-FSBL_ELF = $(PWD)/boot/fsbl.elf
+FSBL_ELF = $(CURDIR)/boot/fsbl.elf
 
 BOOT_FILES =
 BOOT_FILES += $(BOOT_BUILD)/boot.bin    # Second stage bootloader
