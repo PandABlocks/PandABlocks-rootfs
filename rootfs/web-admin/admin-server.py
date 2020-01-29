@@ -138,7 +138,7 @@ class CommandHandler(RequestHandler):
             command, stdout=Subprocess.STREAM, stderr=subprocess.STDOUT)
         try:
             while True:
-                line = yield sub_process.stdout.read_until("\n")
+                line = yield sub_process.stdout.read_until(b"\n")
                 if not got_output:
                     got_output = True
                     self.write('<div class="shadow command">')
@@ -148,6 +148,7 @@ class CommandHandler(RequestHandler):
         except StreamClosedError:
             if got_output:
                 self.write('</div>')
+                sub_process.stdout.close()
 
     @coroutine
     def sync(self):
