@@ -134,7 +134,7 @@ remove_package()
         rmdir "$ROOT_DIR"/$dir 2>/dev/null
     done <"$zdd"
 
-    rm "$zdb" "$zdd"
+    rm "$zdb" "$zdd" "$zdl"
 }
 
 
