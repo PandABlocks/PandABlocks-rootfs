@@ -28,8 +28,12 @@ ROOTFS_VERSION = os.path.join(os.path.dirname(__file__), "rootfs-version.sh")
 ROOTFS = '/boot/imagefile.cpio.gz'
 
 # Log to a rotating file
+extended_formatter = logging.Formatter(
+    """%(asctime)s - %(levelname)6s - %(name)s
+    %(message)s""")
 file_handler = logging.handlers.RotatingFileHandler(
     LOG_FILE, maxBytes=1000000, backupCount=4)
+file_handler.setFormatter(extended_formatter)
 logging.root.addHandler(file_handler)
 logging.root.setLevel(logging.INFO)
 logging.info("Loading web-admin...")
