@@ -25,6 +25,7 @@ BOOT_IMAGE = $(PANDA_ROOT)/boot
 export GIT_VERSION_SUFFIX = \
     $(shell git describe --abbrev=7 --dirty --always --tags)
 BOOT_ZIP = $(PANDA_ROOT)/boot-$(GIT_VERSION_SUFFIX).zip
+DEPS_ZIP = $(PANDA_ROOT)/deps-$(GIT_VERSION_SUFFIX).zip
 
 # Tags for versions of u-boot and kernel
 U_BOOT_TAG = xilinx-v2015.1
@@ -309,17 +310,31 @@ $(BOOT_BUILD)/boot.bif:
 $(BOOT_BUILD)/boot.bin: $(BOOT_BUILD)/boot.bif $(FSBL_ELF) $(U_BOOT_ELF)
 	cd $(BOOT_BUILD)  &&  $(BOOTGEN) -w -image boot.bif -o i $@
 
-$(BOOT_ZIP): $(BOOT_FILES)
+boot: $(BOOT_FILES)
 	mkdir -p $(BOOT_IMAGE)
 	cp $^ $(BOOT_IMAGE)
-	zip -j $(BOOT_ZIP) $^
 
-boot: $(BOOT_ZIP)
 .PHONY: boot
 
-github-release: $(BOOT_ZIP)
-	./make-github-release.py PandABlocks-rootfs $(GIT_VERSION_SUFFIX) \
-		$(BOOT_ZIP)
+$(BOOT_ZIP): $(BOOT_FILES)
+	zip -j $@ $^
+
+# These are the untarred versions of the tar files that rootfs makes
+SRC_DIRS = $(wildcard $(SRC_ROOT)/*)
+
+# Dubious hack, for each untarred dir, guess that there is a source tar file in
+# the TAR_FILES dir that starts with the untarred dir name. These can be
+# collected in one zip file to make the deps zip
+SRC_TARS = $(wildcard $(patsubst $(SRC_ROOT)/%,$(TAR_FILES)/%*,$(SRC_DIRS)))
+
+$(DEPS_ZIP): $(BOOT_ZIP)
+	zip -j $@ $(SRC_TARS)
+
+zips: $(BOOT_ZIP) $(DEPS_ZIP)
+.PHONY: zips
+
+github-release: $(BOOT_ZIP) $(DEPS_ZIP)
+	./make-github-release.py PandABlocks-rootfs $(GIT_VERSION_SUFFIX) $^
 
 
 # ------------------------------------------------------------------------------
