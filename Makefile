@@ -59,7 +59,6 @@ BUILD_ROOT = $(PANDA_ROOT)/build
 
 U_BOOT_BUILD = $(BUILD_ROOT)/u-boot
 KERNEL_BUILD = $(BUILD_ROOT)/linux
-BOOT_BUILD = $(BUILD_ROOT)/boot
 
 
 U_BOOT_TOOLS = $(U_BOOT_BUILD)/tools
@@ -175,50 +174,29 @@ kernel: $(UIMAGE)
 
 
 # ------------------------------------------------------------------------------
-# Building u-boot
+# Building mkimage from u-boot
 #
 
 U_BOOT_NAME = u-boot-xlnx-$(U_BOOT_TAG)
 U_BOOT_SRC = $(SRC_ROOT)/$(U_BOOT_NAME)
-U_BOOT_ELF = $(U_BOOT_BUILD)/u-boot.elf
 
 MAKE_U_BOOT = $(EXPORTS) KBUILD_OUTPUT=$(U_BOOT_BUILD) $(MAKE) -C $(U_BOOT_SRC)
-
-DEVICE_TREE_DTB = $(BOOT_BUILD)/devicetree.dtb
-
-
-# Rule to create binary device tree from device tree source.
-$(DEVICE_TREE_DTB): boot/devicetree.dts $(DTC)
-	$(DTC) -o $@ -O dtb -I dts $<
-
-# # Inverse rule to extract device tree source from blob.
-# %.dts: %.dtb
-# 	$(DTC) -o $@ -O dts -I dtb $<
-
-devicetree_dtb: $(DEVICE_TREE_DTB)
-.PHONY: devicetree_dtb
-
 
 $(U_BOOT_SRC):
 	mkdir -p $(SRC_ROOT)
 	$(call EXTRACT_FILE,$(U_BOOT_NAME).tar.gz,$(MD5_SUM_$(U_BOOT_NAME)))
-	patch -p1 -d $(U_BOOT_SRC) < u-boot/u-boot.patch
-	ln -s $(PWD)/u-boot/PandA_defconfig $(U_BOOT_SRC)/configs
-	ln -s $(PWD)/u-boot/PandA.h $(U_BOOT_SRC)/include/configs
 	chmod -R a-w $(U_BOOT_SRC)
 
-$(U_BOOT_ELF) $(U_BOOT_TOOLS)/mkimage: $(U_BOOT_SRC) $(DEVICE_TREE_DTB)
+$(U_BOOT_TOOLS)/mkimage: $(U_BOOT_SRC)
 	mkdir -p $(U_BOOT_BUILD)
-	$(MAKE_U_BOOT) PandA_config
-	$(MAKE_U_BOOT) EXT_DTB=$(DEVICE_TREE_DTB)
-	ln -sf u-boot $(U_BOOT_ELF)
+	$(MAKE_U_BOOT) zynq_zc70x_config
+	$(MAKE_U_BOOT) tools
 
-u-boot: $(U_BOOT_ELF)
 u-boot-src: $(U_BOOT_SRC)
 
-.PHONY: u-boot u-boot-src
+u-boot-tools : $(U_BOOT_TOOLS)/mkimage
 
-
+.PHONY: u-boot-src u-boot-tools
 
 # ------------------------------------------------------------------------------
 # File system building
@@ -286,28 +264,11 @@ rootfs: $(ROOTFS)
 # ------------------------------------------------------------------------------
 # Boot image
 #
-
-# The first stage bootloader image is managed here under source control, despite
-# being a binary, because it will never change and is build as part of the
-# Xilinx build process.
-FSBL_ELF = $(PWD)/boot/fsbl.elf
-
 BOOT_FILES =
-BOOT_FILES += $(BOOT_BUILD)/boot.bin    # Second stage bootloader
-BOOT_FILES += boot/uEnv.txt             # u-boot environment
 BOOT_FILES += $(UIMAGE)                 # Kernel image
-BOOT_FILES += $(DEVICE_TREE_DTB)        # Device tree for kernel
 BOOT_FILES += $(INITRAMFS)              # Initial ramfs image
 BOOT_FILES += $(ROOTFS)                 # Target root file system
 BOOT_FILES += boot/config.txt           # Configuration settings for target
-
-
-$(BOOT_BUILD)/boot.bif:
-	mkdir -p $(BOOT_BUILD)
-	scripts/make_boot.bif $@ $(FSBL_ELF) $(U_BOOT_ELF)
-
-$(BOOT_BUILD)/boot.bin: $(BOOT_BUILD)/boot.bif $(FSBL_ELF) $(U_BOOT_ELF)
-	cd $(BOOT_BUILD)  &&  $(BOOTGEN) -w -image boot.bif -o i $@
 
 $(BOOT_ZIP): $(BOOT_FILES)
 	mkdir -p $(BOOT_IMAGE)
