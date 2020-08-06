@@ -9,6 +9,8 @@
 # that the file name and contents match.
 MD5_SUM_u-boot-xlnx-xilinx-v2015.1 = b6d212208b7694f748727883eebaa74e
 MD5_SUM_linux-xlnx-xilinx-v2015.1  = 930d126df2113221e63c4ec4ce356f2c
+MD5_SUM_u-boot-xlnx-xilinx-v2019.2   = 1b681950c604dbd6e0d7e4612bafb193
+MD5_SUM_linux-xlnx-zynq-soc-for-v5.7 = 41212e3a37d573a6e8d54ff7c37d7549
 
 
 # Define settings that may need to be overridden before including CONFIG.
@@ -203,6 +205,7 @@ $(U_BOOT_SRC):
 	mkdir -p $(SRC_ROOT)
 	$(call EXTRACT_FILE,$(U_BOOT_NAME).tar.gz,$(MD5_SUM_$(U_BOOT_NAME)))
 	patch -p1 -d $(U_BOOT_SRC) < u-boot/u-boot.patch
+	patch -p1 -d $(U_BOOT_SRC) < u-boot/u-boot_rsa.patch
 	ln -s $(PWD)/u-boot/PandA_defconfig $(U_BOOT_SRC)/configs
 	ln -s $(PWD)/u-boot/PandA.h $(U_BOOT_SRC)/include/configs
 	chmod -R a-w $(U_BOOT_SRC)
