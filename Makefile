@@ -33,6 +33,29 @@ KERNEL_TAG = xilinx-v2015.1
 # Configuration and local settings.
 include CONFIG
 
+## The following code is for future compatability with the Zynq Ultrascale+ MPSoC
+## We need to specify different architecture and cross-compile toolchain for the 
+## zynqmp platform, as well as u-boot config. It is commented out for the time being.
+#
+#PLATFORM ?= zynq
+#
+#ifeq($(PLATFORM),zynq)
+#    ARCH=arm
+#    # Use Linero (hard float) toolchain rather than CodeSourcery (soft float) toolchain?
+#    COMPILER_PREFIX=arm-linux-gnueabihf-
+#    # From Vivado 2020 onwards we can use the common defconfig
+#    #UBOOT_CONFIG = xilinx_zynq_virt_defconfig
+#    # For ealier Vivado we can specify zc70x as a generic config, as we are only using it to build mkimage
+#    UBOOT_CONFIG = zynq_zc70x_config
+#else ifeq($(PLATFORM,zynqmp)
+#    ARCH=aarch64
+#    COMPILER_PREFIX=aarch64-linux-gnu-
+#    # From Vivado 2020 onwards we can use the common defconfig
+#    #UBOOT_CONFIG = xilinx_zynqmp_virt_defconfig
+#    # For earlier Vivado verions, we can try zcu102 as an initial guess for the relevant config.
+#    UBOOT_CONFIG = xilinx_zynqmp_zcu102_rev1_0_defconfig
+#else
+#    $$(error Unknown PLATFORM specified. Must be 'zynq' or 'zynqmp')
 
 CROSS_COMPILE = $(COMPILER_PREFIX)-
 
