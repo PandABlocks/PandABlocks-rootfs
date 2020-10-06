@@ -62,7 +62,7 @@ case "$1" in
             hostname "$(cat /etc/hostname)"
         elif [ "$(hostname -s)" == "panda" ]; then
             # Set hostname from ip addr entry in DNS
-            cmd="import socket; print socket.gethostbyaddr('$ip')[0]"
+            cmd="import socket; print(socket.gethostbyaddr('$ip')[0])"
             hostname="$(python -c "$cmd")"
             if [ -n "$hostname" ]; then
                 hostname "$hostname"

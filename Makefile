@@ -9,6 +9,8 @@
 # that the file name and contents match.
 MD5_SUM_u-boot-xlnx-xilinx-v2015.1 = b6d212208b7694f748727883eebaa74e
 MD5_SUM_linux-xlnx-xilinx-v2015.1  = 930d126df2113221e63c4ec4ce356f2c
+MD5_SUM_u-boot-xlnx-xilinx-v2019.2   = 1b681950c604dbd6e0d7e4612bafb193
+MD5_SUM_linux-xlnx-zynq-soc-for-v5.7 = 41212e3a37d573a6e8d54ff7c37d7549
 
 
 # Define settings that may need to be overridden before including CONFIG.
@@ -25,6 +27,7 @@ BOOT_IMAGE = $(PANDA_ROOT)/boot
 export GIT_VERSION_SUFFIX = \
     $(shell git describe --abbrev=7 --dirty --always --tags)
 BOOT_ZIP = $(PANDA_ROOT)/boot-$(GIT_VERSION_SUFFIX).zip
+DEPS_ZIP = $(PANDA_ROOT)/deps-$(GIT_VERSION_SUFFIX).zip
 
 # Tags for versions of u-boot and kernel
 U_BOOT_TAG = xilinx-v2015.1
@@ -293,17 +296,31 @@ BOOT_FILES += $(INITRAMFS)              # Initial ramfs image
 BOOT_FILES += $(ROOTFS)                 # Target root file system
 BOOT_FILES += boot/config.txt           # Configuration settings for target
 
-$(BOOT_ZIP): $(BOOT_FILES)
+boot: $(BOOT_FILES)
 	mkdir -p $(BOOT_IMAGE)
 	cp $^ $(BOOT_IMAGE)
-	zip -j $(BOOT_ZIP) $^
 
-boot: $(BOOT_ZIP)
 .PHONY: boot
 
-github-release: $(BOOT_ZIP)
-	./make-github-release.py PandABlocks-rootfs $(GIT_VERSION_SUFFIX) \
-		$(BOOT_ZIP)
+$(BOOT_ZIP): $(BOOT_FILES)
+	zip -j $@ $^
+
+# These are the untarred versions of the tar files that rootfs makes
+SRC_DIRS = $(wildcard $(SRC_ROOT)/*)
+
+# Dubious hack, for each untarred dir, guess that there is a source tar file in
+# the TAR_FILES dir that starts with the untarred dir name. These can be
+# collected in one zip file to make the deps zip
+SRC_TARS = $(wildcard $(patsubst $(SRC_ROOT)/%,$(TAR_FILES)/%*,$(SRC_DIRS)))
+
+$(DEPS_ZIP): $(BOOT_ZIP)
+	zip -j $@ $(SRC_TARS)
+
+zips: $(BOOT_ZIP) $(DEPS_ZIP)
+.PHONY: zips
+
+github-release: $(BOOT_ZIP) $(DEPS_ZIP)
+	./make-github-release.py PandABlocks-rootfs $(GIT_VERSION_SUFFIX) $^
 
 
 # ------------------------------------------------------------------------------
