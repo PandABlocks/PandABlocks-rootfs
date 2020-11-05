@@ -18,6 +18,8 @@ It is then possible to log in remotely and perform operations on the PandA
     Root has privileges to break the system, so be careful when running the
     commands below.
 
+First update rootfs and then, after a reboot, update to the latest available zpkg packages (while making sure to match the major versions of everything).
+
 Updating the rootfs
 -------------------
 
@@ -35,17 +37,16 @@ the new rootfs. It they don't then retry from the beginning.
 
 .. _GitHub: https://github.com/PandABlocks/PandABlocks-rootfs/releases
 
-Updating a zpkg
----------------
+Updating zpkg packages
+----------------------
 
-Download a new zpkg files from the appropriate GitHub repositories, then::
+Download new zpkg files from the appropriate GitHub repositories (these are shown at <PandA-URL>/admin/packages/list), then::
 
     $ scp *.zpg root@my_panda_ip:/tmp
     $ ssh root@my_panda_ip
     # zpkg install /tmp/*.zpg
 
-This will install the appropriate packages and restart the services to on the
-box to use them.
+This will install the new versions of the appropriate packages, and restart the services on the box to use them.
 
 .. note::
 
