@@ -18,6 +18,3 @@ f 644 /usr/lib/python3.8/site-packages/defaults.pth defaults.pth
 # Copy in our updated profile: now with ll!
 rm - /etc/profile
 f 555 /etc/profile
-
-# copy in user-led defs
-f 666 /boot/user-leds

@@ -12,17 +12,27 @@ GRAIN=100000        # Our timing granularity: 100ms in microseconds
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 # LED initialisation
+#if [ -d /boot && -f /boot/user-leds ]; then
+#    source /boot/user-leds
+#    STA_LED=/sys/class/gpio/gpio$STA_LED_GPIO
+#    DIA_LED=/sys/class/gpio/gpio$DIA_LED_GPIO
+#
+#    [ -e $STA_LED ]  ||  echo $STA_LED_GPIO >/sys/class/gpio/export
+#    [ -e $DIA_LED ]  ||  echo $DIA_LED_GPIO >/sys/class/gpio/export
+#
+#    echo out >$STA_LED/direction
+#    echo out >$DIA_LED/direction
+#
+#    STA_LED_OUT=$STA_LED/value
+#    DIA_LED_OUT=$DIA_LED/value
+#else
+#    STA_LED_OUT=/dev/null
+#    DIA_LED_OUT=/dev/null
+#fi
 
-source /boot/user-leds
+STA_LED_OUT=/dev/null
+DIA_LED_OUT=/dev/null
 
-STA_LED=/sys/class/gpio/gpio$STA_LED_GPIO
-DIA_LED=/sys/class/gpio/gpio$DIA_LED_GPIO
-
-[ -e $STA_LED ]  ||  echo $STA_LED_GPIO >/sys/class/gpio/export
-[ -e $DIA_LED ]  ||  echo $DIA_LED_GPIO >/sys/class/gpio/export
-
-echo out >$STA_LED/direction
-echo out >$DIA_LED/direction
 
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -86,8 +96,8 @@ while :; do
     for action in $COMMAND; do
         command_seen=1
         parse_action $action
-        echo $sta >$STA_LED/value
-        echo $dia >$DIA_LED/value
+        echo $sta >$STA_LED_OUT
+        echo $dia >$DIA_LED_OUT
 
         do_delay $delay  ||  break
     done

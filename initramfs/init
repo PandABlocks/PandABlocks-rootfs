@@ -8,6 +8,9 @@ mount -t proc proc /proc
 mount -t sysfs sysfs /sys
 mdev -s
 
+# enable hotplugging
+echo /sbin/mdev > /proc/sys/kernel/hotplug
+
 
 # This is called if something goes horribly wrong.
 panic()
@@ -32,6 +35,12 @@ LED_DAEMON_PID=$!
 
 # Mounting /boot isn't altogether straightforward as the SD card may or may not
 # be partitioned, so we have to try both mmcblk0p1 and mmcblk0
+
+# slightly horrible hack to deal with SD card not mounting in a timely fashion
+# on the zc706
+mount /boot  ||
+mount -t vfat /dev/mmcblk0 /boot  ||
+mdev -s 
 mount /boot  ||
 mount -t vfat /dev/mmcblk0 /boot  ||
     panic 'Unable to mount boot partition!'
