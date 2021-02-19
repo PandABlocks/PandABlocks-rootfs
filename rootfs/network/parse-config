@@ -33,8 +33,10 @@ echo "$CONFIG_FILE" >/tmp/config_file
 # present.
 parse_config()
 {
+    # Extract file entry removing leading and trailing whitespace
+    # and windows line endings
     local config="$(
-        sed -n "/^$1[ \t]*=[ \t]*/{s///;s/[ \t]*$//;p}" <"$CONFIG_FILE")"
+        sed -n "/^[ \t]*$1[ \t]*=[ \t]*/{s///;s/[ \t]*\r*$//;p}" <"$CONFIG_FILE")"
     printf %s "$config"
     [ -n "$config" ]
 }
