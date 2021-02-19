@@ -4,6 +4,7 @@ import subprocess
 import glob
 import os
 import sys
+import shutil
 import mimetypes
 from collections import defaultdict, OrderedDict
 
@@ -25,6 +26,8 @@ AUTHORIZED_KEYS = "/boot/authorized_keys"
 LOG_FILE = "/var/log/web-admin.log"
 MNT = "/mnt"
 ROOTFS_VERSION = os.path.join(os.path.dirname(__file__), "rootfs-version.sh")
+ROOTFS_OLD = "/boot/*.old"
+ROOTFS_TMP = "/tmp/rootfs"
 ROOTFS = '/boot/imagefile.cpio.gz'
 
 # Log to a rotating file
@@ -301,12 +304,13 @@ class CommandHandler(RequestHandler):
         self.ensure_trailing_slash()
         self.write("<p>")
         self.write("Updated rootfs images can be installed by placing the "
-                   "imagefile.cpio.gz file from the boot.zip ")
+                   "boot.zip (or imagefile.cpio.gz from within it) from the ")
         link = "https://github.com/PandABlocks/PandABlocks-rootfs/releases"
         self.popup(link, "rootfs release")
         self.write(" onto the USB stick, and navigating to it below:")
         self.write("</p>")
-        root, glob_list = glob_dir('*.cpio.gz', *path_suffix)
+        root, glob_list = glob_dir('*.zip', *path_suffix)
+        glob_list += glob_dir('imagefile.cpio.gz', *path_suffix)[1]
         if glob_list:
             self.h2("Available in %s:" % tt(root))
             self.t("form_select.html", label="Replace rootfs on next reboot",
@@ -396,6 +400,17 @@ class CommandHandler(RequestHandler):
         packages = [os.path.join(root, f) for f in self.get_arguments('value')]
         yield self.zpkg("install", *packages)
 
+    @coroutine
+    def revert_rootfs_files(self):
+        if os.path.exists(ROOTFS):
+            self.p("Removing %s" % tt(ROOTFS))
+            os.remove(ROOTFS)
+        for f in glob.glob(ROOTFS_OLD):
+            orig = f[:-4]
+            self.p("Restoring %s" % tt(orig))
+            yield self.run_command('mv', f, orig)
+        yield self.sync()
+
     @add_post_page("packages/rootfs")
     def post_rootfs_install(self, *path_suffix):
         """Preparing Updated Rootfs"""
@@ -403,34 +418,64 @@ class CommandHandler(RequestHandler):
         new_rootfs = self.single_filename_argument("rootfs")
         path_suffix += (new_rootfs,)
         source_path = os.path.join(MNT, *path_suffix)
-        self.p("Checking new rootfs version...")
-        yield self.run_command(ROOTFS_VERSION, source_path)
-        self.p("Copying %s to %s..." % (tt(source_path), tt(ROOTFS)))
-        yield self.run_command('cp', source_path, ROOTFS)
-        self.p("Checking md5sums match...")
-        source_md5 = blocking_cmd_lines('md5sum', source_path)[0].split()[0]
-        dest_md5 = blocking_cmd_lines('md5sum', ROOTFS)[0].split()[0]
-        if source_md5 != dest_md5:
-            os.remove(ROOTFS)
-            self.p("Rootfs did not copy correctly, please try again")
+        to_copy = {}
+        if source_path.endswith(".zip"):
+            # Unpack the boot.zip
+            if os.path.exists(ROOTFS_TMP):
+                shutil.rmtree(ROOTFS_TMP)
+            os.makedirs(ROOTFS_TMP)
+            self.p("Unzipping %s..." % tt(source_path))
+            yield self.run_command('unzip', '-d', ROOTFS_TMP, source_path)
+            for f in os.listdir(ROOTFS_TMP):
+                if f != "config.txt":
+                    to_copy[os.path.join("/boot", f)] = os.path.join(ROOTFS_TMP, f)
         else:
-            self.p(
-                "Rootfs copied successfully to SD card. If you restart now it "
-                "will be installed on boot. If you have changed your mind you "
-                "can delete the new rootfs from the SD card and cancel.")
-            self.t('button.html', label='Delete new rootfs and cancel',
-                   path='packages/delete_rootfs')
-            self.t('button.html', label='Reboot and install it now',
-                   path='system/reboot')
+            # This is an imagefile.cpio.gz
+            to_copy[ROOTFS] = source_path
+        # Remove old backups
+        yield self.run_command("rm", "-f", ROOTFS_OLD)
+        self.p("Checking new rootfs version...")
+        yield self.run_command(ROOTFS_VERSION, to_copy[ROOTFS])
+        for dest, src in to_copy.items():
+            self.p("Installing %s..." % tt(dest))
+            # Backup the old files in case we want to revert
+            if os.path.exists(dest):
+                yield self.run_command('mv', dest, dest + ".old")
+            yield self.run_command('cp', src, dest)
+            source_md5 = blocking_cmd_lines('md5sum', src)[0].split()[0]
+            dest_md5 = blocking_cmd_lines('md5sum', dest)[0].split()[0]
+            if source_md5 != dest_md5:
+                self.p("Files did not copy correctly, please try again")
+                yield self.revert_rootfs_files()
+                return
+        if os.path.exists(ROOTFS_TMP):
+            shutil.rmtree(ROOTFS_TMP)
+        # Report on what we did
+        self.p(
+            "Rootfs copied successfully to SD card. If you restart now it "
+            "will be installed on boot. If you have changed your mind you "
+            "can delete the new rootfs from the SD card and cancel.")
+        self.t('button.html', label='Delete new rootfs and cancel',
+                path='packages/delete_rootfs')
+        self.t('button.html', label='Reboot and install it now',
+                path='system/reboot_rootfs')
 
     @add_post_page("packages/delete_rootfs")
     def post_delete_rootfs(self):
         """Delete the new Rootfs from the SD Card and Cancel"""
         ensure_usb_key_inserted()
-        self.p("Removing %s" % tt(ROOTFS))
-        yield self.run_command('rm', ROOTFS)
-        yield self.sync()
+        yield self.revert_rootfs_files()
         self.p("Rootfs upgrade successfully cancelled.")
+
+    @add_post_page("system/reboot_rootfs")
+    def post_reboot_rootfs(self):
+        """Rebooting System to Install Rootfs"""
+        yield self.run_command("rm", "-f", ROOTFS_OLD)
+        yield self.sync()
+        self.p("Rebooting now, please wait. "
+               "This page will refresh in 60 seconds...")
+        self.write('<meta http-equiv="refresh" content="60;url=/admin.html">')
+        yield self.run_command('reboot')
 
     @add_post_page("ssh/remove")
     def post_remove_keys(self):
