@@ -57,7 +57,7 @@ case "$1" in
 
         if [ -n "$hostname" ]; then
             hostname "$hostname"
-            echo Hostname set to $(hostname)
+            echo Hostname set to $(hostname), supplied by DHCP server
         elif [ -e /etc/hostname ]; then
             hostname "$(cat /etc/hostname)"
         elif [ "$(hostname -s)" == "panda" ]; then
@@ -66,6 +66,7 @@ case "$1" in
             hostname="$(python -c "$cmd")"
             if [ -n "$hostname" ]; then
                 hostname "$hostname"
+                echo Hostname set to $(hostname), looked up in DNS
             else
                 echo "Cannot lookup hostname from $ip in DNS"
             fi

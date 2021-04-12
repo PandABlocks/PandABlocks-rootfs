@@ -103,9 +103,18 @@ EOF
     else
         echo 'iface eth0 inet dhcp'
         echo -n '    udhcpc_opts -t 10 -O search'
+        if HOSTNAME="$(parse_config HOSTNAME)"; then
+            # Send hostname to DHCP server
+            echo -n " -x hostname:$HOSTNAME"
+        else
+            # Ask for hostname from DHCP server
+            echo -n " -O hostname"
+        fi
         if NTP="$(parse_config NTP)"; then
+            # Use defined NTP servers
             echo
         else
+            # Ask for NTP servers from DHCP server
             echo ' -O timesrv'
         fi
     fi
