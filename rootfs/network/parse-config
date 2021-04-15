@@ -108,15 +108,13 @@ EOF
             echo -n " -x hostname:$HOSTNAME"
         else
             # Ask for hostname from DHCP server
-            echo -n " -O hostname"
+            echo -n ' -O hostname'
         fi
-        if NTP="$(parse_config NTP)"; then
-            # Use defined NTP servers
-            echo
-        else
+        if ! NTP="$(parse_config NTP)"; then
             # Ask for NTP servers from DHCP server
-            echo ' -O timesrv'
+            echo -n ' -O timesrv'
         fi
+        echo
     fi
 } >$VAR/interfaces
 

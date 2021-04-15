@@ -56,10 +56,9 @@ case "$1" in
         mv $VAR/resolv.conf-$$ $VAR/resolv.conf
 
         if [ -n "$hostname" ]; then
+            # Set hostname supplied by DHCP server
             hostname "$hostname"
             echo Hostname set to $(hostname), supplied by DHCP server
-        elif [ -e /etc/hostname ]; then
-            hostname "$(cat /etc/hostname)"
         elif [ "$(hostname -s)" == "panda" ]; then
             # Set hostname from ip addr entry in DNS
             cmd="import socket; print(socket.gethostbyaddr('$ip')[0])"
