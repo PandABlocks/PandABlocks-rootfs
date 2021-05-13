@@ -6,11 +6,11 @@ busybox_VERSION = 1.23.2
 busybox_CONFIG = $(configdir)/busybox.config
 
 PACKAGES += e2fsprogs
-e2fsprogs_VERSION = 1.42.13
+e2fsprogs_VERSION = 1.46.2
 e2fsprogs_INSTALL_FILES = /sbin/mkfs.ext4
 
 PACKAGES += mtd-utils
-mtd-utils_VERSION = 1.5.1
+mtd-utils_VERSION = 2.1.2
 mtd-utils_INSTALL_FILES = flash_erase
 
 # This is a bare bones install which only executes an init script before calling
