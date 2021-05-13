@@ -17,18 +17,14 @@ DROPBEAR_OPTS = -s
 PACKAGES += ntp
 NTP_CONF = n
 
-# Useful debugging tools
-PACKAGES += strace lsof
-
 PACKAGES += zlib
 PACKAGES += ncurses
 PACKAGES += readline
 PACKAGES += nano
 PACKAGES += screen
 
-PACKAGES += procServ conserver
+PACKAGES += procServ
 PACKAGES += ethtool
-PACKAGES += iperf
 PACKAGES += i2c-tools
 
 SYSTEM_PYTHON = 3
