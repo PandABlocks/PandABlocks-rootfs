@@ -11,14 +11,17 @@ MD5_SUM_u-boot-xlnx-xilinx-v2015.1 = b6d212208b7694f748727883eebaa74e
 MD5_SUM_linux-xlnx-xilinx-v2015.1  = 930d126df2113221e63c4ec4ce356f2c
 MD5_SUM_u-boot-xlnx-xilinx-v2019.2   = 1b681950c604dbd6e0d7e4612bafb193
 MD5_SUM_linux-xlnx-zynq-soc-for-v5.7 = 41212e3a37d573a6e8d54ff7c37d7549
+MD5_SUM_u-boot-xlnx-xilinx-v2020.2.2-k26 = 391aecbe06c7148540223744b7e4aaf5
+MD5_SUM_linux-xlnx-xilinx-v2020.2.2-k26  = fddd83b9aae0bd5410e18602359fba0d
 
 
 # Define settings that may need to be overridden before including CONFIG.
 SPHINX_BUILD = sphinx-build
 
-# Locations of key files in the SDK
 # Cross-compilation tuple for toolkit
-COMPILER_PREFIX = arm-xilinx-linux-gnueabi
+COMPILER_PREFIX_zynq = arm-none-linux-gnueabihf
+COMPILER_PREFIX_zynqmp = aarch64-none-linux-gnu
+COMPILER_PREFIX = $(COMPILER_PREFIX_$(PLATFORM))
 
 # The final boot image is assembled here
 BOOT_IMAGE = $(PANDA_ROOT)/boot
@@ -30,8 +33,8 @@ BOOT_ZIP = $(PANDA_ROOT)/boot-$(GIT_VERSION_SUFFIX).zip
 DEPS_ZIP = $(PANDA_ROOT)/deps-$(GIT_VERSION_SUFFIX).zip
 
 # Tags for versions of u-boot and kernel
-U_BOOT_TAG = xilinx-v2015.1
-KERNEL_TAG = xilinx-v2015.1
+U_BOOT_TAG = xilinx-v2020.2.2-k26
+KERNEL_TAG = xilinx-v2020.2.2-k26
 
 # Configuration and local settings.
 include CONFIG
@@ -39,9 +42,8 @@ include CONFIG
 
 CROSS_COMPILE = $(COMPILER_PREFIX)-
 
-ifdef SDK_ROOT
-    BOOTGEN ?= $(SDK_ROOT)/bin/bootgen
-    BINUTILS_DIR ?= $(SDK_ROOT)/gnu/arm/lin
+ifdef TOOLCHAIN_ROOT
+    BINUTILS_DIR ?= $(TOOLCHAIN_ROOT)
 endif
 
 ifdef BINUTILS_DIR
@@ -49,13 +51,14 @@ ifdef BINUTILS_DIR
 endif
 
 # We'll check that these symbols have been defined.
-REQUIRED_SYMBOLS = ROOTFS_TOP BOOTGEN BINUTILS_DIR SYSROOT TAR_FILES PANDA_ROOT
+REQUIRED_SYMBOLS = ROOTFS_TOP BINUTILS_DIR SYSROOT TAR_FILES PANDA_ROOT PLATFORM
 
 
 default: boot
 
-
-ARCH = arm
+ARCH_zynq = arm
+ARCH_zynqmp = arm64
+ARCH = $(ARCH_$(PLATFORM))
 
 SRC_ROOT = $(PANDA_ROOT)/src
 BUILD_ROOT = $(PANDA_ROOT)/build
@@ -64,8 +67,12 @@ U_BOOT_BUILD = $(BUILD_ROOT)/u-boot
 KERNEL_BUILD = $(BUILD_ROOT)/linux
 BOOT_BUILD = $(BUILD_ROOT)/boot
 
+U_BOOT_CONFIG_zynq = xilinx_zynq_virt_defconfig
+U_BOOT_CONFIG_zynqmp = xilinx_zynqmp_virt_defconfig
+U_BOOT_CONFIG = $(U_BOOT_CONFIG_$(PLATFORM))
 
 U_BOOT_TOOLS = $(U_BOOT_BUILD)/tools
+U_BOOT_MKIMAGE = $(U_BOOT_TOOLS)/mkimage
 
 export PATH := $(BINUTILS_DIR)/bin:$(U_BOOT_TOOLS):$(PATH)
 
@@ -139,36 +146,36 @@ clean-all: clean
 KERNEL_NAME = linux-xlnx-$(KERNEL_TAG)
 KERNEL_SRC = $(SRC_ROOT)/$(KERNEL_NAME)
 MAKE_KERNEL = $(EXPORTS) KBUILD_OUTPUT=$(KERNEL_BUILD) $(MAKE) -C $(KERNEL_SRC)
-UIMAGE_LOADADDR = 0x8000
+UIMAGE_LOADADDR_zynq = 0x8000
+UIMAGE_LOADADDR_zynqmp = 0x80000
+UIMAGE_LOADADDR = $(UIMAGE_LOADADDR_$(PLATFORM))
 
 # Outputs from build: kernel uImage and device tree compiler, needed for u-boot
 # and final boot configuration.
-UIMAGE = $(KERNEL_BUILD)/arch/arm/boot/uImage
-DTC = $(KERNEL_BUILD)/scripts/dtc/dtc
-
+IMAGE = $(KERNEL_BUILD)/arch/$(ARCH)/boot/Image
+UIMAGE = $(KERNEL_BUILD)/arch/$(ARCH)/boot/uImage
 
 $(KERNEL_SRC):
 	mkdir -p $(SRC_ROOT)
 	$(call EXTRACT_FILE,$(KERNEL_NAME).tar.gz,$(MD5_SUM_$(KERNEL_NAME)))
 	chmod -R a-w $(KERNEL_SRC)
 
-$(KERNEL_BUILD)/.config: kernel/dot.config $(KERNEL_SRC)
+$(KERNEL_BUILD)/.config: kernel/$(PLATFORM).config $(KERNEL_SRC)
 	mkdir -p $(KERNEL_BUILD)
 	cp $< $@
 	$(MAKE_KERNEL) -j4 oldconfig
 
-$(DTC): $(KERNEL_BUILD)/.config
-	$(MAKE_KERNEL) scripts
-
-$(UIMAGE): $(KERNEL_BUILD)/.config $(U_BOOT_TOOLS)/mkimage
-	$(MAKE_KERNEL) uImage UIMAGE_LOADADDR=$(UIMAGE_LOADADDR)
+$(IMAGE): $(KERNEL_BUILD)/.config
+	$(MAKE_KERNEL) Image
 	touch $@
 
+$(UIMAGE): $(IMAGE) $(U_BOOT_MKIMAGE)
+	mkimage -n 'Kernel Image' -A $(ARCH) -O linux -C none -T kernel \
+            -a $(UIMAGE_LOADADDR) -e $(UIMAGE_LOADADDR) -d $(IMAGE) $(UIMAGE)
 
 kernel-menuconfig: $(KERNEL_BUILD)/.config
 	$(MAKE_KERNEL) menuconfig
-	cp $< kernel/dot.config
-
+	cp -f $< kernel/$(PLATFORM).config
 
 kernel-src: $(KERNEL_SRC)
 kernel: $(UIMAGE)
@@ -178,51 +185,28 @@ kernel: $(UIMAGE)
 
 
 # ------------------------------------------------------------------------------
-# Building u-boot
+# Building u-boot tools
 #
 
 U_BOOT_NAME = u-boot-xlnx-$(U_BOOT_TAG)
 U_BOOT_SRC = $(SRC_ROOT)/$(U_BOOT_NAME)
-U_BOOT_ELF = $(U_BOOT_BUILD)/u-boot.elf
 
 MAKE_U_BOOT = $(EXPORTS) KBUILD_OUTPUT=$(U_BOOT_BUILD) $(MAKE) -C $(U_BOOT_SRC)
-
-DEVICE_TREE_DTB = $(BOOT_BUILD)/devicetree.dtb
-
-
-# Rule to create binary device tree from device tree source.
-$(DEVICE_TREE_DTB): boot/devicetree.dts $(DTC)
-	$(DTC) -o $@ -O dtb -I dts $<
-
-# # Inverse rule to extract device tree source from blob.
-# %.dts: %.dtb
-# 	$(DTC) -o $@ -O dts -I dtb $<
-
-devicetree_dtb: $(DEVICE_TREE_DTB)
-.PHONY: devicetree_dtb
-
 
 $(U_BOOT_SRC):
 	mkdir -p $(SRC_ROOT)
 	$(call EXTRACT_FILE,$(U_BOOT_NAME).tar.gz,$(MD5_SUM_$(U_BOOT_NAME)))
-	patch -p1 -d $(U_BOOT_SRC) < u-boot/u-boot.patch
-	patch -p1 -d $(U_BOOT_SRC) < u-boot/u-boot_rsa.patch
-	ln -s $(PWD)/u-boot/PandA_defconfig $(U_BOOT_SRC)/configs
-	ln -s $(PWD)/u-boot/PandA.h $(U_BOOT_SRC)/include/configs
 	chmod -R a-w $(U_BOOT_SRC)
 
-$(U_BOOT_ELF) $(U_BOOT_TOOLS)/mkimage: $(U_BOOT_SRC) $(DEVICE_TREE_DTB)
+$(U_BOOT_MKIMAGE): $(U_BOOT_SRC)
 	mkdir -p $(U_BOOT_BUILD)
-	$(MAKE_U_BOOT) PandA_config
-	$(MAKE_U_BOOT) EXT_DTB=$(DEVICE_TREE_DTB)
-	ln -sf u-boot $(U_BOOT_ELF)
+	$(MAKE_U_BOOT) $(U_BOOT_CONFIG)
+	$(MAKE_U_BOOT) tools
 
-u-boot: $(U_BOOT_ELF)
+u-boot-mkimage: $(U_BOOT_MKIMAGE)
 u-boot-src: $(U_BOOT_SRC)
 
-.PHONY: u-boot u-boot-src
-
-
+.PHONY: u-boot-mkimage u-boot-src
 
 # ------------------------------------------------------------------------------
 # File system building
@@ -261,8 +245,8 @@ $(INITRAMFS_CPIO): $(wildcard initramfs/*)
 	$(call MAKE_ROOTFS,initramfs,make)
 
 # So that u-boot can load the initramfs it needs to be wrapped with mkimage
-$(INITRAMFS): $(INITRAMFS_CPIO).gz $(U_BOOT_TOOLS)/mkimage
-	mkimage -A arm -T ramdisk -C gzip -d $< $@
+$(INITRAMFS): $(INITRAMFS_CPIO).gz $(U_BOOT_MKIMAGE)
+	mkimage -A $(ARCH) -T ramdisk -C gzip -d $< $@
 
 
 initramfs: $(INITRAMFS)
@@ -297,21 +281,11 @@ rootfs: $(ROOTFS)
 FSBL_ELF = $(PWD)/boot/fsbl.elf
 
 BOOT_FILES =
-BOOT_FILES += $(BOOT_BUILD)/boot.bin    # Second stage bootloader
-BOOT_FILES += boot/uEnv.txt             # u-boot environment
 BOOT_FILES += $(UIMAGE)                 # Kernel image
-BOOT_FILES += $(DEVICE_TREE_DTB)        # Device tree for kernel
 BOOT_FILES += $(INITRAMFS)              # Initial ramfs image
 BOOT_FILES += $(ROOTFS)                 # Target root file system
 BOOT_FILES += boot/config.txt           # Configuration settings for target
 
-
-$(BOOT_BUILD)/boot.bif:
-	mkdir -p $(BOOT_BUILD)
-	scripts/make_boot.bif $@ $(FSBL_ELF) $(U_BOOT_ELF)
-
-$(BOOT_BUILD)/boot.bin: $(BOOT_BUILD)/boot.bif $(FSBL_ELF) $(U_BOOT_ELF)
-	cd $(BOOT_BUILD)  &&  $(BOOTGEN) -w -image boot.bif -o i $@
 
 boot: $(BOOT_FILES)
 	mkdir -p $(BOOT_IMAGE)
