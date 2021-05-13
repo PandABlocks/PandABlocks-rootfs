@@ -36,6 +36,29 @@ KERNEL_TAG = xilinx-v2015.1
 # Configuration and local settings.
 include CONFIG
 
+## The following code is for future compatability with the Zynq Ultrascale+ MPSoC
+## We need to specify different architecture and cross-compile toolchain for the 
+## zynqmp platform, as well as u-boot config. It is commented out for the time being.
+#
+#PLATFORM ?= zynq
+#
+#ifeq($(PLATFORM),zynq)
+#    ARCH=arm
+#    # Use Linero (hard float) toolchain rather than CodeSourcery (soft float) toolchain?
+#    COMPILER_PREFIX=arm-linux-gnueabihf-
+#    # From Vivado 2020 onwards we can use the common defconfig
+#    #UBOOT_CONFIG = xilinx_zynq_virt_defconfig
+#    # For ealier Vivado we can specify zc70x as a generic config, as we are only using it to build mkimage
+#    UBOOT_CONFIG = zynq_zc70x_config
+#else ifeq($(PLATFORM,zynqmp)
+#    ARCH=aarch64
+#    COMPILER_PREFIX=aarch64-linux-gnu-
+#    # From Vivado 2020 onwards we can use the common defconfig
+#    #UBOOT_CONFIG = xilinx_zynqmp_virt_defconfig
+#    # For earlier Vivado verions, we can try zcu102 as an initial guess for the relevant config.
+#    UBOOT_CONFIG = xilinx_zynqmp_zcu102_rev1_0_defconfig
+#else
+#    $$(error Unknown PLATFORM specified. Must be 'zynq' or 'zynqmp')
 
 CROSS_COMPILE = $(COMPILER_PREFIX)-
 
@@ -62,7 +85,6 @@ BUILD_ROOT = $(PANDA_ROOT)/build
 
 U_BOOT_BUILD = $(BUILD_ROOT)/u-boot
 KERNEL_BUILD = $(BUILD_ROOT)/linux
-BOOT_BUILD = $(BUILD_ROOT)/boot
 
 
 U_BOOT_TOOLS = $(U_BOOT_BUILD)/tools
@@ -178,51 +200,29 @@ kernel: $(UIMAGE)
 
 
 # ------------------------------------------------------------------------------
-# Building u-boot
+# Building mkimage from u-boot
 #
 
 U_BOOT_NAME = u-boot-xlnx-$(U_BOOT_TAG)
 U_BOOT_SRC = $(SRC_ROOT)/$(U_BOOT_NAME)
-U_BOOT_ELF = $(U_BOOT_BUILD)/u-boot.elf
 
 MAKE_U_BOOT = $(EXPORTS) KBUILD_OUTPUT=$(U_BOOT_BUILD) $(MAKE) -C $(U_BOOT_SRC)
-
-DEVICE_TREE_DTB = $(BOOT_BUILD)/devicetree.dtb
-
-
-# Rule to create binary device tree from device tree source.
-$(DEVICE_TREE_DTB): boot/devicetree.dts $(DTC)
-	$(DTC) -o $@ -O dtb -I dts $<
-
-# # Inverse rule to extract device tree source from blob.
-# %.dts: %.dtb
-# 	$(DTC) -o $@ -O dts -I dtb $<
-
-devicetree_dtb: $(DEVICE_TREE_DTB)
-.PHONY: devicetree_dtb
-
 
 $(U_BOOT_SRC):
 	mkdir -p $(SRC_ROOT)
 	$(call EXTRACT_FILE,$(U_BOOT_NAME).tar.gz,$(MD5_SUM_$(U_BOOT_NAME)))
-	patch -p1 -d $(U_BOOT_SRC) < u-boot/u-boot.patch
-	patch -p1 -d $(U_BOOT_SRC) < u-boot/u-boot_rsa.patch
-	ln -s $(PWD)/u-boot/PandA_defconfig $(U_BOOT_SRC)/configs
-	ln -s $(PWD)/u-boot/PandA.h $(U_BOOT_SRC)/include/configs
 	chmod -R a-w $(U_BOOT_SRC)
 
-$(U_BOOT_ELF) $(U_BOOT_TOOLS)/mkimage: $(U_BOOT_SRC) $(DEVICE_TREE_DTB)
+$(U_BOOT_TOOLS)/mkimage: $(U_BOOT_SRC)
 	mkdir -p $(U_BOOT_BUILD)
-	$(MAKE_U_BOOT) PandA_config
-	$(MAKE_U_BOOT) EXT_DTB=$(DEVICE_TREE_DTB)
-	ln -sf u-boot $(U_BOOT_ELF)
+	$(MAKE_U_BOOT) zynq_zc70x_config
+	$(MAKE_U_BOOT) tools
 
-u-boot: $(U_BOOT_ELF)
 u-boot-src: $(U_BOOT_SRC)
 
-.PHONY: u-boot u-boot-src
+u-boot-tools : $(U_BOOT_TOOLS)/mkimage
 
-
+.PHONY: u-boot-src u-boot-tools
 
 # ------------------------------------------------------------------------------
 # File system building
@@ -290,28 +290,11 @@ rootfs: $(ROOTFS)
 # ------------------------------------------------------------------------------
 # Boot image
 #
-
-# The first stage bootloader image is managed here under source control, despite
-# being a binary, because it will never change and is build as part of the
-# Xilinx build process.
-FSBL_ELF = $(PWD)/boot/fsbl.elf
-
 BOOT_FILES =
-BOOT_FILES += $(BOOT_BUILD)/boot.bin    # Second stage bootloader
-BOOT_FILES += boot/uEnv.txt             # u-boot environment
 BOOT_FILES += $(UIMAGE)                 # Kernel image
-BOOT_FILES += $(DEVICE_TREE_DTB)        # Device tree for kernel
 BOOT_FILES += $(INITRAMFS)              # Initial ramfs image
 BOOT_FILES += $(ROOTFS)                 # Target root file system
 BOOT_FILES += boot/config.txt           # Configuration settings for target
-
-
-$(BOOT_BUILD)/boot.bif:
-	mkdir -p $(BOOT_BUILD)
-	scripts/make_boot.bif $@ $(FSBL_ELF) $(U_BOOT_ELF)
-
-$(BOOT_BUILD)/boot.bin: $(BOOT_BUILD)/boot.bif $(FSBL_ELF) $(U_BOOT_ELF)
-	cd $(BOOT_BUILD)  &&  $(BOOTGEN) -w -image boot.bif -o i $@
 
 boot: $(BOOT_FILES)
 	mkdir -p $(BOOT_IMAGE)
