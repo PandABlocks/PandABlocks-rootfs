@@ -9,6 +9,7 @@ PACKAGES += e2fsprogs
 e2fsprogs_VERSION = 1.46.2
 e2fsprogs_INSTALL_FILES = /sbin/mkfs.ext4
 
+PACKAGES += zlib
 PACKAGES += mtd-utils
 mtd-utils_VERSION = 2.1.2
 mtd-utils_INSTALL_FILES = flash_erase
