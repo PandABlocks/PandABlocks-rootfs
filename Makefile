@@ -275,11 +275,6 @@ rootfs: $(ROOTFS)
 # Boot image
 #
 
-# The first stage bootloader image is managed here under source control, despite
-# being a binary, because it will never change and is build as part of the
-# Xilinx build process.
-FSBL_ELF = $(PWD)/boot/fsbl.elf
-
 BOOT_FILES =
 BOOT_FILES += $(UIMAGE)                 # Kernel image
 BOOT_FILES += $(INITRAMFS)              # Initial ramfs image
