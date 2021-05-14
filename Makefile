@@ -1,4 +1,5 @@
 # Top level make file for building u-boot, kernel, rootfs.
+TOP := $(CURDIR)
 
 # Some definitions of source file checksums to try and ensure repeatability of
 # builds.  These releases are downloaded (as .tar.gz files) from:
@@ -155,6 +156,10 @@ UIMAGE_LOADADDR = $(UIMAGE_LOADADDR_$(PLATFORM))
 IMAGE = $(KERNEL_BUILD)/arch/$(ARCH)/boot/Image
 UIMAGE = $(KERNEL_BUILD)/arch/$(ARCH)/boot/uImage
 
+# Wrapper for boot script
+U_BOOT_SCRIPT = $(BOOT_BUILD)/boot.scr
+U_BOOT_CMD = $(TOP)/boot/boot.cmd
+
 $(KERNEL_SRC):
 	mkdir -p $(SRC_ROOT)
 	$(call EXTRACT_FILE,$(KERNEL_NAME).tar.gz,$(MD5_SUM_$(KERNEL_NAME)))
@@ -172,6 +177,10 @@ $(IMAGE): $(KERNEL_BUILD)/.config
 $(UIMAGE): $(IMAGE) $(U_BOOT_MKIMAGE)
 	mkimage -n 'Kernel Image' -A $(ARCH) -O linux -C none -T kernel \
             -a $(UIMAGE_LOADADDR) -e $(UIMAGE_LOADADDR) -d $(IMAGE) $(UIMAGE)
+
+$(U_BOOT_SCRIPT): $(U_BOOT_CMD) $(U_BOOT_MKIMAGE)
+	mkdir -p $(BOOT_BUILD)
+	mkimage -A $(ARCH) -C none -T script -d $< $@
 
 kernel-menuconfig: $(KERNEL_BUILD)/.config
 	$(MAKE_KERNEL) menuconfig
@@ -281,6 +290,7 @@ rootfs: $(ROOTFS)
 FSBL_ELF = $(PWD)/boot/fsbl.elf
 
 BOOT_FILES =
+BOOT_FILES += $(U_BOOT_SCRIPT)          # Boot script
 BOOT_FILES += $(UIMAGE)                 # Kernel image
 BOOT_FILES += $(INITRAMFS)              # Initial ramfs image
 BOOT_FILES += $(ROOTFS)                 # Target root file system
