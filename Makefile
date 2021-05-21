@@ -40,6 +40,8 @@ KERNEL_TAG = xilinx-v2020.2.2-k26
 # Configuration and local settings.
 include CONFIG
 
+# convenient platform dependent makefile
+-include Makefile.$(PLATFORM)
 
 CROSS_COMPILE = $(COMPILER_PREFIX)-
 
@@ -52,7 +54,12 @@ ifdef BINUTILS_DIR
 endif
 
 # We'll check that these symbols have been defined.
-REQUIRED_SYMBOLS = ROOTFS_TOP BINUTILS_DIR SYSROOT TAR_FILES PANDA_ROOT PLATFORM
+REQUIRED_SYMBOLS += ROOTFS_TOP
+REQUIRED_SYMBOLS += BINUTILS_DIR
+REQUIRED_SYMBOLS += SYSROOT
+REQUIRED_SYMBOLS += TAR_FILES
+REQUIRED_SYMBOLS += PANDA_ROOT
+REQUIRED_SYMBOLS += PLATFORM
 
 
 default: boot
@@ -284,12 +291,6 @@ rootfs: $(ROOTFS)
 # Boot image
 #
 
-# The first stage bootloader image is managed here under source control, despite
-# being a binary, because it will never change and is build as part of the
-# Xilinx build process.
-FSBL_ELF = $(PWD)/boot/fsbl.elf
-
-BOOT_FILES =
 BOOT_FILES += $(U_BOOT_SCRIPT)          # Boot script
 BOOT_FILES += $(UIMAGE)                 # Kernel image
 BOOT_FILES += $(INITRAMFS)              # Initial ramfs image
@@ -336,4 +337,6 @@ docs: $(DOCS_BUILD_DIR)/index.html
 
 clean-docs:
 	rm -rf $(DOCS_BUILD_DIR)
+
+-include RULES.$(PLATFORM)
 
