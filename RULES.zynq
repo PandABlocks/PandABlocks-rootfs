@@ -1,0 +1,22 @@
+DTC = $(KERNEL_BUILD)/scripts/dtc/dtc
+
+U_BOOT_ELF = $(U_BOOT_BUILD)/u-boot.elf
+
+$(DTC): $(KERNEL_BUILD)/.config
+	$(MAKE_KERNEL) scripts
+
+$(BOOT_BUILD)/boot.bif:
+	mkdir -p $(BOOT_BUILD)
+	scripts/make_boot.bif $@ $(FSBL_ELF) $(U_BOOT_ELF)
+
+$(BOOT_BUILD)/boot.bin: $(BOOT_BUILD)/boot.bif $(FSBL_ELF) $(U_BOOT_ELF)
+	cd $(BOOT_BUILD)  &&  $(BOOTGEN) -w -image boot.bif -o i $@
+
+$(DEVICE_TREE_DTB): boot/devicetree.dts $(DTC)
+	$(DTC) -o $@ -O dtb -I dts $<
+
+$(U_BOOT_ELF): $(U_BOOT_SRC)
+	mkdir -p $(U_BOOT_BUILD)
+	$(MAKE_U_BOOT) $(U_BOOT_CONFIG)
+	$(MAKE_U_BOOT)
+

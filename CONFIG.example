@@ -5,17 +5,26 @@
 
 # Location of rootfs builder.  This needs to be at least version 1.13 and can be
 # downloaded from https://github.com/araneidae/rootfs
-ROOTFS_TOP = /dls_sw/prod/targetOS/rootfs/1.13
+ROOTFS_TOP = /dls_sw/prod/targetOS/rootfs/1.14
 
-# Location of SDK used to build target.  There are a couple of ways that this
-# can be specified, depending on precisely where the toolchain is installed.
-# The simplest option is to specify SDK_ROOT.
+# Location of SDK used to find bootgen.
 SDK_ROOT = /dls_sw/apps/FPGA/Xilinx/SDK/2016.4
+
+# Toolchain used to build the target
+TOOLCHAIN_ROOT = /dls_sw/targetOS/x-tools/gcc-10.2.1-glibc-2.31/$(COMPILER_PREFIX)
+
+# Additionally, if the toolchain uses a vendor specific compiler prefix, we
+# need:
+#
+# COMPILER_PREFIX = arm-xilinx-linux-gnueabi
 
 # Where to find source files
 TAR_FILES = /dls_sw/prod/targetOS/tar-files
 
 # Target location for build
-PANDA_ROOT = /scratch/tmp/PandA-rootfs
+PANDA_ROOT = /scratch/tmp/PandA-rootfs-$(PLATFORM)
+
+# Whether the platform is zynq or zyqnmp
+PLATFORM = zynq
 
 # vim: set filetype=make:

@@ -42,6 +42,14 @@
 		};
 	};
 
+	fpga-full {
+		compatible = "fpga-region";
+		fpga-mgr = <0x05>;
+		#address-cells = <0x01>;
+		#size-cells = <0x01>;
+		ranges;
+	};
+
 	pmu {
 		compatible = "arm,cortex-a9-pmu";
 		interrupts = <0x0 0x5 0x4 0x0 0x6 0x4>;
@@ -282,34 +290,16 @@
 		};
 
 		ethernet@e000b000 {
-			compatible = "xlnx,ps7-ethernet-1.00.a";
+			compatible = "cdns,zynq-gem", "cdns,gem";
 			reg = <0xe000b000 0x1000>;
 			status = "okay";
-			interrupts = <0x0 0x16 0x4>;
-			clocks = <0x1 0xd 0x1 0x1e>;
-			clock-names = "ref_clk", "aper_clk";
-			local-mac-address = [00 0a 35 00 22 5c];
-			xlnx,has-mdio = <0x1>;
-			#address-cells = <0x1>;
-			#size-cells = <0x0>;
-			enet-reset = <0x4 0x2f 0x0>;
+			interrupts = <0x00 0x16 0x04>;
+			clocks = <0x01 0x1e 0x01 0x1e 0x01 0x0d>;
+			clock-names = "pclk", "hclk", "tx_clk";
+			#address-cells = <0x01>;
+			#size-cells = <0x00>;
 			phy-mode = "rgmii-id";
 			xlnx,ptp-enet-clock = <0x69f6bcb>;
-			phy-handle = <0x5>;
-
-			mdio {
-				#address-cells = <0x1>;
-				#size-cells = <0x0>;
-
-				phy@0 {
-					compatible = "marvell,88e1512";
-					device_type = "ethernet-phy";
-					reg = <0x0>;
-					marvell,reg-init = <0x3 0x10 0xff00 0x1e 0x3 0x11 0xfff0 0x0>;
-					linux,phandle = <0x5>;
-					phandle = <0x5>;
-				};
-			};
 		};
 
 		ethernet@e000c000 {
@@ -352,6 +342,7 @@
 			compatible = "xlnx,zynq-slcr", "syscon";
 			reg = <0xf8000000 0x1000>;
 			ranges;
+			phandle = <0x06>;
 
 			clkc@100 {
 				#clock-cells = <0x1>;
@@ -385,6 +376,8 @@
 			interrupt-parent = <0x3>;
 			interrupts = <0x0 0x8 0x4>;
 			reg = <0xf8007000 0x100>;
+			syscon = <0x06>;
+			phandle = <0x05>;
 		};
 
 		timer@f8f00200 {
