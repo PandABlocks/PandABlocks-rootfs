@@ -112,7 +112,7 @@ EOF
         fi
         if ! NTP="$(parse_config NTP)"; then
             # Ask for NTP servers from DHCP server
-            echo -n ' -O timesrv'
+            echo -n ' -O ntpsrv'
         fi
         echo
     fi
