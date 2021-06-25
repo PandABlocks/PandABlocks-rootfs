@@ -7,9 +7,6 @@
 # downloaded from https://github.com/araneidae/rootfs
 ROOTFS_TOP = /dls_sw/prod/targetOS/rootfs/1.14
 
-# Location of SDK used to find bootgen.
-SDK_ROOT = /dls_sw/apps/FPGA/Xilinx/SDK/2016.4
-
 # Toolchain used to build the target
 TOOLCHAIN_ROOT = /dls_sw/targetOS/x-tools/gcc-10.2.1-glibc-2.31/$(COMPILER_PREFIX)
 
