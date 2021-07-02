@@ -33,7 +33,7 @@ jobs:
       - name: Checkout rootfs builder
         uses: actions/checkout@v2
         with:
-          ssh-key: git@github.com:dls-controls/rootfs.git
+          repository: dls-controls/rootfs
 
       #Temporary verification
       - name: List files in the repository
