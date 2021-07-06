@@ -51,7 +51,7 @@ jobs:
       - name: Make tar files directory
         run: |
           mkdir ${{ github.workspace }}/tar-files
-          cd tar-files
+          cd ${{ github.workspace }}/tar-files
 
       - name: Download tar files
         uses: wei/wget@v1
