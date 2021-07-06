@@ -30,24 +30,27 @@ jobs:
 
       - name: Checkout Source
         uses: actions/checkout@v2
+        with:
+          path: pandABlocks-rootfs
 
       - name: Checkout rootfs builder
         uses: actions/checkout@v2
         with:
           repository: dls-controls/rootfs
+          path: rootfs
           
       - name: Download GNU toolchain CC - PLATFORM = zynq
         uses: wei/wget@v1
         with:
           args: -O test.tar.xz https://armkeil.blob.core.windows.net/developer/Files/downloads/gnu-a/10.2-2020.11/binrel/gcc-arm-10.2-2020.11-x86_64-arm-none-linux-gnueabihf.tar.xz
-  
+          path: gcc-arm
+
       - name: Extract GNU toolchain CC - PLATFORM = zynqmp
-        run: tar -xf test.tar.xz
+        run: /gcc-arm/tar -xf test.tar.xz
 
       #Temporary verification
       - name: List files in the repository
         run: |
-          ls ${{env.WORKFLOW_LOCATION}}
-          ls ${{env.WORKFLOW_LOCATION}}/gcc-arm-10.2.2020.11
+          ls ${{ github.workspace }}
       - run: echo "🍏 This job's status is ${{ job.status }}."
 
