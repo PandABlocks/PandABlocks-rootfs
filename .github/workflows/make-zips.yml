@@ -18,7 +18,7 @@ jobs:
       #   - Xilinx U-boot & Linux kernel sources
       #   - rootfs buider
       #   - tar files
-      #   - ARM GNU cross compiler tool chain (AND EXTRACT)
+      #   - ARM GNU tool chain (AND EXTRACT)
 
       # - Create and fill out CONFIG files:
       #   - PandABlocks-rootfs repo (This)
@@ -30,27 +30,48 @@ jobs:
 
       - name: Checkout Source
         uses: actions/checkout@v2
+        with:
+          path: pandABlocks-rootfs
 
       - name: Checkout rootfs builder
         uses: actions/checkout@v2
         with:
           repository: dls-controls/rootfs
+          path: rootfs
+          
+      - name: Download Arm GNU toolchain - PLATFORM = zynq
+        uses: wei/wget@v1
+        with:
+          args: -O arm-gcc.tar.xz https://armkeil.blob.core.windows.net/developer/Files/downloads/gnu-a/10.2-2020.11/binrel/gcc-arm-10.2-2020.11-x86_64-arm-none-linux-gnueabihf.tar.xz
 
-      - name: Download and extract GNU toolchain CC - PLATFORM = zynq
+      - name: Extract Arm GNU toolchain - PLATFORM = zynq
         run: |
-          mkdir ${{env.WORKFLOW_LOCATION}}/gcc-arm-10.2.2020.11
-          wget –P ${{env.WORKFLOW_LOCATION}}/gcc-arm-10.2.2020.11 https://armkeil.blob.core.windows.net/developer/Files/downloads/gnu-a/10.2-2020.11/binrel/gcc-arm-10.2-2020.11-x86_64-arm-none-linux-gnueabihf.tar.xz
-          tar -xf ${{env.WORKFLOW_LOCATION}}/gcc-arm-10.2.2020.11/gcc-arm-10.2-2020.11-x86_64-arm-none-linux-gnueabihf.tar.xz
-      
-      - name: Download and extract GNU toolchain CC - PLATFORM = zynqmp
-        run: |
-          wget –P ${{env.WORKFLOW_LOCATION}}/gcc-arm-10.2.2020.11 https://developer.arm.com/-/media/Files/downloads/gnu-a/10.2-2020.11/binrel/gcc-arm-10.2-2020.11-x86_64-aarch64-none-linux-gnu.tar.xz
-          tar -xf ${{env.WORKFLOW_LOCATION}}/gcc-arm-10.2.2020.11/gcc-arm-10.2-2020.11-x86_64-aarch64-none-linux-gnu.tar.xz
+          tar -xf arm-gcc.tar.xz
+          rm arm-gcc.tar.xz
 
-      #Temporary verification
+      #Temporary download of tar dependancies. Will need to be replaced by a script that downloads each source file individually
+      - name: Download tar files
+        run: |
+          mkdir tar-files
+          cd tar-files
+        uses: wei/wget@v1
+        with:
+          args: -O tarbundle.tar.xz https://github.com/PandABlocks/PandABlocks-rootfs/releases/download/3.0a1/deps-3.0a1-1-gb44e35b.zip
+
+      - name: Extract tar files
+        run: |
+          tar -xf tarbundle.tar.xz
+          rm tarbundle.tar.xz
+
+      # Temporary verification
       - name: List files in the repository
         run: |
-          ls ${{env.WORKFLOW_LOCATION}}
-          ls ${{env.WORKFLOW_LOCATION}}/gcc-arm-10.2.2020.11
+          ls ${{ github.workspace }}
+          echo " "
+          ls ${{ github.workspace }}/pandABlocks-rootfs
+          echo " "
+          ls ${{ github.workspace }}/rootfs
+          echo " "
+          ls ${{ github.workspace }}/tar-files
+          echo " "
       - run: echo "🍏 This job's status is ${{ job.status }}."
-
