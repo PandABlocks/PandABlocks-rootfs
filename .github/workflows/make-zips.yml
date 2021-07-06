@@ -50,10 +50,12 @@ jobs:
           rm arm-gcc.tar.xz
 
       #Temporary download of tar dependancies. Will need to be replaced by a script that downloads each source file individually
-      - name: Download tar files
+      - name: Make tar files directory
         run: |
           mkdir tar-files
           cd tar-files
+
+      - name: Download tar files
         uses: wei/wget@v1
         with:
           args: -O tarbundle.tar.xz https://github.com/PandABlocks/PandABlocks-rootfs/releases/download/3.0a1/deps-3.0a1-1-gb44e35b.zip
