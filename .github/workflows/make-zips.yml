@@ -39,12 +39,12 @@ jobs:
       - name: Download and extract GNU toolchain CC - PLATFORM = zynq
         run: |
           mkdir ${{env.WORKFLOW_LOCATION}}/gcc-arm-10.2.2020.11
-          wget –P ${{env.WORKFLOW_LOCATION}}/gcc-arm-10.2.2020.11 https://armkeil.blob.core.windows.net/developer/Files/downloads/gnu-a/10.2-2020.11/binrel/gcc-arm-10.2-2020.11-x86_64-arm-none-linux-gnueabihf.tar.xz
+          wget –P ${{env.WORKFLOW_LOCATION}}/gcc-arm-10.2.2020.11 armkeil.blob.core.windows.net/developer/Files/downloads/gnu-a/10.2-2020.11/binrel/gcc-arm-10.2-2020.11-x86_64-arm-none-linux-gnueabihf.tar.xz
           tar -xf ${{env.WORKFLOW_LOCATION}}/gcc-arm-10.2.2020.11/gcc-arm-10.2-2020.11-x86_64-arm-none-linux-gnueabihf.tar.xz
       
       - name: Download and extract GNU toolchain CC - PLATFORM = zynqmp
         run: |
-          wget –P ${{env.WORKFLOW_LOCATION}}/gcc-arm-10.2.2020.11 https://developer.arm.com/-/media/Files/downloads/gnu-a/10.2-2020.11/binrel/gcc-arm-10.2-2020.11-x86_64-aarch64-none-linux-gnu.tar.xz
+          wget –P ${{env.WORKFLOW_LOCATION}}/gcc-arm-10.2.2020.11 developer.arm.com/-/media/Files/downloads/gnu-a/10.2-2020.11/binrel/gcc-arm-10.2-2020.11-x86_64-aarch64-none-linux-gnu.tar.xz
           tar -xf ${{env.WORKFLOW_LOCATION}}/gcc-arm-10.2.2020.11/gcc-arm-10.2-2020.11-x86_64-aarch64-none-linux-gnu.tar.xz
 
       #Temporary verification
