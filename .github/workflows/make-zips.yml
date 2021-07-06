@@ -43,10 +43,9 @@ jobs:
         uses: wei/wget@v1
         with:
           args: -O test.tar.xz https://armkeil.blob.core.windows.net/developer/Files/downloads/gnu-a/10.2-2020.11/binrel/gcc-arm-10.2-2020.11-x86_64-arm-none-linux-gnueabihf.tar.xz
-          path: gcc-arm
 
       - name: Extract GNU toolchain CC - PLATFORM = zynqmp
-        run: /gcc-arm/tar -xf test.tar.xz
+        run: tar -xf test.tar.xz
 
       #Temporary verification
       - name: List files in the repository
