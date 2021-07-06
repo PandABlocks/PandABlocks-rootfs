@@ -59,8 +59,9 @@ jobs:
 
       - name: Extract tar files
         run: |
-          unzip tar-files/tarbundle.zip
-          rm tar-files/tarbundle.zip
+          cd tar-files
+          unzip tarbundle.zip
+          rm tarbundle.zip
 
       # Temporary verification
       - name: List files in the repository
