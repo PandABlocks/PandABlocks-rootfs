@@ -58,12 +58,12 @@ jobs:
       - name: Download tar files
         uses: wei/wget@v1
         with:
-          args: -O tarbundle.tar.xz https://github.com/PandABlocks/PandABlocks-rootfs/releases/download/3.0a1/deps-3.0a1-1-gb44e35b.zip
+          args: -O tarbundle.zip https://github.com/PandABlocks/PandABlocks-rootfs/releases/download/3.0a1/deps-3.0a1-1-gb44e35b.zip
 
       - name: Extract tar files
         run: |
-          tar -xf tarbundle.tar.xz
-          rm tarbundle.tar.xz
+          unzip tarbundle.zip
+          rm tarbundle.zip
 
       # Temporary verification
       - name: List files in the repository
