@@ -37,13 +37,12 @@ jobs:
           repository: dls-controls/rootfs
 
       - name: Check the resolver namespace
-        run: |
-          echo /etc/resolv.conf
+        run: cat /etc/resolv.conf
           
       - name: wget using a marketplace plugin
         uses: wei/wget@v1
         with:
-          args: –P ${{env.WORKFLOW_LOCATION}}/gcc-arm-10.2.2020.11 armkeil.blob.core.windows.net/developer/Files/downloads/gnu-a/10.2-2020.11/binrel/gcc-arm-10.2-2020.11-x86_64-arm-none-linux-gnueabihf.tar.xz
+          args: https://armkeil.blob.core.windows.net/developer/Files/downloads/gnu-a/10.2-2020.11/binrel/gcc-arm-10.2-2020.11-x86_64-arm-none-linux-gnueabihf.tar.xz
 
       - name: Download and extract GNU toolchain CC - PLATFORM = zynq
         run: |
