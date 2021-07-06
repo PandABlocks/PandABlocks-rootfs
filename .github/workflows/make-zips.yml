@@ -18,7 +18,7 @@ jobs:
       #   - Xilinx U-boot & Linux kernel sources
       #   - rootfs buider
       #   - tar files
-      #   - ARM GNU cross compiler tool chain (AND EXTRACT)
+      #   - ARM GNU tool chain (AND EXTRACT)
 
       # - Create and fill out CONFIG files:
       #   - PandABlocks-rootfs repo (This)
@@ -39,17 +39,21 @@ jobs:
           repository: dls-controls/rootfs
           path: rootfs
           
-      - name: Download GNU toolchain CC - PLATFORM = zynq
+      - name: Download Arm GNU toolchain - PLATFORM = zynq
         uses: wei/wget@v1
         with:
-          args: -O test.tar.xz https://armkeil.blob.core.windows.net/developer/Files/downloads/gnu-a/10.2-2020.11/binrel/gcc-arm-10.2-2020.11-x86_64-arm-none-linux-gnueabihf.tar.xz
+          args: -O arm-gcc.tar.xz https://armkeil.blob.core.windows.net/developer/Files/downloads/gnu-a/10.2-2020.11/binrel/gcc-arm-10.2-2020.11-x86_64-arm-none-linux-gnueabihf.tar.xz
 
-      - name: Extract GNU toolchain CC - PLATFORM = zynqmp
-        run: tar -xf test.tar.xz
+      - name: Extract Arm GNU toolchain - PLATFORM = zynq
+        run: |
+          tar -xf arm-gcc.tar.xz
+          rm arm-gcc.tar.xz
 
       #Temporary verification
       - name: List files in the repository
         run: |
           ls ${{ github.workspace }}
+          ls ${{ github.workspace }}/pandABlocks-rootfs
+          ls ${{ github.workspace }}/rootfs
       - run: echo "🍏 This job's status is ${{ job.status }}."
 
