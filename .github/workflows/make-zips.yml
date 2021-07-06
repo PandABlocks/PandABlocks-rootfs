@@ -7,8 +7,6 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
-    env:
-      WORKFLOW_LOCATION: /home/runner/work/PandABlocks-rootfs
     steps:
       # TODO: add following steps:  
 
@@ -52,7 +50,7 @@ jobs:
       #Temporary download of tar dependancies. Will need to be replaced by a script that downloads each source file individually
       - name: Make tar files directory
         run: |
-          mkdir tar-files
+          mkdir ${{ github.workspace }}/tar-files
           cd tar-files
 
       - name: Download tar files
