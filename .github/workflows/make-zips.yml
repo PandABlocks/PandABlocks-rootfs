@@ -47,7 +47,7 @@ jobs:
           tar -xf arm-gcc.tar.xz
           rm arm-gcc.tar.xz
 
-      #Temporary download of tar dependancies. Will need to be replaced by a script that downloads each source file individually
+      # Temporary download of tar dependancies. Will need to be replaced by a script that downloads each source file individually
       - name: Make tar files directory
         run: |
           mkdir tar-files
@@ -63,6 +63,11 @@ jobs:
           unzip tarbundle.zip
           rm tarbundle.zip
 
+      - name: Install system dependancies
+        run: |
+          sudo apt-get install gcc make autoconf automake libtool readline fakeroot ncurses expat zlib openssl
+          pip install rst2pdf
+
       # Temporary verification
       - name: List files in the repository
         run: |
@@ -73,5 +78,4 @@ jobs:
           ls ${{ github.workspace }}/rootfs
           echo " "
           ls ${{ github.workspace }}/tar-files
-          echo " "
       - run: echo "🍏 This job's status is ${{ job.status }}."
