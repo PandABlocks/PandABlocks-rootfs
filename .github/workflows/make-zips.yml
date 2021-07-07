@@ -91,4 +91,6 @@ jobs:
           ls ${{ github.workspace }}/rootfs
           echo " "
           ls ${{ github.workspace }}/tar-files
+          echo " "
+          ls ${{ github.workspace }}/build
       - run: echo "🍏 This job's status is ${{ job.status }}."
