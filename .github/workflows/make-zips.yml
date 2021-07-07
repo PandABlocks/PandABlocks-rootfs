@@ -18,6 +18,8 @@ jobs:
       #   - tar files
       #   - ARM GNU tool chain (AND EXTRACT)
 
+      # - Install system dependancies
+
       # - Create and fill out CONFIG files:
       #   - PandABlocks-rootfs repo (This)
       #   - rootfs builder repo
@@ -67,6 +69,11 @@ jobs:
         run: |
           sudo apt-get install -y gcc make autoconf automake libffi-dev libtool fakeroot libreadline6-dev libncurses5 libncurses5-dev expat libexpat1-dev zlib1g-dev libssl-dev
           sudo pip install rst2pdf
+      
+      - name: Run CONFIG generation script
+        run: |
+          mkdir build
+          ./${{ github.workspace }}/pandABlocks-rootfs/.github/scripts/setup-config-files.sh
 
       # Temporary verification
       - name: List files in the repository
