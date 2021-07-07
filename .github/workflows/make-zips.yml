@@ -75,6 +75,11 @@ jobs:
           mkdir build
           sudo bash pandABlocks-rootfs/.github/scripts/setup-config-files.sh
         shell: bash
+      
+      - name: Make zips
+        run: |
+          cd pandABlocks-rootfs
+          make zips
 
       # Temporary verification
       - name: List files in the repository
