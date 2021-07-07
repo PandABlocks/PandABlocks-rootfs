@@ -70,10 +70,10 @@ jobs:
           sudo apt-get install -y gcc make autoconf automake libffi-dev libtool fakeroot libreadline6-dev libncurses5 libncurses5-dev expat libexpat1-dev zlib1g-dev libssl-dev
           sudo pip install rst2pdf
       
-      #- name: Run CONFIG generation script
-      #  run: |
-      #    mkdir build
-      #    .${{ github.workspace }}/pandABlocks-rootfs/.github/scripts/setup-config-files.sh
+      - name: Run CONFIG generation script
+        run: mkdir build
+        run: ./pandABlocks-rootfs/.github/scripts/setup-config-files.sh
+        shell: bash
 
       # Temporary verification
       - name: List files in the repository
