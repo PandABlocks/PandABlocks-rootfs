@@ -73,7 +73,7 @@ jobs:
       - name: Run CONFIG generation script
         run: |
           mkdir build
-          ./${{ github.workspace }}/pandABlocks-rootfs/.github/scripts/setup-config-files.sh
+          .${{ github.workspace }}/pandABlocks-rootfs/.github/scripts/setup-config-files.sh
 
       # Temporary verification
       - name: List files in the repository
