@@ -73,7 +73,7 @@ jobs:
       - name: Run CONFIG generation script
         run: |
           mkdir build
-          sudo bash /pandABlocks-rootfs/.github/scripts/setup-config-files.sh
+          sudo bash pandABlocks-rootfs/.github/scripts/setup-config-files.sh
         shell: bash
 
       # Temporary verification
