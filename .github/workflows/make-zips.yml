@@ -65,7 +65,7 @@ jobs:
 
       - name: Install system dependancies
         run: |
-          sudo apt install gcc make autoconf automake libffi libffi-devel libtool fakeroot libreadline libreadline-dev ncurses ncurses-devel expat expat-devel zlib openssl openssl-devel
+          sudo apt-get install gcc make autoconf automake libffi libffi-devel libtool fakeroot libreadline libreadline-dev ncurses ncurses-devel expat expat-devel zlib openssl openssl-devel
           sudo pip install rst2pdf
 
       # Temporary verification
