@@ -71,8 +71,9 @@ jobs:
           sudo pip install rst2pdf
       
       - name: Run CONFIG generation script
-        run: mkdir build
-        run: ./pandABlocks-rootfs/.github/scripts/setup-config-files.sh
+        run: |
+          mkdir build
+          ./pandABlocks-rootfs/.github/scripts/setup-config-files.sh
         shell: bash
 
       # Temporary verification
