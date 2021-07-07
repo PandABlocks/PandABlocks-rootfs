@@ -65,8 +65,8 @@ jobs:
 
       - name: Install system dependancies
         run: |
-          sudo apt-get install gcc make autoconf automake libtool readline fakeroot ncurses expat zlib openssl
-          pip install rst2pdf
+          sudo apt install gcc make autoconf automake libffi libffi-devel libtool fakeroot libreadline libreadline-dev ncurses ncurses-devel expat expat-devel zlib openssl openssl-devel
+          sudo pip install rst2pdf
 
       # Temporary verification
       - name: List files in the repository
