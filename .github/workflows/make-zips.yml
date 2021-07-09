@@ -38,26 +38,21 @@ jobs:
         with:
           repository: dls-controls/rootfs
           path: rootfs
-          
+
       - name: Download Arm GNU toolchain - PLATFORM = zynq
-        uses: wei/wget@v1
-        with:
-          args: -O arm-gcc.tar.xz https://armkeil.blob.core.windows.net/developer/Files/downloads/gnu-a/10.2-2020.11/binrel/gcc-arm-10.2-2020.11-x86_64-arm-none-linux-gnueabihf.tar.xz
+        run: |
+          curl -o zynq-gnu-toolchain.tar.xz -L https://developer.arm.com/-/media/Files/downloads/gnu-a/10.2-2020.11/binrel/gcc-arm-10.2-2020.11-x86_64-arm-none-linux-gnueabihf.tar.xz
 
       - name: Extract Arm GNU toolchain - PLATFORM = zynq
         run: |
-          tar -xf arm-gcc.tar.xz
-          rm arm-gcc.tar.xz
+          tar -xf zynq-gnu-toolchain.tar.xz
+          rm zynq-gnu-toolchain.tar.xz
 
       # Temporary download of tar dependancies. Will need to be replaced by a script that downloads each source file individually
-      - name: Make tar files directory
+      - name: Download tar files
         run: |
           mkdir tar-files
-
-      - name: Download tar files
-        uses: wei/wget@v1
-        with:
-          args: -O tar-files/tarbundle.zip https://github.com/PandABlocks/PandABlocks-rootfs/releases/download/3.0a1/deps-3.0a1-1-gb44e35b.zip
+          curl -o tar-files/tarbundle.zip -L https://github.com/PandABlocks/PandABlocks-rootfs/releases/download/3.0a1/deps-3.0a1-1-gb44e35b.zip
 
       - name: Extract tar files
         run: |
@@ -76,20 +71,21 @@ jobs:
           sudo bash pandABlocks-rootfs/.github/scripts/setup-config-files.sh
         shell: bash
       
-      - name: Make zips
-        run: |
-          cd pandABlocks-rootfs
-          make zips
+      # Build code
+      #- name: Make zips
+      #  run: |
+      #    cd pandABlocks-rootfs
+      #    make zips
 
-      - name: Upload deps and boot build files
-        uses: actions/upload-artifact@v2
-        with:
-          name: build-files
-          path: |
-            ${{ github.workspace }}/build/deps-*.zip
-            ${{ github.workspace }}/build/boot-*.zip
+      #- name: Upload deps and boot build files
+      #  uses: actions/upload-artifact@v2
+      #  with:
+      #    name: build-files
+      #    path: |
+      #      ${{ github.workspace }}/build/deps-*.zip
+      #      ${{ github.workspace }}/build/boot-*.zip
         
-        # Temporary verification
+      # Verification of files/file structure
       - name: List files in the repository
         run: |
           ls ${{ github.workspace }}
@@ -101,4 +97,3 @@ jobs:
           ls ${{ github.workspace }}/tar-files
           echo " "
           ls ${{ github.workspace }}/build
-      - run: echo "🍏 This job's status is ${{ job.status }}."
