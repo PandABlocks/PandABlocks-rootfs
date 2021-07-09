@@ -38,7 +38,11 @@ jobs:
         with:
           repository: dls-controls/rootfs
           path: rootfs
-          
+       
+      - name: Extract Arm GNU toolchain using curl - PLATFORM = zynq
+        run: |
+          curl -o gnu-toolchain.tar.xz https://armkeil.blob.core.windows.net/developer/Files/downloads/gnu-a/10.2-2020.11/binrel/gcc-arm-10.2-2020.11-x86_64-arm-none-linux-gnueabihf.tar.xz
+
       - name: Download Arm GNU toolchain - PLATFORM = zynq
         uses: wei/wget@v1
         with:
@@ -76,18 +80,18 @@ jobs:
           sudo bash pandABlocks-rootfs/.github/scripts/setup-config-files.sh
         shell: bash
       
-      - name: Make zips
-        run: |
-          cd pandABlocks-rootfs
-          make zips
+      #- name: Make zips
+      #  run: |
+      #    cd pandABlocks-rootfs
+      #    make zips
 
-      - name: Upload deps and boot build files
-        uses: actions/upload-artifact@v2
-        with:
-          name: build-files
-          path: |
-            ${{ github.workspace }}/build/deps-*.zip
-            ${{ github.workspace }}/build/boot-*.zip
+      #- name: Upload deps and boot build files
+      #  uses: actions/upload-artifact@v2
+      #  with:
+      #    name: build-files
+      #    path: |
+      #      ${{ github.workspace }}/build/deps-*.zip
+      #      ${{ github.workspace }}/build/boot-*.zip
         
         # Temporary verification
       - name: List files in the repository
