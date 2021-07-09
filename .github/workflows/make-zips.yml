@@ -81,7 +81,15 @@ jobs:
           cd pandABlocks-rootfs
           make zips
 
-      # Temporary verification
+      - name: Upload deps and boot build files
+        uses: actions/upload-artifact@v2
+        with:
+          name: build-files
+          path: |
+            ${{ github.workspace }}/build/deps-*.zip
+            ${{ github.workspace }}/build/boot-*.zip
+        
+        # Temporary verification
       - name: List files in the repository
         run: |
           ls ${{ github.workspace }}
