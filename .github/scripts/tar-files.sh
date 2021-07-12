@@ -28,7 +28,7 @@ curl -O -L https://github.com/libffi/libffi/releases/tag/v3.3-rc2 \
      -O -L http://git.savannah.gnu.org/cgit/automake.git/snapshot/automake-1.15.tar.gz \
      -o Python-3.8.0.tgz -L https://github.com/python/cpython/archive/refs/tags/v3.8.0.tar.gz \
      -o libressl-3.0.2.tar.gz -L https://github.com/libressl-portable/portable/archive/refs/tags/v3.0.2.tar.gz \
-     -o m4-1.4.18.tar.gz -L https://github.com/tar-mirror/gnu-m4/archive/refs/tags/v1.4.18.tar.gz \
+     -O -L https://ftp.gnu.org/gnu/m4/m4-1.4.18.tar.gz \
      -O -L https://files.pythonhosted.org/packages/11/0a/7f13ef5cd932a107cd4c0f3ebc9d831d9b78e1a0e8c98a098ca17b1d7d97/setuptools-41.6.0.zip \
      -O -L https://snapshot.debian.org/archive/debian/20140303T040015Z/pool/main/i/i2c-tools/i2c-tools_3.1.1.orig.tar.bz2 \
      -O -L https://ftp.gnu.org/gnu/screen/screen-4.2.1.tar.gz \
