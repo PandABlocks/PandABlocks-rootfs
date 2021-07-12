@@ -31,17 +31,10 @@ jobs:
           tar -xf zynq-gnu-toolchain.tar.xz
           rm zynq-gnu-toolchain.tar.xz
 
-      # Tar dependancies. TODO: Will need to be replaced by a script that downloads each source file individually
-      - name: Download tar files
-        run: |
-          mkdir tar-files
-          curl -o tar-files/tarbundle.zip -L https://github.com/PandABlocks/PandABlocks-rootfs/releases/download/3.0a1/deps-3.0a1-1-gb44e35b.zip
-
-      - name: Extract tar files
-        run: |
-          cd tar-files
-          unzip tarbundle.zip
-          rm tarbundle.zip
+      # Tar dependancies
+      - name: Run tar file download script
+        run: sudo bash pandABlocks-rootfs/.github/scripts/tar-files.sh
+        shell: bash
 
       # System dependancies (required for build)
       - name: Install system dependancies
@@ -52,7 +45,7 @@ jobs:
       - name: Run CONFIG generation script
         run: |
           mkdir build
-          sudo bash pandABlocks-rootfs/.github/scripts/setup-config-files.sh
+          sudo bash pandABlocks-rootfs/.github/scripts/config-files.sh
         shell: bash
       
       # Build
