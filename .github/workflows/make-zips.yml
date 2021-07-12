@@ -48,13 +48,13 @@ jobs:
           sudo bash pandABlocks-rootfs/.github/scripts/config-files.sh
         shell: bash
       
-       # Build
+      # Build
       - name: Make zips
         run: |
           cd pandABlocks-rootfs
           make zips
 
-       Build files
+      # Build files
       - name: Upload deps and boot build files
         uses: actions/upload-artifact@v2
         with:
