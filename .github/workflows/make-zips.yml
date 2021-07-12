@@ -48,7 +48,7 @@ jobs:
           sudo bash pandABlocks-rootfs/.github/scripts/config-files.sh
         shell: bash
       
-       Build
+       # Build
       - name: Make zips
         run: |
           cd pandABlocks-rootfs
