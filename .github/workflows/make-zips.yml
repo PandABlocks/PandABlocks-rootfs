@@ -48,20 +48,20 @@ jobs:
           sudo bash pandABlocks-rootfs/.github/scripts/config-files.sh
         shell: bash
       
-      # Build
-      #- name: Make zips
-      #  run: |
-      #    cd pandABlocks-rootfs
-      #    make zips
+       Build
+      - name: Make zips
+        run: |
+          cd pandABlocks-rootfs
+          make zips
 
-      # Build files
-      #- name: Upload deps and boot build files
-      #  uses: actions/upload-artifact@v2
-      #  with:
-      #    name: build-files
-      #    path: |
-      #      ${{ github.workspace }}/build/deps-*.zip
-      #      ${{ github.workspace }}/build/boot-*.zip
+       Build files
+      - name: Upload deps and boot build files
+        uses: actions/upload-artifact@v2
+        with:
+          name: build-files
+          path: |
+            ${{ github.workspace }}/build/deps-*.zip
+            ${{ github.workspace }}/build/boot-*.zip
         
       # Verification of files/file structure
       - name: List files in the repository
