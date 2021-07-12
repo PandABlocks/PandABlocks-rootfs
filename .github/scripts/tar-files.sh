@@ -34,4 +34,6 @@ curl -O -L https://github.com/libffi/libffi/releases/tag/v3.3-rc2 \
      -O -L https://ftp.gnu.org/gnu/screen/screen-4.2.1.tar.gz \
      -O -L https://ftpmirror.gnu.org/libtool/libtool-2.4.6.tar.gz \
      -o ncurses-6.1.tar.gz -L https://github.com/mirror/ncurses/archive/refs/tags/v6.1.tar.gz \
-     -O -L https://gitlab.freedesktop.org/pkg-config/pkg-config/-/archive/pkg-config-0.28/pkg-config-pkg-config-0.28.tar.gz
+     -O -L https://gitlab.freedesktop.org/pkg-config/pkg-config/-/archive/pkg-config-0.28/pkg-config-pkg-config-0.28.tar.gz \
+     -o u-boot-xlnx-xilinx-v2020.2.2-k26.tar.gz -L https://github.com/Xilinx/u-boot-xlnx/tarball/xilinx-v2020.2.2-k26 \
+     -o linux-xlnx-xilinx-v2020.2.2-k26.tar.gz -L https://github.com/Xilinx/linux-xlnx/tarball/xilinx-v2020.2.2-k26
