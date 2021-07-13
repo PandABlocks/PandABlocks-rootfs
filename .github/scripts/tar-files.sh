@@ -11,7 +11,7 @@ cd $GITHUB_WORKSPACE/tar-files
 curl -OL https://github.com/libffi/libffi/releases/tag/v3.3-rc2 \
      -OL https://git.savannah.gnu.org/cgit/nano.git/snapshot/nano-2.4.1.tar.gz \
      -o cothread-2-18.tar.gz -L https://github.com/dls-controls/cothread/archive/refs/tags/2-18.tar.gz \
-     -o zlib-1.2.8.tar.gz -L https://github.com/madler/zlib/archive/refs/tags/v1.2.8.tar.gz \
+     -OL https://zlib.net/fossils/zlib-1.2.8.tar.gz \
      -OL https://git.kernel.org/pub/scm/network/ethtool/ethtool.git/snapshot/ethtool-2.6.36.tar.gz \
      -OL https://infraroot.at/pub/mtd/mtd-utils-2.1.2.tar.bz2 \
      -OL https://busybox.net/downloads/busybox-1.23.2.tar.bz2 \
