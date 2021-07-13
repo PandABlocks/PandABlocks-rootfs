@@ -17,7 +17,7 @@ curl -OL https://github.com/libffi/libffi/releases/tag/v3.3-rc2 \
      -OL https://git.busybox.net/busybox/snapshot/busybox-1_23_2.tar.bz2 \
      -OL https://github.com/ralphlange/procServ/releases/download/V2.6.1-rc1/procServ-2.6.1-rc1.tar.gz \
      -o procServ-2.6.0.tar.gz -L https://github.com/ralphlange/procServ/archive/refs/tags/V2.6.0.tar.gz \
-     -o autoconf-2.69.tar.gz -L https://github.com/autotools-mirror/autoconf/archive/refs/tags/v2.69.tar.gz \
+     -OL https://ftp.gnu.org/gnu/autoconf/autoconf-2.69.tar.gz \
      -o e2fsprogs-1.46.2.tar.gz -L https://github.com/tytso/e2fsprogs/archive/refs/tags/v1.46.2.tar.gz \
      -OL https://github.com/numpy/numpy/releases/download/v1.17.5/numpy-1.17.5.tar.gz \
      -OL http://www.eecis.udel.edu/~ntp/ntp_spool/ntp4/ntp-4.2/ntp-4.2.8p15.tar.gz \
