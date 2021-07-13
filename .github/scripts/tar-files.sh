@@ -28,7 +28,7 @@ curl -OL https://github.com/libffi/libffi/releases/tag/v3.3-rc2 \
      -OL http://git.savannah.gnu.org/cgit/automake.git/snapshot/automake-1.15.tar.gz \
      -o Python-3.8.0.tgz -L https://github.com/python/cpython/archive/refs/tags/v3.8.0.tar.gz \
      -o libressl-3.0.2.tar.gz -L https://github.com/libressl-portable/portable/archive/refs/tags/v3.0.2.tar.gz \
-     -OL https://ftp.gnu.org/gnu/m4/m4-1.4.18.tar.gz \
+     -OL https://ftp.gnu.org/gnu/m4/m4-1.4.19.tar.gz \
      -OL https://files.pythonhosted.org/packages/11/0a/7f13ef5cd932a107cd4c0f3ebc9d831d9b78e1a0e8c98a098ca17b1d7d97/setuptools-41.6.0.zip \
      -OL https://snapshot.debian.org/archive/debian/20140303T040015Z/pool/main/i/i2c-tools/i2c-tools_3.1.1.orig.tar.bz2 \
      -OL https://ftp.gnu.org/gnu/screen/screen-4.2.1.tar.gz \
@@ -40,4 +40,6 @@ curl -OL https://github.com/libffi/libffi/releases/tag/v3.3-rc2 \
 
 # Adjust checksums to the new versioned packages (temporary)
 cd $GITHUB_WORKSPACE/rootfs/scripts/makefiles
+# Addressed bug encountered with v1.4.18 (Bug: "Please port gnulib freadahead.c to your platform!")
 sed -i 's/3b53feb7063fea08ed47e874ac5ce802/a077779db287adf4e12a035029002d28/g' TOOLKIT_DEFS
+sed -i 's/1.4.18/1.4.19/g' TOOLKIT_DEFS
