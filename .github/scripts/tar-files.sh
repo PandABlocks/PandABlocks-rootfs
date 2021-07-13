@@ -25,7 +25,7 @@ curl -OL https://github.com/libffi/libffi/releases/tag/v3.3-rc2 \
      -OL http://git.savannah.gnu.org/cgit/readline.git/snapshot/readline-6.3.tar.gz \
      -OL https://git.busybox.net/busybox/snapshot/busybox-1_33_1.tar.bz2 \
      -o tornado-6.0.3.tar.gz -L https://github.com/tornadoweb/tornado/archive/refs/tags/v6.0.3.tar.gz \
-     -OL http://git.savannah.gnu.org/cgit/automake.git/snapshot/automake-1.15.tar.gz \
+     -OL https://ftp.gnu.org/gnu/automake/automake-1.15.tar.gz \
      -o Python-3.8.0.tgz -L https://github.com/python/cpython/archive/refs/tags/v3.8.0.tar.gz \
      -o libressl-3.0.2.tar.gz -L https://github.com/libressl-portable/portable/archive/refs/tags/v3.0.2.tar.gz \
      -OL https://ftp.gnu.org/gnu/m4/m4-1.4.19.tar.gz \
