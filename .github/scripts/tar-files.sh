@@ -14,7 +14,7 @@ curl -OL https://github.com/libffi/libffi/releases/tag/v3.3-rc2 \
      -o zlib-1.2.8.tar.gz -L https://github.com/madler/zlib/archive/refs/tags/v1.2.8.tar.gz \
      -OL https://git.kernel.org/pub/scm/network/ethtool/ethtool.git/snapshot/ethtool-2.6.36.tar.gz \
      -OL https://infraroot.at/pub/mtd/mtd-utils-2.1.2.tar.bz2 \
-     -OL https://git.busybox.net/busybox/snapshot/busybox-1_23_2.tar.bz2 \
+     -o busybox-1.23.2.tar.bz2 -L https://git.busybox.net/busybox/snapshot/busybox-1_23_2.tar.bz2 \
      -OL https://github.com/ralphlange/procServ/releases/download/V2.6.1-rc1/procServ-2.6.1-rc1.tar.gz \
      -o procServ-2.6.0.tar.gz -L https://github.com/ralphlange/procServ/archive/refs/tags/V2.6.0.tar.gz \
      -OL https://ftp.gnu.org/gnu/autoconf/autoconf-2.69.tar.gz \
