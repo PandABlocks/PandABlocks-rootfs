@@ -16,7 +16,7 @@ curl -OL https://github.com/libffi/libffi/releases/download/v3.3-rc2/libffi-3.3-
      -OL https://infraroot.at/pub/mtd/mtd-utils-2.1.2.tar.bz2 \
      -OL https://busybox.net/downloads/busybox-1.23.2.tar.bz2 \
      -OL https://github.com/ralphlange/procServ/releases/download/V2.6.1-rc1/procServ-2.6.1-rc1.tar.gz \
-     -o procServ-2.6.0.tar.gz -L https://github.com/ralphlange/procServ/archive/refs/tags/V2.6.0.tar.gz \
+     -o procServ-2.6.0.tar.gz -L https://sourceforge.net/projects/procserv/files/2.6.0/procServ-2.6.0.tar.gz/download \
      -OL https://ftp.gnu.org/gnu/autoconf/autoconf-2.69.tar.gz \
      -o e2fsprogs-1.46.2.tar.gz -L https://sourceforge.net/projects/e2fsprogs/files/latest/download \
      -OL https://github.com/numpy/numpy/releases/download/v1.17.5/numpy-1.17.5.tar.gz \
