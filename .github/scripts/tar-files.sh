@@ -33,7 +33,7 @@ curl -OL https://github.com/libffi/libffi/releases/tag/v3.3-rc2 \
      -OL https://snapshot.debian.org/archive/debian/20140303T040015Z/pool/main/i/i2c-tools/i2c-tools_3.1.1.orig.tar.bz2 \
      -OL https://ftp.gnu.org/gnu/screen/screen-4.2.1.tar.gz \
      -OL https://ftpmirror.gnu.org/libtool/libtool-2.4.6.tar.gz \
-     -o ncurses-6.1.tar.gz -L https://github.com/mirror/ncurses/archive/refs/tags/v6.1.tar.gz \
+     -OL https://invisible-mirror.net/archives/ncurses/ncurses-6.1.tar.gz \
      -OL https://pkgconfig.freedesktop.org/releases/pkg-config-0.28.tar.gz \
      -o u-boot-xlnx-xilinx-v2020.2.2-k26.tar.gz -L https://github.com/Xilinx/u-boot-xlnx/archive/refs/tags/xilinx-v2020.2.2-k26.tar.gz \
      -o linux-xlnx-xilinx-v2020.2.2-k26.tar.gz -L https://github.com/Xilinx/linux-xlnx/archive/refs/tags/xilinx-v2020.2.2-k26.tar.gz
