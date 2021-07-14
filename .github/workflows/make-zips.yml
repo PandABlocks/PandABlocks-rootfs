@@ -41,13 +41,25 @@ jobs:
         run: |
           sudo apt-get install -y gcc make autoconf automake libffi-dev libtool fakeroot libreadline6-dev libncurses5 libncurses5-dev expat libexpat1-dev zlib1g-dev libssl-dev
           sudo pip install rst2pdf
-      
+
+      # Verification of files/file structure
       - name: Run CONFIG generation script
         run: |
           mkdir build
           sudo bash pandABlocks-rootfs/.github/scripts/config-files.sh
         shell: bash
       
+      - name: List files in the repository
+        run: |
+          ls ${{ github.workspace }}
+          echo " "
+          ls ${{ github.workspace }}/pandABlocks-rootfs
+          echo " "
+          ls ${{ github.workspace }}/rootfs
+          echo " "
+          ls ${{ github.workspace }}/tar-files
+          echo " "
+
       # Build
       - name: Make zips
         run: |
