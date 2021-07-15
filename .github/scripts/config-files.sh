@@ -9,7 +9,7 @@ PLATFORM=$1
 cd $GITHUB_WORKSPACE/pandABlocks-rootfs
 touch CONFIG
 # Populate the CONFIG file
-if [PLATFORM=="zynq"]; 
+if [ "$PLATFORM" == "zynq" ]; 
 then
 cat >> CONFIG <<EOL
 # Location of rootfs builder
@@ -27,7 +27,7 @@ PANDA_ROOT = /home/runner/work/PandABlocks-rootfs/PandABlocks-rootfs/build
 # Whether the platform is zynq or zyqnmp
 PLATFORM = zynq
 EOL
-elif [PLATFORM=="zynqmp"]
+elif [ "$PLATFORM" == "zynqmp" ]
 then
 cat >> CONFIG <<EOL
 # Location of rootfs builder
