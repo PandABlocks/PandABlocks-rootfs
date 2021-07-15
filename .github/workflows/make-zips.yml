@@ -8,7 +8,7 @@ jobs:
   build:
     strategy:
       matrix:
-        platform: [zynq, zynqmp]
+        platform: ["zynq", "zynqmp"]
 
     runs-on: ubuntu-latest
     steps:
@@ -42,10 +42,10 @@ jobs:
           sudo pip install rst2pdf
 
       # Verification of files/file structure
-      - name: Generate CONFIG files
+      - name: Generate CONFIG files - ${{ matrix.platform }}
         run: |
           mkdir build
-          sudo bash pandABlocks-rootfs/.github/scripts/config-files.sh
+          sudo bash pandABlocks-rootfs/.github/scripts/config-files.sh ${{ matrix.platform }}
         shell: bash
       
       - name: List files in the repository
