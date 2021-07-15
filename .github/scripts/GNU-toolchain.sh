@@ -15,3 +15,4 @@ then
     curl -o zynqmp-gnu-toolchain.tar.xz -L https://developer.arm.com/-/media/Files/downloads/gnu-a/10.2-2020.11/binrel/gcc-arm-10.2-2020.11-x86_64-aarch64-none-linux-gnu.tar.xz
     tar -xf zynqmp-gnu-toolchain.tar.xz
     rm zynqmp-gnu-toolchain.tar.xz
+fi

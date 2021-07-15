@@ -45,6 +45,7 @@ PANDA_ROOT = /home/runner/work/PandABlocks-rootfs/PandABlocks-rootfs/build
 # Whether the platform is zynq or zyqnmp
 PLATFORM = zynqmp
 EOL
+fi
 
 # rootfs:
 # Create the CONFIG file
