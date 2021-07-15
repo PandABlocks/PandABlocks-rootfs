@@ -30,7 +30,7 @@ curl -OL https://github.com/libffi/libffi/releases/download/v3.3-rc2/libffi-3.3-
      -o libressl-3.0.2.tar.gz -L https://github.com/libressl-portable/portable/archive/refs/tags/v3.0.2.tar.gz \
      -OL https://ftp.gnu.org/gnu/m4/m4-1.4.19.tar.gz \
      -OL https://files.pythonhosted.org/packages/11/0a/7f13ef5cd932a107cd4c0f3ebc9d831d9b78e1a0e8c98a098ca17b1d7d97/setuptools-41.6.0.zip \
-     -OL https://snapshot.debian.org/package/i2c-tools \
+     -OL http://jdelvare.nerim.net/mirror/i2c-tools/i2c-tools-3.1.1.tar.bz2 \
      -OL https://ftp.gnu.org/gnu/screen/screen-4.2.1.tar.gz \
      -OL https://ftpmirror.gnu.org/libtool/libtool-2.4.6.tar.gz \
      -OL https://ftp.gnu.org/gnu/ncurses/ncurses-6.1.tar.gz \
