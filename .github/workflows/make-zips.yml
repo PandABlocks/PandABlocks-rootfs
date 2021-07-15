@@ -6,6 +6,10 @@ on:
 
 jobs:
   build:
+    strategy:
+      matrix:
+        platform: [zynq, zynqmp]
+
     runs-on: ubuntu-latest
     steps:
       
@@ -22,28 +26,23 @@ jobs:
           path: rootfs
 
       # ARM GNU Toolchain
-      - name: Download Arm GNU toolchain - PLATFORM = zynq
-        run: |
-          curl -o zynq-gnu-toolchain.tar.xz -L https://developer.arm.com/-/media/Files/downloads/gnu-a/10.2-2020.11/binrel/gcc-arm-10.2-2020.11-x86_64-arm-none-linux-gnueabihf.tar.xz
-
-      - name: Extract Arm GNU toolchain - PLATFORM = zynq
-        run: |
-          tar -xf zynq-gnu-toolchain.tar.xz
-          rm zynq-gnu-toolchain.tar.xz
+      - name: Download Arm GNU toolchain - ${{ matrix.platform }}
+        run: sudo bash pandABlocks-rootfs/.github/scripts/GNU-toolchain.sh ${{ matrix.platform }}
+        shell: bash
 
       # Tar dependancies
-      - name: Run tar file download script
+      - name: Download tar file dependencies
         run: sudo bash pandABlocks-rootfs/.github/scripts/tar-files.sh
         shell: bash
 
-      # System dependancies (required for build)
-      - name: Install system dependancies
+      # System dependencies (required for build)
+      - name: Install system dependencies
         run: |
           sudo apt-get install -y gcc make autoconf automake libffi-dev libtool fakeroot libreadline6-dev libncurses5 libncurses5-dev expat libexpat1-dev zlib1g-dev libssl-dev
           sudo pip install rst2pdf
 
       # Verification of files/file structure
-      - name: Run CONFIG generation script
+      - name: Generate CONFIG files
         run: |
           mkdir build
           sudo bash pandABlocks-rootfs/.github/scripts/config-files.sh

@@ -8,6 +8,8 @@ GITHUB_WORKSPACE='/home/runner/work/PandABlocks-rootfs/PandABlocks-rootfs'
 cd $GITHUB_WORKSPACE/pandABlocks-rootfs
 touch CONFIG
 # Populate the CONFIG file
+if [PLATFORM=="zynq"]; 
+then
 cat >> CONFIG <<EOL
 # Location of rootfs builder
 ROOTFS_TOP = /home/runner/work/PandABlocks-rootfs/PandABlocks-rootfs/rootfs
@@ -24,7 +26,24 @@ PANDA_ROOT = /home/runner/work/PandABlocks-rootfs/PandABlocks-rootfs/build
 # Whether the platform is zynq or zyqnmp
 PLATFORM = zynq
 EOL
+elif [PLATFORM=="zynqmp"]
+then
+cat >> CONFIG <<EOL
+# Location of rootfs builder
+ROOTFS_TOP = /home/runner/work/PandABlocks-rootfs/PandABlocks-rootfs/rootfs
 
+# Toolchain used to build the target
+TOOLCHAIN_ROOT = /home/runner/work/PandABlocks-rootfs/PandABlocks-rootfs/gcc-arm-10.2-2020.11-x86_64-aarch64-none-linux-gnu
+
+# Where to find source files
+TAR_FILES = /home/runner/work/PandABlocks-rootfs/PandABlocks-rootfs/tar-files
+
+# Target location for build
+PANDA_ROOT = /home/runner/work/PandABlocks-rootfs/PandABlocks-rootfs/build
+
+# Whether the platform is zynq or zyqnmp
+PLATFORM = zynqmp
+EOL
 
 # rootfs:
 # Create the CONFIG file
