@@ -49,7 +49,7 @@ jobs:
         shell: bash
 
       # Verification of files/file structure
-      - name: List files in the repository
+      - name: List workspace files
         run: |
           ls ${{ github.workspace }}
           echo " "
@@ -67,7 +67,7 @@ jobs:
           make zips
 
       # Verification of build files
-      - name: List files in the repository
+      - name: List build files
         run: ls ${{ github.workspace }}/build
 
       # Artifacts
