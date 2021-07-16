@@ -41,13 +41,14 @@ jobs:
           sudo apt-get install -y gcc make autoconf automake libffi-dev libtool fakeroot libreadline6-dev libncurses5 libncurses5-dev expat libexpat1-dev zlib1g-dev libssl-dev
           sudo pip install rst2pdf
 
-      # Verification of files/file structure
+      #CONFIG files
       - name: Generate CONFIG files - ${{ matrix.platform }}
         run: |
           mkdir build
           sudo bash pandABlocks-rootfs/.github/scripts/config-files.sh ${{ matrix.platform }}
         shell: bash
-      
+
+      # Verification of files/file structure
       - name: List files in the repository
         run: |
           ls ${{ github.workspace }}
@@ -65,7 +66,11 @@ jobs:
           cd pandABlocks-rootfs
           make zips
 
-      # Build files
+      # Verification of build files
+      - name: List files in the repository
+        run: ls ${{ github.workspace }}/build
+
+      # Artifacts
       - name: Upload deps and boot build files
         uses: actions/upload-artifact@v2
         with:
@@ -74,15 +79,4 @@ jobs:
             ${{ github.workspace }}/build/deps-*.zip
             ${{ github.workspace }}/build/boot-*.zip
         
-      # Verification of files/file structure
-      - name: List files in the repository
-        run: |
-          ls ${{ github.workspace }}
-          echo " "
-          ls ${{ github.workspace }}/pandABlocks-rootfs
-          echo " "
-          ls ${{ github.workspace }}/rootfs
-          echo " "
-          ls ${{ github.workspace }}/tar-files
-          echo " "
-          ls ${{ github.workspace }}/build
+
