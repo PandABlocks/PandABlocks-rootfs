@@ -39,12 +39,24 @@ jobs:
           sudo apt-get install -y gcc make autoconf automake libffi-dev libtool fakeroot libreadline6-dev libncurses5 libncurses5-dev expat libexpat1-dev zlib1g-dev libssl-dev
           sudo pip install rst2pdf sphinx
 
-      #CONFIG files
+      # CONFIG files
       - name: Generate CONFIG files - ${{ matrix.platform }}
         run: |
           mkdir build
           sudo bash pandABlocks-rootfs/.github/scripts/config-files.sh ${{ matrix.platform }}
         shell: bash
+
+      # Verification of files/file structure
+      - name: List workspace files
+        run: |
+          ls ${{ github.workspace }}
+          echo " "
+          ls ${{ github.workspace }}/pandABlocks-rootfs
+          echo " "
+          ls ${{ github.workspace }}/rootfs
+          echo " "
+          ls ${{ github.workspace }}/tar-files
+          echo " "
 
       # Build
       - name: Build Docs
