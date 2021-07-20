@@ -73,7 +73,7 @@ jobs:
 
       - name: Move to versioned directory
         # e.g. master or 0.1.2
-        run: mv build/build/html ".github/pages/${{ steps.split.outputs._2 }}"
+        run: mv ${{ github.workspace }}/build/build/html "${{ github.workspace }}/pandABlocks-rootfs/.github/pages/${{ steps.split.outputs._2 }}"
 
       - name: Publish Docs to gh-pages
         # Only master and tags are published
@@ -83,5 +83,5 @@ jobs:
         uses: peaceiris/actions-gh-pages@bbdfb200618d235585ad98e965f4aafc39b4c501  # v3.7.3
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: .github/pages
+          publish_dir: ${{ github.workspace }}/pandABlocks-rootfs/.github/pages
           keep_files: true
