@@ -24,8 +24,8 @@ jobs:
           path: rootfs
 
       # ARM GNU Toolchain
-      - name: Download Arm GNU toolchain - ${{ matrix.platform }}
-        run: sudo bash pandABlocks-rootfs/.github/scripts/GNU-toolchain.sh ${{ matrix.platform }}
+      - name: Download Arm GNU toolchain - zynq
+        run: sudo bash pandABlocks-rootfs/.github/scripts/GNU-toolchain.sh zynq
         shell: bash
 
       # Tar dependancies
@@ -40,10 +40,10 @@ jobs:
           sudo pip install rst2pdf sphinx
 
       # CONFIG files
-      - name: Generate CONFIG files - ${{ matrix.platform }}
+      - name: Generate CONFIG files - zynq
         run: |
           mkdir build
-          sudo bash pandABlocks-rootfs/.github/scripts/config-files.sh ${{ matrix.platform }}
+          sudo bash pandABlocks-rootfs/.github/scripts/config-files.sh zynq
         shell: bash
 
       # Verification of files/file structure
