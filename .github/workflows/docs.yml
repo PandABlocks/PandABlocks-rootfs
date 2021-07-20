@@ -9,22 +9,48 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      # Git repositories
       - name: Checkout Source
         uses: actions/checkout@v2
         with:
+          path: pandABlocks-rootfs
           # require history to get back to last tag for version number of branches
           fetch-depth: 0
 
-      - name: Set up Python
-        uses: actions/setup-python@v2
+      - name: Checkout rootfs builder
+        uses: actions/checkout@v2
         with:
-          python-version: "3.7"
+          repository: dls-controls/rootfs
+          path: rootfs
 
-      - name: Install Packages
-        run: pip install sphinx
+      # ARM GNU Toolchain
+      - name: Download Arm GNU toolchain - ${{ matrix.platform }}
+        run: sudo bash pandABlocks-rootfs/.github/scripts/GNU-toolchain.sh ${{ matrix.platform }}
+        shell: bash
 
+      # Tar dependancies
+      - name: Download tar file dependencies
+        run: sudo bash pandABlocks-rootfs/.github/scripts/tar-files.sh
+        shell: bash
+
+      # System dependencies (required for build)
+      - name: Install system dependencies
+        run: |
+          sudo apt-get install -y gcc make autoconf automake libffi-dev libtool fakeroot libreadline6-dev libncurses5 libncurses5-dev expat libexpat1-dev zlib1g-dev libssl-dev
+          sudo pip install rst2pdf sphinx
+
+      #CONFIG files
+      - name: Generate CONFIG files - ${{ matrix.platform }}
+        run: |
+          mkdir build
+          sudo bash pandABlocks-rootfs/.github/scripts/config-files.sh ${{ matrix.platform }}
+        shell: bash
+
+      # Build
       - name: Build Docs
-        run: make docs
+        run: |
+          cd pandABlocks-rootfs
+          make docs
 
       #- uses: rishabhgupta/split-by@v1
       #  id: split
