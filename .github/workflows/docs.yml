@@ -65,6 +65,10 @@ jobs:
           cd pandABlocks-rootfs
           make docs
 
+      # Verification of build files
+      - name: List build files
+        run: ls ${{ github.workspace }}/build
+
       - uses: rishabhgupta/split-by@v1
         id: split
         with:
@@ -73,7 +77,7 @@ jobs:
 
       - name: Move to versioned directory
         # e.g. master or 0.1.2
-        run: mv ${{ github.workspace }}/build/build/html "${{ github.workspace }}/pandABlocks-rootfs/.github/pages/${{ steps.split.outputs._2 }}"
+        run: mv ${{ github.workspace }}/build/html "${{ github.workspace }}/pandABlocks-rootfs/.github/pages/${{ steps.split.outputs._2 }}"
 
       - name: Publish Docs to gh-pages
         # Only master and tags are published
