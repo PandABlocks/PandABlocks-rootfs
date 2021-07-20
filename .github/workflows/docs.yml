@@ -47,17 +47,17 @@ jobs:
         shell: bash
 
       # Verification of files/file structure
-      - name: List workspace files
-        run: |
-          ls ${{ github.workspace }}
-          echo " "
-          ls pandABlocks-rootfs
-          echo " "
-          ls rootfs
-          echo " "
-          ls tar-files
-          echo " "
-          pip list
+      #- name: List workspace files
+      #  run: |
+      #    ls ${{ github.workspace }}
+      #    echo " "
+      #    ls pandABlocks-rootfs
+      #    echo " "
+      #    ls rootfs
+      #    echo " "
+      #    ls tar-files
+      #    echo " "
+      #    pip list
 
       # Build
       - name: Build Docs
@@ -66,8 +66,8 @@ jobs:
           make docs
 
       # Verification of build files
-      - name: List build files
-        run: ls ${{ github.workspace }}/build/build
+      #- name: List build files
+      #  run: ls ${{ github.workspace }}/build
 
       - uses: rishabhgupta/split-by@v1
         id: split
@@ -75,6 +75,7 @@ jobs:
           string: ${{ github.ref }}
           split-by: /
 
+      # Publish docs
       - name: Move to versioned directory
         # e.g. master or 0.1.2
         run: |

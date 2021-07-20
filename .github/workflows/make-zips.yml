@@ -49,16 +49,16 @@ jobs:
         shell: bash
 
       # Verification of files/file structure
-      - name: List workspace files
-        run: |
-          ls ${{ github.workspace }}
-          echo " "
-          ls ${{ github.workspace }}/pandABlocks-rootfs
-          echo " "
-          ls ${{ github.workspace }}/rootfs
-          echo " "
-          ls ${{ github.workspace }}/tar-files
-          echo " "
+      #- name: List workspace files
+      #  run: |
+      #    ls ${{ github.workspace }}
+      #    echo " "
+      #    ls pandABlocks-rootfs
+      #    echo " "
+      #    ls rootfs
+      #    echo " "
+      #    ls tar-files
+      #    echo " "
 
       # Build
       - name: Make zips
@@ -67,8 +67,8 @@ jobs:
           make zips
 
       # Verification of build files
-      - name: List build files
-        run: ls ${{ github.workspace }}/build
+      #- name: List build files
+      #  run: ls build
 
       # Artifacts
       - name: Upload deps and boot build files
@@ -76,7 +76,7 @@ jobs:
         with:
           name: build-files-${{ matrix.platform }}
           path: |
-            ${{ github.workspace }}/build/deps-*.zip
-            ${{ github.workspace }}/build/boot-*.zip
+            build/deps-*.zip
+            build/boot-*.zip
         
 
