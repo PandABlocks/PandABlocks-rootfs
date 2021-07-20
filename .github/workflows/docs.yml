@@ -67,7 +67,7 @@ jobs:
 
       # Verification of build files
       - name: List build files
-        run: ls ${{ github.workspace }}/build
+        run: ls ${{ github.workspace }}/build/build
 
       - uses: rishabhgupta/split-by@v1
         id: split
@@ -77,7 +77,7 @@ jobs:
 
       - name: Move to versioned directory
         # e.g. master or 0.1.2
-        run: mv ${{ github.workspace }}/build/html "${{ github.workspace }}/pandABlocks-rootfs/.github/pages/${{ steps.split.outputs._2 }}"
+        run: mv ${{ github.workspace }}/build/build/html "${{ github.workspace }}/pandABlocks-rootfs/.github/pages/${{ steps.split.outputs._2 }}"
 
       - name: Publish Docs to gh-pages
         # Only master and tags are published
