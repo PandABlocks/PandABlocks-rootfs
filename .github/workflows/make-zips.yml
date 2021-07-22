@@ -86,7 +86,7 @@ jobs:
         if: startsWith(github.ref, 'refs/tags/')
         with:
           files: |
-            ${{ github.workflow }}/pandABlocks-rootfs/CHANGELOG.txt
+            ${{ github.workflow }}/pandABlocks-rootfs/CHANGELOG.rst
             build/deps-*.zip
             build/boot-*.zip
         env:
