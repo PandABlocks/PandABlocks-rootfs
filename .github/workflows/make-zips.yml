@@ -78,5 +78,16 @@ jobs:
           path: |
             build/deps-*.zip
             build/boot-*.zip
-        
 
+      # Release 
+      - name: Release
+        uses: softprops/action-gh-release@v1
+        # Only release when a tag is pushed
+        if: startsWith(github.ref, 'refs/tags/')
+        with:
+          files: |
+            ${{ github.workflow }}/pandABlocks-rootfs/CHANGELOG.txt
+            build/deps-*.zip
+            build/boot-*.zip
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
