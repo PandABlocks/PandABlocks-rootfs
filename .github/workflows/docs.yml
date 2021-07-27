@@ -13,7 +13,7 @@ jobs:
       - name: Checkout Source
         uses: actions/checkout@v2
         with:
-          path: pandABlocks-rootfs
+          path: PandABlocks-rootfs
           # require history to get back to last tag for version number of branches
           fetch-depth: 0
 
@@ -25,12 +25,12 @@ jobs:
 
       # ARM GNU Toolchain
       - name: Download Arm GNU toolchain - zynq
-        run: sudo bash pandABlocks-rootfs/.github/scripts/GNU-toolchain.sh zynq
+        run: sudo bash PandABlocks-rootfs/.github/scripts/GNU-toolchain.sh zynq
         shell: bash
 
       # Tar dependancies
       - name: Download tar file dependencies
-        run: sudo bash pandABlocks-rootfs/.github/scripts/tar-files.sh
+        run: sudo bash PandABlocks-rootfs/.github/scripts/tar-files.sh
         shell: bash
 
       # System dependencies (required for build)
@@ -43,7 +43,7 @@ jobs:
       - name: Generate CONFIG files - zynq
         run: |
           mkdir build
-          sudo bash pandABlocks-rootfs/.github/scripts/config-files.sh zynq
+          sudo bash PandABlocks-rootfs/.github/scripts/config-files.sh zynq
         shell: bash
 
       # Verification of files/file structure
@@ -51,7 +51,7 @@ jobs:
       #  run: |
       #    ls ${{ github.workspace }}
       #    echo " "
-      #    ls pandABlocks-rootfs
+      #    ls PandABlocks-rootfs
       #    echo " "
       #    ls rootfs
       #    echo " "
@@ -62,7 +62,7 @@ jobs:
       # Build
       - name: Build Docs
         run: |
-          cd pandABlocks-rootfs
+          cd PandABlocks-rootfs
           make docs
 
       # Verification of build files
@@ -79,8 +79,8 @@ jobs:
       - name: Move to versioned directory
         # e.g. master or 0.1.2
         run: |
-          mkdir pandABlocks-rootfs/.github/pages
-          mv build/build/html "pandABlocks-rootfs/.github/pages/${{ steps.split.outputs._2 }}"
+          mkdir PandABlocks-rootfs/.github/pages
+          mv build/build/html "PandABlocks-rootfs/.github/pages/${{ steps.split.outputs._2 }}"
 
       - name: Publish Docs to gh-pages
         # Only master and tags are published
@@ -90,5 +90,5 @@ jobs:
         uses: peaceiris/actions-gh-pages@bbdfb200618d235585ad98e965f4aafc39b4c501  # v3.7.3
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: pandABlocks-rootfs/.github/pages
+          publish_dir: PandABlocks-rootfs/.github/pages
           keep_files: true
