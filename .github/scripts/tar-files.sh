@@ -1,8 +1,6 @@
 #!/bin/bash
 # Installs all sources relevant to the rootfs build as tar files
 
-GITHUB_WORKSPACE='/home/runner/work/PandABlocks-rootfs/PandABlocks-rootfs'
-
 # Create the tar-files directory
 mkdir tar-files
 cd tar-files

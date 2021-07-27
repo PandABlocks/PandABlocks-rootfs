@@ -17,7 +17,7 @@ jobs:
       - name: Checkout Source
         uses: actions/checkout@v2
         with:
-          path: pandABlocks-rootfs
+          path: PandABlocks-rootfs
 
       - name: Checkout rootfs builder
         uses: actions/checkout@v2
@@ -27,12 +27,12 @@ jobs:
 
       # ARM GNU Toolchain
       - name: Download Arm GNU toolchain - ${{ matrix.platform }}
-        run: sudo bash pandABlocks-rootfs/.github/scripts/GNU-toolchain.sh ${{ matrix.platform }}
+        run: sudo bash PandABlocks-rootfs/.github/scripts/GNU-toolchain.sh ${{ matrix.platform }}
         shell: bash
 
       # Tar dependancies
       - name: Download tar file dependencies
-        run: sudo bash pandABlocks-rootfs/.github/scripts/tar-files.sh
+        run: sudo bash PandABlocks-rootfs/.github/scripts/tar-files.sh
         shell: bash
 
       # System dependencies (required for build)
@@ -45,7 +45,7 @@ jobs:
       - name: Generate CONFIG files - ${{ matrix.platform }}
         run: |
           mkdir build
-          sudo bash pandABlocks-rootfs/.github/scripts/config-files.sh ${{ matrix.platform }}
+          sudo bash PandABlocks-rootfs/.github/scripts/config-files.sh ${{ matrix.platform }}
         shell: bash
 
       # Verification of files/file structure
@@ -63,7 +63,7 @@ jobs:
       # Build
       - name: Make zips
         run: |
-          cd pandABlocks-rootfs
+          cd PandABlocks-rootfs
           make zips
 
       # Verification of build files
@@ -86,7 +86,7 @@ jobs:
         if: startsWith(github.ref, 'refs/tags/')
         with:
           files: |
-            ${{ github.workflow }}/pandABlocks-rootfs/CHANGELOG.rst
+            ${{ github.workflow }}/PandABlocks-rootfs/CHANGELOG.rst
             build/deps-*.zip
             build/boot-*.zip
         env:

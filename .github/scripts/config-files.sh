@@ -1,12 +1,11 @@
 #!/bin/bash
 # Generates config files in PandABlocks-rootfs and rootfs repositories and populates them with information.
 
-GITHUB_WORKSPACE='/home/runner/work/PandABlocks-rootfs/PandABlocks-rootfs'
 PLATFORM=$1
 
 # PandABlocks-rootfs:
 # Create the CONFIG file
-cd $GITHUB_WORKSPACE/pandABlocks-rootfs
+cd PandABlocks-rootfs
 touch CONFIG
 # Populate the CONFIG file
 if [ "$PLATFORM" == "zynq" ]; 
@@ -49,7 +48,7 @@ fi
 
 # rootfs:
 # Create the CONFIG file
-cd $GITHUB_WORKSPACE/rootfs
+cd ../rootfs
 touch CONFIG.local
 # Populate the CONFIG file
 cat >> CONFIG.local <<EOL

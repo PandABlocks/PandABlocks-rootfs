@@ -1,7 +1,6 @@
 #!/bin/bash
 # Installs and extracts a GNU toolchain based on the systems architecture
 
-GITHUB_WORKSPACE='/home/runner/work/PandABlocks-rootfs/PandABlocks-rootfs'
 PLATFORM=$1
 
 # ARM GNU Toolchain
