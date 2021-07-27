@@ -4,8 +4,8 @@
 GITHUB_WORKSPACE='/home/runner/work/PandABlocks-rootfs/PandABlocks-rootfs'
 
 # Create the tar-files directory
-mkdir $GITHUB_WORKSPACE/tar-files
-cd $GITHUB_WORKSPACE/tar-files
+mkdir tar-files
+cd tar-files
 
 # Install tar files
 curl -OL https://github.com/libffi/libffi/releases/download/v3.3-rc2/libffi-3.3-rc2.tar.gz \
@@ -39,7 +39,7 @@ curl -OL https://github.com/libffi/libffi/releases/download/v3.3-rc2/libffi-3.3-
      -o linux-xlnx-xilinx-v2020.2.2-k26.tar.gz -L https://github.com/Xilinx/linux-xlnx/archive/refs/tags/xilinx-v2020.2.2-k26.tar.gz
 
 # Adjust checksums to the new versioned packages (temporary)
-cd $GITHUB_WORKSPACE/rootfs/scripts/makefiles
+cd ../rootfs/scripts/makefiles
 # Addressed bug encountered with v1.4.18 (Bug: "Please port gnulib freadahead.c to your platform!")
 sed -i 's/3b53feb7063fea08ed47e874ac5ce802/f4a2b0284d80353b995f8ef2385ed73c/g' TOOLKIT_DEFS #v1.4.19
 #sed -i 's/3b53feb7063fea08ed47e874ac5ce802/a077779db287adf4e12a035029002d28/g' TOOLKIT_DEFS # v1.4.18
