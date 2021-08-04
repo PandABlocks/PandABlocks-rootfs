@@ -45,7 +45,7 @@ jobs:
       - name: Generate CONFIG files - ${{ matrix.platform }}
         run: |
           mkdir build
-          sudo bash PandABlocks-rootfs/.github/scripts/config-files.sh ${{ matrix.platform }}
+          sudo bash PandABlocks-rootfs/.github/scripts/config-file-rootfs.sh ${{ matrix.platform }}
         shell: bash
 
       # Verification of files/file structure
