@@ -5,8 +5,24 @@
 mkdir tar-files
 cd tar-files
 
-# Install tar files
-curl -OL https://github.com/libffi/libffi/releases/download/v3.3-rc2/libffi-3.3-rc2.tar.gz \
+# What should the script download?
+#    -a = All tar files
+#    -t = tar file dependencies (Excluding linux)
+#    -l = Linux tar files only
+DOWNLOAD="a"
+
+while getopts l:t: flag
+do
+    case "${flag}" in
+        l) DOWNLOAD="l";;
+        t) DOWNLOAD="t";;
+    esac
+done
+
+if [ "$DOWNLOAD" == "a" | "$DOWNLOAD" == "t" ]; 
+then
+     # Install tar file dependencies
+     curl -OL https://github.com/libffi/libffi/releases/download/v3.3-rc2/libffi-3.3-rc2.tar.gz \
      -OL https://ftp.gnu.org/gnu/nano/nano-2.4.1.tar.gz \
      -o cothread-2-18.tar.gz -L https://github.com/dls-controls/cothread/archive/refs/tags/2-18.tar.gz \
      -OL https://zlib.net/fossils/zlib-1.2.8.tar.gz \
@@ -33,8 +49,13 @@ curl -OL https://github.com/libffi/libffi/releases/download/v3.3-rc2/libffi-3.3-
      -OL https://ftpmirror.gnu.org/libtool/libtool-2.4.6.tar.gz \
      -OL https://ftp.gnu.org/gnu/ncurses/ncurses-6.1.tar.gz \
      -OL https://pkgconfig.freedesktop.org/releases/pkg-config-0.28.tar.gz \
-     -o u-boot-xlnx-xilinx-v2020.2.2-k26.tar.gz -L https://github.com/Xilinx/u-boot-xlnx/archive/refs/tags/xilinx-v2020.2.2-k26.tar.gz \
+
+elif [ "$DOWNLOAD" == "a" | "$DOWNLOAD" == "l" ] 
+then
+     # Install linux tar files
+     curl -o u-boot-xlnx-xilinx-v2020.2.2-k26.tar.gz -L https://github.com/Xilinx/u-boot-xlnx/archive/refs/tags/xilinx-v2020.2.2-k26.tar.gz \
      -o linux-xlnx-xilinx-v2020.2.2-k26.tar.gz -L https://github.com/Xilinx/linux-xlnx/archive/refs/tags/xilinx-v2020.2.2-k26.tar.gz
+fi
 
 # Adjust checksums to the new versioned packages (temporary)
 cd ../rootfs/scripts/makefiles
@@ -42,3 +63,4 @@ cd ../rootfs/scripts/makefiles
 # sed -i 's/3b53feb7063fea08ed47e874ac5ce802/f4a2b0284d80353b995f8ef2385ed73c/g' TOOLKIT_DEFS #v1.4.19
 sed -i 's/3b53feb7063fea08ed47e874ac5ce802/a077779db287adf4e12a035029002d28/g' TOOLKIT_DEFS # v1.4.18
 # sed -i 's/1.4.18/1.4.19/g' TOOLKIT_DEFS
+
