@@ -8,7 +8,7 @@ cd tar-files
 # If an argument is provided, the script will only download the linux tar file dependencies
 DOWNLOAD=$1
 
-if [-z "$1" ]; # No Argument given
+if [-z "$1" ] # No Argument given
 then
      # Install tar file dependencies
      curl -OL https://github.com/libffi/libffi/releases/download/v3.3-rc2/libffi-3.3-rc2.tar.gz \
@@ -51,4 +51,3 @@ cd ../rootfs/scripts/makefiles
 # sed -i 's/3b53feb7063fea08ed47e874ac5ce802/f4a2b0284d80353b995f8ef2385ed73c/g' TOOLKIT_DEFS #v1.4.19
 sed -i 's/3b53feb7063fea08ed47e874ac5ce802/a077779db287adf4e12a035029002d28/g' TOOLKIT_DEFS # v1.4.18
 # sed -i 's/1.4.18/1.4.19/g' TOOLKIT_DEFS
-
