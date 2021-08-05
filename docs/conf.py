@@ -55,7 +55,7 @@ author = u'Michael Abbott'
 try:
     # Something like 1.5.0-3-g3ab26eb
     release = subprocess.check_output([
-        "git", "describe", "--abbrev=7", "--dirty","--always", "--tags"]).toString()
+        "git", "describe", "--abbrev=7", "--dirty","--always", "--tags"], text=True)
 except:
     # No git, or not under a git repo
     release = "0.0"
