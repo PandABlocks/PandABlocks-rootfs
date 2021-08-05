@@ -5,21 +5,10 @@
 mkdir tar-files
 cd tar-files
 
-# What should the script download?
-#    -a = All tar files
-#    -t = tar file dependencies (Excluding linux)
-#    -l = Linux tar files only
-DOWNLOAD="a"
+# If an argument is provided, the script will only download the linux tar file dependencies
+DOWNLOAD=$1
 
-while getopts l:t: flag
-do
-    case "${flag}" in
-        l) DOWNLOAD="l";;
-        t) DOWNLOAD="t";;
-    esac
-done
-
-if [ "$DOWNLOAD" == "a" | "$DOWNLOAD" == "t" ]; 
+if [-z "$1" ]; # No Argument given
 then
      # Install tar file dependencies
      curl -OL https://github.com/libffi/libffi/releases/download/v3.3-rc2/libffi-3.3-rc2.tar.gz \
@@ -49,13 +38,12 @@ then
      -OL https://ftpmirror.gnu.org/libtool/libtool-2.4.6.tar.gz \
      -OL https://ftp.gnu.org/gnu/ncurses/ncurses-6.1.tar.gz \
      -OL https://pkgconfig.freedesktop.org/releases/pkg-config-0.28.tar.gz \
-
-elif [ "$DOWNLOAD" == "a" | "$DOWNLOAD" == "l" ] 
-then
-     # Install linux tar files
-     curl -o u-boot-xlnx-xilinx-v2020.2.2-k26.tar.gz -L https://github.com/Xilinx/u-boot-xlnx/archive/refs/tags/xilinx-v2020.2.2-k26.tar.gz \
-     -o linux-xlnx-xilinx-v2020.2.2-k26.tar.gz -L https://github.com/Xilinx/linux-xlnx/archive/refs/tags/xilinx-v2020.2.2-k26.tar.gz
 fi
+
+# Install linux tar files
+curl -o u-boot-xlnx-xilinx-v2020.2.2-k26.tar.gz -L https://github.com/Xilinx/u-boot-xlnx/archive/refs/tags/xilinx-v2020.2.2-k26.tar.gz \
+-o linux-xlnx-xilinx-v2020.2.2-k26.tar.gz -L https://github.com/Xilinx/linux-xlnx/archive/refs/tags/xilinx-v2020.2.2-k26.tar.gz
+
 
 # Adjust checksums to the new versioned packages (temporary)
 cd ../rootfs/scripts/makefiles
