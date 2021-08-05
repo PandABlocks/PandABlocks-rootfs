@@ -6,10 +6,10 @@ PLATFORM=$1
 # ARM GNU Toolchain
 # Determine which toolchain to use
 if [ "$PLATFORM" == "zynq" ]; 
-then
+    then
     TOOLCHAIN=https://developer.arm.com/-/media/Files/downloads/gnu-a/10.2-2020.11/binrel/gcc-arm-10.2-2020.11-x86_64-arm-none-linux-gnueabihf.tar.xz
 elif [ "$PLATFORM" == "zynqmp" ] 
-then
+    then
     TOOLCHAIN=https://developer.arm.com/-/media/Files/downloads/gnu-a/10.2-2020.11/binrel/gcc-arm-10.2-2020.11-x86_64-aarch64-none-linux-gnu.tar.xz
 fi
 
