@@ -30,8 +30,6 @@ BOOT_IMAGE = $(PANDA_ROOT)/boot
 # The zipped file will be called this
 export GIT_VERSION_SUFFIX = \
     $(shell git describe --abbrev=7 --dirty --always --tags)
-# BOOT_ZIP = $(PANDA_ROOT)/boot-$(GIT_VERSION_SUFFIX).zip
-# DEPS_ZIP = $(PANDA_ROOT)/deps-$(GIT_VERSION_SUFFIX).zip
 BOOT_ZIP = $(PANDA_ROOT)/boot-$(PLATFORM)@$(GIT_VERSION_SUFFIX).zip
 DEPS_ZIP = $(PANDA_ROOT)/deps-$(PLATFORM)@$(GIT_VERSION_SUFFIX).zip
 
