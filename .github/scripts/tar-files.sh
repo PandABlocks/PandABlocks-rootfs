@@ -5,7 +5,8 @@
 mkdir tar-files
 cd tar-files
 
-if [-z "$1" ]; # No Argument given
+# Any single arguement ensures that only the linux tar files will be downloaded
+if [[ -z $1 ]]; # If no argument is given
      then
      # Install tar file dependencies
      curl -OL https://github.com/libffi/libffi/releases/download/v3.3-rc2/libffi-3.3-rc2.tar.gz \
@@ -34,7 +35,8 @@ if [-z "$1" ]; # No Argument given
           -OL https://ftp.gnu.org/gnu/screen/screen-4.2.1.tar.gz \
           -OL https://ftpmirror.gnu.org/libtool/libtool-2.4.6.tar.gz \
           -OL https://ftp.gnu.org/gnu/ncurses/ncurses-6.1.tar.gz \
-          -OL https://pkgconfig.freedesktop.org/releases/pkg-config-0.28.tar.gz
+          -OL https://pkgconfig.freedesktop.org/releases/pkg-config-0.28.tar.gz#
+
 fi
 
 # Install linux tar files
