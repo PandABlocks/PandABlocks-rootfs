@@ -7,33 +7,23 @@ PLATFORM=$1
 # Create the CONFIG file
 cd PandABlocks-rootfs
 touch CONFIG
-# Populate the CONFIG file
+
+#Determine the toolchain to use
 if [ "$PLATFORM" == "zynq" ]; 
 then
-cat >> CONFIG <<EOL
-# Location of rootfs builder
-ROOTFS_TOP = \$(GITHUB_WORKSPACE)/rootfs
-
-# Toolchain used to build the target
-TOOLCHAIN_ROOT = \$(GITHUB_WORKSPACE)/gcc-arm-10.2-2020.11-x86_64-arm-none-linux-gnueabihf
-
-# Where to find source files
-TAR_FILES = \$(GITHUB_WORKSPACE)/tar-files
-
-# Target location for build
-PANDA_ROOT = \$(GITHUB_WORKSPACE)/build
-
-# Whether the platform is zynq or zyqnmp
-PLATFORM = zynq
-EOL
+    TOOLCHAIN=gcc-arm-10.2-2020.11-x86_64-arm-none-linux-gnueabihf
 elif [ "$PLATFORM" == "zynqmp" ]
 then
+    TOOLCHAIN=gcc-arm-10.2-2020.11-x86_64-aarch64-none-linux-gnu
+fi
+
+# Populate the CONFIG file
 cat >> CONFIG <<EOL
 # Location of rootfs builder
 ROOTFS_TOP = \$(GITHUB_WORKSPACE)/rootfs
 
 # Toolchain used to build the target
-TOOLCHAIN_ROOT = \$(GITHUB_WORKSPACE)/gcc-arm-10.2-2020.11-x86_64-aarch64-none-linux-gnu
+TOOLCHAIN_ROOT = \$(GITHUB_WORKSPACE)/$TOOLCHAIN
 
 # Where to find source files
 TAR_FILES = \$(GITHUB_WORKSPACE)/tar-files
@@ -42,9 +32,8 @@ TAR_FILES = \$(GITHUB_WORKSPACE)/tar-files
 PANDA_ROOT = \$(GITHUB_WORKSPACE)/build
 
 # Whether the platform is zynq or zyqnmp
-PLATFORM = zynqmp
+PLATFORM = $PLATFORM
 EOL
-fi
 
 # rootfs:
 # Create the CONFIG file
