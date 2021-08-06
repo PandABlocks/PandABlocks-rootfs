@@ -26,7 +26,7 @@ if [[ -z $1 ]]; # If no argument is given
           -OL https://ftp.gnu.org/gnu/readline/readline-6.3.tar.gz \
           -OL https://busybox.net/downloads/busybox-1.33.1.tar.bz2 \
           -o tornado-6.0.3.tar.gz -L https://github.com/tornadoweb/tornado/archive/refs/tags/v6.0.3.tar.gz \
-          -OL https://ftp.gnu.org/gnu/automake/automake-1.15.tar.gz \
+          -OL https://ftp.gnu.org/gnu/automake/automake-1.15.1.tar.gz \
           -OL https://www.python.org/ftp/python/3.8.0/Python-3.8.0.tgz \
           -OL https://ftp.openbsd.org/pub/OpenBSD/LibreSSL/libressl-3.0.2.tar.gz \
           -OL https://ftp.gnu.org/gnu/m4/m4-1.4.19.tar.gz \
