@@ -13,4 +13,4 @@ and this project adheres to `Semantic Versioning <https://semver.org/spec/v2.0.0
 - Start keeping a changelog
 
 
-.. _2.1: https://github.com/PandABlocks/PandABlocks-rootfs/compare/2.0.2...2.1
+.. _2.1: https://github.com/PandABlocks/PandABlocks-rootfs/releases/tag/2.1
