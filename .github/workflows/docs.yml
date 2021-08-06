@@ -28,28 +28,11 @@ jobs:
           mkdir build
           sudo bash PandABlocks-rootfs/.github/scripts/config-file-rootfs.sh zynq
 
-      # Verification of files/file structure
-      #- name: List workspace files
-      #  run: |
-      #    ls ${{ github.workspace }}
-      #    echo " "
-      #    ls PandABlocks-rootfs
-      #    echo " "
-      #    ls rootfs
-      #    echo " "
-      #    ls tar-files
-      #    echo " "
-      #    pip list
-
       # Build
       - name: Build Docs
         run: |
           cd PandABlocks-rootfs
           make docs
-
-      # Verification of build files
-      #- name: List build files
-      #  run: ls ${{ github.workspace }}/build
 
       - uses: rishabhgupta/split-by@v1
         id: split

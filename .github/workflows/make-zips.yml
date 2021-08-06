@@ -46,16 +46,16 @@ jobs:
           sudo bash PandABlocks-rootfs/.github/scripts/config-file-rootfs.sh ${{ matrix.platform }}
 
       # Verification of files/file structure
-      - name: List workspace files
-        run: |
-          ls ${{ github.workspace }}
-          echo " "
-          ls PandABlocks-rootfs
-          echo " "
-          ls rootfs
-          echo " "
-          ls tar-files
-          echo " "
+      #- name: List workspace files
+      #  run: |
+      #    ls ${{ github.workspace }}
+      #    echo " "
+      #    ls PandABlocks-rootfs
+      #    echo " "
+      #    ls rootfs
+      #    echo " "
+      #    ls tar-files
+      #    echo " "
 
       # Build
       - name: Make zips

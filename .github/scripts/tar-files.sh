@@ -5,7 +5,7 @@
 mkdir tar-files
 cd tar-files
 
-# Any single arguement ensures that only the linux tar files will be downloaded
+# Any single arguement ensures that only the linux source files will be downloaded
 if [[ -z $1 ]]; # If no argument is given
      then
      # Install tar file dependencies
