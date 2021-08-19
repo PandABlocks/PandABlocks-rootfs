@@ -5,9 +5,8 @@
 mkdir tar-files
 cd tar-files
 
-# Any single arguement ensures that only the linux source files will be downloaded
-if [[ -z $1 ]]; # If no argument is given
-     then
+# If no argument is given
+if [[ -z $1 ]]; then 
      # Install tar file dependencies
      curl -OL https://github.com/libffi/libffi/releases/download/v3.3-rc2/libffi-3.3-rc2.tar.gz \
           -OL https://ftp.gnu.org/gnu/nano/nano-2.4.1.tar.gz \
@@ -39,6 +38,6 @@ if [[ -z $1 ]]; # If no argument is given
 
 fi
 
-# Install linux tar files
+# Install linux tar file dependencies
 curl -o u-boot-xlnx-xilinx-v2020.2.2-k26.tar.gz -L https://github.com/Xilinx/u-boot-xlnx/archive/refs/tags/xilinx-v2020.2.2-k26.tar.gz \
      -o linux-xlnx-xilinx-v2020.2.2-k26.tar.gz -L https://github.com/Xilinx/linux-xlnx/archive/refs/tags/xilinx-v2020.2.2-k26.tar.gz
