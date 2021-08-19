@@ -26,7 +26,7 @@ jobs:
       - name: Generate CONFIG files - zynq
         run: |
           mkdir build
-          sudo bash PandABlocks-rootfs/.github/scripts/config-file-rootfs.sh zynq
+          sudo bash PandABlocks-rootfs/.github/scripts/config-file-pbrootfs.sh zynq
 
       # Build
       - name: Build Docs
