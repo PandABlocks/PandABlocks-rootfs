@@ -3,9 +3,6 @@
 
 PLATFORM=$1
 
-# PandABlocks-rootfs:
-cd PandABlocks-rootfs
-
 # Determine the toolchain to use
 if [ "$PLATFORM" == "zynq" ]; then
     TOOLCHAIN=gcc-arm-10.2-2020.11-x86_64-arm-none-linux-gnueabihf
@@ -13,8 +10,8 @@ elif [ "$PLATFORM" == "zynqmp" ]; then
     TOOLCHAIN=gcc-arm-10.2-2020.11-x86_64-aarch64-none-linux-gnu
 fi
 
-# Populate the CONFIG file
-cat >> CONFIG << 'EOL'
+# PandABlocks-rootfs:
+cat >> PandABlocks-rootfs/CONFIG << 'EOL'
 # Location of rootfs builder
 ROOTFS_TOP = $(GITHUB_WORKSPACE)/rootfs
 
@@ -28,13 +25,11 @@ TAR_FILES = $(GITHUB_WORKSPACE)/tar-files
 PANDA_ROOT = $(GITHUB_WORKSPACE)/build
 
 # Whether the platform is zynq or zyqnmp
-PLATFORM = $PLATFORM
+PLATFORM = $(PLATFORM)
 EOL
 
 # rootfs:
-cd ../rootfs
-# Populate the CONFIG file
-cat >> CONFIG.local << 'EOL'
+cat >> rootfs/CONFIG.local << 'EOL'
 TARGET = minimal
 
 # This is the location where source and build files will be placed.
