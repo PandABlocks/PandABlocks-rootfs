@@ -56,6 +56,9 @@ jobs:
           echo " "
           ls tar-files
           echo " "
+          cat PandABlocks-rootfs/CONFIG
+          echo " "
+          cat rootfs/CONFIG.local
 
       # Build
       - name: Make zips
