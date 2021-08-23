@@ -14,9 +14,6 @@ cat >> PandABlocks-rootfs/CONFIG << 'EOL'
 # Location of rootfs builder
 ROOTFS_TOP = $(GITHUB_WORKSPACE)/rootfs
 
-# Toolchain used to build the target
-TOOLCHAIN_ROOT = $(GITHUB_WORKSPACE)/$TOOLCHAIN
-
 # Where to find source files
 TAR_FILES = $(GITHUB_WORKSPACE)/tar-files
 
@@ -25,6 +22,11 @@ PANDA_ROOT = $(GITHUB_WORKSPACE)/build
 
 EOL
 
-echo "# Whether the platform is zynq or zyqnmp
-PLATFORM = $PLATFORM" >> PandABlocks-rootfs/CONFIG
+cat >> PandABlocks-rootfs/CONFIG << EOL
+# Toolchain used to build the target
+TOOLCHAIN_ROOT = $(GITHUB_WORKSPACE)/$TOOLCHAIN
 
+# Whether the platform is zynq or zyqnmp
+PLATFORM = $PLATFORM
+
+EOL
