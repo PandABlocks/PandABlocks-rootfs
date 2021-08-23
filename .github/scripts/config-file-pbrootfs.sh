@@ -24,7 +24,7 @@ EOL
 
 cat >> PandABlocks-rootfs/CONFIG << EOL
 # Toolchain used to build the target
-TOOLCHAIN_ROOT = $(GITHUB_WORKSPACE)/$TOOLCHAIN
+TOOLCHAIN_ROOT = \$(GITHUB_WORKSPACE)/$TOOLCHAIN
 
 # Whether the platform is zynq or zyqnmp
 PLATFORM = $PLATFORM
