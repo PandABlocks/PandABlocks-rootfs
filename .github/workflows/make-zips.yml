@@ -49,18 +49,18 @@ jobs:
 
       # Verification of files/file structure
       - name: List workspace files
-        run: |
-          ls ${{ github.workspace }}
-          echo " "
-          ls PandABlocks-rootfs
-          echo " "
-          ls rootfs
-          echo " "
-          ls tar-files
-          echo " "
-          cat PandABlocks-rootfs/CONFIG
-          echo " "
-          cat rootfs/CONFIG.local
+        #run: |
+        #  ls ${{ github.workspace }}
+        #  echo " "
+        #  ls PandABlocks-rootfs
+        #  echo " "
+        #  ls rootfs
+        #  echo " "
+        #  ls tar-files
+        #  echo " "
+        #  cat PandABlocks-rootfs/CONFIG
+        #  echo " "
+        #  cat rootfs/CONFIG.local
 
       # Build
       - name: Make zips
