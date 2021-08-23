@@ -18,6 +18,8 @@ jobs:
         uses: actions/checkout@v2
         with:
           path: PandABlocks-rootfs
+          # require history to get back to last tag for version number of branches
+          fetch-depth: 0
 
       - name: Checkout rootfs builder
         uses: actions/checkout@v2
@@ -42,24 +44,23 @@ jobs:
       #CONFIG files
       - name: Generate CONFIG files - ${{ matrix.platform }}
         run: |
-          mkdir build
           bash PandABlocks-rootfs/.github/scripts/config-file-pbrootfs.sh ${{ matrix.platform }}
           bash PandABlocks-rootfs/.github/scripts/config-file-rootfs.sh
 
       # Verification of files/file structure
-      - name: List workspace files
-        run: |
-          ls ${{ github.workspace }}
-          echo " "
-          ls PandABlocks-rootfs
-          echo " "
-          ls rootfs
-          echo " "
-          ls tar-files
-          echo " "
-          cat PandABlocks-rootfs/CONFIG
-          echo " "
-          cat rootfs/CONFIG.local
+      #- name: List workspace files
+      #  run: |
+      #    ls ${{ github.workspace }}
+      #    echo " "
+      #    ls PandABlocks-rootfs
+      #    echo " "
+      #    ls rootfs
+      #    echo " "
+      #    ls tar-files
+      #    echo " "
+      #    cat PandABlocks-rootfs/CONFIG
+      #    echo " "
+      #    cat rootfs/CONFIG.local
 
       # Build
       - name: Make zips
@@ -75,20 +76,31 @@ jobs:
       - name: Upload deps and boot build files
         uses: actions/upload-artifact@v2
         with:
-          name: build-files-${{ matrix.platform }}
+          name: deps&boot-${{ matrix.platform }}
           path: |
             build/deps-*.zip
             build/boot-*.zip
-
-      # Release 
-      - name: Release
-        uses: softprops/action-gh-release@v1
-        # Only release when a tag is pushed
-        if: startsWith(github.ref, 'refs/tags/')
+  
+  release:
+    needs: [build]
+    runs-on: ubuntu-latest
+    # make a release on every tag
+    if: github.event_name == 'push' && startsWith(github.event.ref, 'refs/tags')
+    steps:
+      - uses: actions/download-artifact@v2
         with:
-          files: |
-            build/deps-*.zip
-            build/boot-*.zip
-          body_path: ${{ github.workflow }}/PandABlocks-rootfs/CHANGELOG.rst
+          name: |
+            deps&boot-zynq
+            deps&boot-zynqmp
+          path:
+            artifacts 
+
+      - name: Github Release
+        # We pin to the SHA, not the tag, for security reasons.
+        # https://docs.github.com/en/actions/learn-github-actions/security-hardening-for-github-actions#using-third-party-actions
+        uses: softprops/action-gh-release@2d72d869af3bf23602f9593a1e3fd739b80ac1eb  # v0.1.12
+        with:
+          files: artifacts/*
+          body: See [Changelog](CHANGELOG.rst) for more details
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
