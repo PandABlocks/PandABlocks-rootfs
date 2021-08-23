@@ -25,8 +25,6 @@ PANDA_ROOT = $(GITHUB_WORKSPACE)/build
 
 EOL
 
-cat >> PandABlocks-rootfs/CONFIG << EOL
-# Whether the platform is zynq or zyqnmp
-PLATFORM = $PLATFORM
-EOL
+echo "# Whether the platform is zynq or zyqnmp
+PLATFORM = $PLATFORM" >> PandABlocks-rootfs/CONFIG
 
