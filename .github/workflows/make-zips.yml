@@ -78,8 +78,8 @@ jobs:
         with:
           name: deps&boot-${{ matrix.platform }}
           path: |
-            build/deps-*.zip
-            build/boot-*.zip
+            build/deps@*.zip
+            build/boot@*.zip
   
   release:
     needs: [build]
