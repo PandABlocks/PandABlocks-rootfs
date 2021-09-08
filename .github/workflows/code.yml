@@ -1,4 +1,4 @@
-name: Make Zips CI
+name: Code CI
 
 on:
   push:
