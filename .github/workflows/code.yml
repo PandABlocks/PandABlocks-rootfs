@@ -78,9 +78,10 @@ jobs:
         with:
           name: deps&boot-${{ matrix.platform }}
           path: |
-            build/deps@*.zip
-            build/boot@*.zip
-  
+            build/deps*.zip
+            build/boot*.zip
+
+
   release:
     needs: [build]
     runs-on: ubuntu-latest
@@ -89,11 +90,8 @@ jobs:
     steps:
       - uses: actions/download-artifact@v2
         with:
-          name: |
-            deps&boot-zynq
-            deps&boot-zynqmp
-          path:
-            artifacts 
+          name: deps&boot*
+          path: artifacts 
 
       - name: Github Release
         # We pin to the SHA, not the tag, for security reasons.
