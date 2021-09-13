@@ -8,6 +8,8 @@ if [ "$PLATFORM" == "zynq" ]; then
     TOOLCHAIN=gcc-arm-10.2-2020.11-x86_64-arm-none-linux-gnueabihf
 elif [ "$PLATFORM" == "zynqmp" ]; then
     TOOLCHAIN=gcc-arm-10.2-2020.11-x86_64-aarch64-none-linux-gnu
+else >&2 echo "Error: Argument $PLATFORM must be either zynq or zynqmp"
+    exit 1
 fi
 
 cat >> PandABlocks-rootfs/CONFIG << 'EOL'

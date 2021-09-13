@@ -9,6 +9,8 @@ if [ "$PLATFORM" == "zynq" ]; then
     TOOLCHAIN=https://developer.arm.com/-/media/Files/downloads/gnu-a/10.2-2020.11/binrel/gcc-arm-10.2-2020.11-x86_64-arm-none-linux-gnueabihf.tar.xz
 elif [ "$PLATFORM" == "zynqmp" ]; then
     TOOLCHAIN=https://developer.arm.com/-/media/Files/downloads/gnu-a/10.2-2020.11/binrel/gcc-arm-10.2-2020.11-x86_64-aarch64-none-linux-gnu.tar.xz
+else >&2 echo "Error: Argument $PLATFORM must be either zynq or zynqmp"
+    exit 1
 fi
 
 # Download and extract toolchain
