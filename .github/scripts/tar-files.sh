@@ -12,12 +12,12 @@ if [[ -z $1 ]]; then
         -OL https://ftp.gnu.org/gnu/nano/nano-2.4.1.tar.gz \
         -o cothread-2-18.tar.gz -L https://github.com/dls-controls/cothread/archive/refs/tags/2-18.tar.gz \
         -OL https://zlib.net/fossils/zlib-1.2.8.tar.gz \
-        -o ethtool-2.6.36.tar.gz -L https://sourceforge.net/projects/gkernel/files/ethtool/2.6.36/ethtool-2.6.36.tar.gz/download \
+        -OL https://src.fedoraproject.org/repo/pkgs/ethtool/ethtool-2.6.36.tar.gz/3b2322695e9ee7bf447ebcdb85f93e83/ethtool-2.6.36.tar.gz \
         -OL https://infraroot.at/pub/mtd/mtd-utils-2.1.2.tar.bz2 \
         -OL https://busybox.net/downloads/busybox-1.23.2.tar.bz2 \
-        -o procServ-2.6.0.tar.gz -L https://sourceforge.net/projects/procserv/files/2.6.0/procServ-2.6.0.tar.gz/download \
+        -OL http://kmq.jp.distfiles.macports.org/procServ/procServ-2.6.0.tar.gz \
         -OL https://ftp.gnu.org/gnu/autoconf/autoconf-2.69.tar.gz \
-        -o e2fsprogs-1.46.2.tar.gz -L https://sourceforge.net/projects/e2fsprogs/files/e2fsprogs/v1.46.2/e2fsprogs-1.46.2.tar.gz/download \
+        -OL https://qa.debian.org/watch/sf.php/e2fsprogs/e2fsprogs-1.46.1.tar.gz \
         -OL https://github.com/numpy/numpy/releases/download/v1.17.5/numpy-1.17.5.tar.gz \
         -OL http://www.eecis.udel.edu/~ntp/ntp_spool/ntp4/ntp-4.2/ntp-4.2.8p15.tar.gz \
         -OL https://matt.ucc.asn.au/dropbear/releases/dropbear-2015.67.tar.bz2 \
