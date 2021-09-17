@@ -12,7 +12,7 @@ if [[ -z $1 ]]; then
         -OL https://ftp.gnu.org/gnu/nano/nano-2.4.1.tar.gz \
         -o cothread-2-18.tar.gz -L https://github.com/dls-controls/cothread/archive/refs/tags/2-18.tar.gz \
         -OL https://zlib.net/fossils/zlib-1.2.8.tar.gz \
-        -o ethtool-2.6.36.tar.gz -L https://es.osdn.net/frs/g_redir.php?m=jaist&f=gkernel%2Fethtool%2F2.6.36%2Fethtool-2.6.36.tar.gz \
+        -o ethtool-2.6.36.tar.gz -L https://sourceforge.net/projects/gkernel/files/ethtool/2.6.36/ethtool-2.6.36.tar.gz/download \
         -OL https://infraroot.at/pub/mtd/mtd-utils-2.1.2.tar.bz2 \
         -OL https://busybox.net/downloads/busybox-1.23.2.tar.bz2 \
         -o procServ-2.6.0.tar.gz -L https://sourceforge.net/projects/procserv/files/2.6.0/procServ-2.6.0.tar.gz/download \
