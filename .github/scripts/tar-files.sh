@@ -17,7 +17,7 @@ if [[ -z $1 ]]; then
         -OL https://busybox.net/downloads/busybox-1.23.2.tar.bz2 \
         -OL http://kmq.jp.distfiles.macports.org/procServ/procServ-2.6.0.tar.gz \
         -OL https://ftp.gnu.org/gnu/autoconf/autoconf-2.69.tar.gz \
-        -OL https://qa.debian.org/watch/sf.php/e2fsprogs/e2fsprogs-1.46.1.tar.gz \
+        -OL https://qa.debian.org/watch/sf.php/e2fsprogs/e2fsprogs-1.46.2.tar.gz \
         -OL https://github.com/numpy/numpy/releases/download/v1.17.5/numpy-1.17.5.tar.gz \
         -OL http://www.eecis.udel.edu/~ntp/ntp_spool/ntp4/ntp-4.2/ntp-4.2.8p15.tar.gz \
         -OL https://matt.ucc.asn.au/dropbear/releases/dropbear-2015.67.tar.bz2 \
