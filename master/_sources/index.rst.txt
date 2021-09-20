@@ -24,8 +24,8 @@ get the PandA on the network, a `ssh_doc` guide, and a `building_doc` guide
 that will allow the rootfs to be rebuilt from source.
 
 .. toctree::
-    :caption: PandABlocks-rootfs
 
     quickstart
     remote
     building
+    Changelog <https://github.com/PandABlocks/PandABlocks-rootfs/blob/master/CHANGELOG.rst>
