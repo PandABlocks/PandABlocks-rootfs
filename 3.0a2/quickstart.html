@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Getting a PandA on the network &mdash; PandABlocks-rootfs 3.0a2
+ documentation</title>
+      <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="_static/theme_overrides.css" type="text/css" />
+    <link rel="shortcut icon" href="_static/favicon.ico"/>
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Updating a PandA via SSH" href="remote.html" />
+    <link rel="prev" title="PandABlocks-rootfs" href="index.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search"  style="background: black" >
+            <a href="index.html" class="icon icon-home"> PandABlocks-rootfs
+            <img src="_static/PandA-logo-for-black-background.svg" class="logo" alt="Logo"/>
+          </a>
+              <div class="version">
+                3.0a2
+
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+  <style>
+    /* style mobile top nav to look like main nav */
+    .wy-nav-top {
+        background: black
+    }
+  </style>
+  
+              <ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Getting a PandA on the network</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#override-file">Override file</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#web-interface">Web Interface</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#web-admin">Web Admin</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="remote.html">Updating a PandA via SSH</a></li>
+<li class="toctree-l1"><a class="reference internal" href="building.html">Building the Root File System</a></li>
+</ul>
+
+  <!-- Include link to changelog -->
+  <a href="https://github.com/PandABlocks/PandABlocks-rootfs/blob/master/CHANGELOG.rst">Changelog</a>
+  <!-- Add versions for selected branches + tags -->
+  <p class="caption"><span class="caption-text">Versions</span></p>
+  <ul id="versions"/>
+  <script>
+    // Add any branches to appear in the side pane here, tags will be added below
+    // Will only appear if docs are built and pushed in gh-pages
+    var versions = ['master', 'main'];
+    var dirs = new Set();
+    function addVersion(name) {
+      if (dirs.has(name)) {
+        var li = document.createElement("li");
+        var a = document.createElement("a");
+        a.href = 'https://PandABlocks.github.io/PandABlocks-rootfs/' + name;
+        a.innerText = name;
+        li.appendChild(a)
+        document.getElementById('versions').appendChild(li);
+      }
+    }
+    Promise.all([
+      // Find gh-pages directories and populate `dirs`
+      fetch("https://api.github.com/repos/PandABlocks/PandABlocks-rootfs/contents?ref=gh-pages")
+      .then(response => response.json())
+      .then(data => data.forEach(function(e) {
+        if (e.type == "dir") dirs.add(e.name);
+      })),
+      // Add tags to `versions`
+      fetch('https://api.github.com/repos/PandABlocks/PandABlocks-rootfs/tags')
+        .then(response => response.json())
+        .then(data => data.forEach(function(e) {
+          versions.push(e.name);
+        }))
+      ]).then(_ => versions.forEach(addVersion))
+  </script>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: black" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">PandABlocks-rootfs</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
+      <li>Getting a PandA on the network</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/quickstart.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <div class="section" id="getting-a-panda-on-the-network">
+<span id="quickstart-doc"></span><h1>Getting a PandA on the network<a class="headerlink" href="#getting-a-panda-on-the-network" title="Permalink to this headline"></a></h1>
+<p>The SD card inside a PandA contains a <code class="docutils literal notranslate"><span class="pre">config.txt</span></code> file that allows control
+of networking and other configuration settings</p>
+<div class="code bash highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># This file contains configuration settings.  In this file network and other</span>
+<span class="c1"># settings can be adjusted.</span>
+
+<span class="c1"># If ADDRESS and NETMASK are not both specified DHCP will be used instead.</span>
+<span class="c1"># The ADDRESS field can be set to a four part dotted IP address followed by a</span>
+<span class="c1"># network mask specification thus:</span>
+<span class="c1">#</span>
+<span class="c1">#   ADDRESS = 172.23.252.202</span>
+<span class="c1">#   NETMASK = 255.255.240.0</span>
+
+<span class="c1"># If the ADDRESS field has been set then the GATEWAY and DNS fields should be</span>
+<span class="c1"># set:</span>
+<span class="c1">#</span>
+<span class="c1">#   GATEWAY = 172.23.240.254</span>
+<span class="c1">#   DNS = 172.23.5.13 172.23.4.1 130.246.8.13</span>
+
+<span class="c1"># Optionally the DNS search domain can be set:</span>
+<span class="c1">#</span>
+<span class="c1">#   DNS_SEARCH = diamond.ac.uk</span>
+
+<span class="c1"># The NTP server or servers can be specified here:</span>
+<span class="c1">#</span>
+<span class="c1">#   NTP = 172.23.240.2 172.23.199.1</span>
+
+<span class="c1"># The machine hostname can be specified here:</span>
+<span class="c1">#</span>
+<span class="c1">#   HOSTNAME = panda</span>
+
+<span class="c1"># To skip loading any zpackages at startup, either for testing or as an</span>
+<span class="c1"># override to recover from a faulty zpkg install:</span>
+<span class="c1">#</span>
+<span class="c1">#   NO_ZPKG</span>
+</pre></div>
+</div>
+<p>During startup the network will be configured as follows:</p>
+<ul class="simple">
+<li><p>If <code class="docutils literal notranslate"><span class="pre">ADDRESS</span></code> and <code class="docutils literal notranslate"><span class="pre">NETMASK</span></code> are set then a static IP will be assigned, and
+the remaining keys should also be set.</p></li>
+<li><p>Otherwise DHCP will be attempted.  If successful this will assign the IP
+address, gateway and DNS settings, and may assign hostname.</p></li>
+<li><p>If DCHP fails then “ZeroConf” is attempted.  If this also fails then PandA
+will not be reachable on the network.</p></li>
+</ul>
+<p>Note that in the default configuration PandA will attempt to contact NTP servers
+at <code class="docutils literal notranslate"><span class="pre">0.pool.ntp.org</span></code> etc.</p>
+<div class="section" id="override-file">
+<h2>Override file<a class="headerlink" href="#override-file" title="Permalink to this headline"></a></h2>
+<p>If a static IP address needs to be set this can be configured after installation
+via the following override mechanism.</p>
+<p>If a USB drive is plugged into PandA while it is booting, and if the drive
+contains this file:</p>
+<blockquote>
+<div><p><code class="docutils literal notranslate"><span class="pre">panda-config.txt</span></code></p>
+</div></blockquote>
+<p>then this file will be used for network configuration instead of <code class="docutils literal notranslate"><span class="pre">config.txt</span></code>
+on the SD card.</p>
+<p>This override file can be made permanent by using the
+<code class="docutils literal notranslate"><span class="pre">Show</span> <span class="pre">Network</span> <span class="pre">Configuration</span></code> function of the <a class="reference internal" href="#web-admin"><span class="std std-ref">Web Admin</span></a> as explained below.</p>
+</div>
+<div class="section" id="web-interface">
+<h2>Web Interface<a class="headerlink" href="#web-interface" title="Permalink to this headline"></a></h2>
+<p>Once a PandA is on the network, it exposes a Web Interface that is accessible
+by typing it’s ip address or hostname into a browser. This consists of a
+number of areas:</p>
+<ul class="simple">
+<li><p>Home: A summary of the Web Interface sections</p></li>
+<li><p>Docs: Documentation on the hardware, firmware and software that make up the
+device</p></li>
+<li><p>Control: If the Web Control package is loaded then this allows the functional
+blocks that make up PandA to be wired together, parameters set, and the design
+saved and loaded.</p></li>
+<li><p>Admin: Allows installation of packages from a USB key, setting up SSH keys,
+and other remote administration.</p></li>
+</ul>
+</div>
+<div class="section" id="web-admin">
+<span id="id1"></span><h2>Web Admin<a class="headerlink" href="#web-admin" title="Permalink to this headline"></a></h2>
+<p>This allows the following functions:</p>
+<ul class="simple">
+<li><p>System</p>
+<ul>
+<li><p>Reboot/Restart</p></li>
+<li><p>Show /var/log/messages</p></li>
+<li><p>Show Network Configuration</p></li>
+</ul>
+</li>
+<li><p>Packages</p>
+<ul>
+<li><p>List Installed Packages</p></li>
+<li><p>Install Packages from USB</p></li>
+<li><p>Install Rootfs from USB</p></li>
+</ul>
+</li>
+<li><p>SSH Keys</p>
+<ul>
+<li><p>Show Authorised SSH Keys</p></li>
+<li><p>Append SSH keys from USB</p></li>
+</ul>
+</li>
+</ul>
+<p>Instructions on each operation is available by visiting the relevant Web Admin
+page.</p>
+</div>
+</div>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="index.html" class="btn btn-neutral float-left" title="PandABlocks-rootfs" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="remote.html" class="btn btn-neutral float-right" title="Updating a PandA via SSH" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2015-2016, Michael Abbott, Tom Cobb.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
