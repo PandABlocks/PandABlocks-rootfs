@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>PandABlocks-rootfs &mdash; panda-rootfs 3.0a1-6-g456b417
+  <title>PandABlocks-rootfs &mdash; PandABlocks-rootfs 3.0a1-7-g7058665
  documentation</title>
       <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
@@ -20,20 +20,19 @@
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="Getting a PandA on the network" href="quickstart.html" />
-    <link rel="prev" title="Contents" href="contents.html" /> 
+    <link rel="next" title="Getting a PandA on the network" href="quickstart.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
   <div class="wy-grid-for-nav">
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
-        <div class="wy-side-nav-search" >
-            <a href="contents.html" class="icon icon-home"> panda-rootfs
+        <div class="wy-side-nav-search"  style="background: black" >
+            <a href="#" class="icon icon-home"> PandABlocks-rootfs
             <img src="_static/PandA-logo-for-black-background.svg" class="logo" alt="Logo"/>
           </a>
               <div class="version">
-                3.0a1-6-g456b417
+                3.0a1-7-g7058665
 
               </div>
 <div role="search">
@@ -44,31 +43,69 @@
   </form>
 </div>
         </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
-              <ul class="current">
-<li class="toctree-l1 current"><a class="current reference internal" href="#">Introduction</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="#what-does-the-rootfs-do">What does the rootfs do?</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#how-is-the-documentation-structured">How is the documentation structured?</a></li>
-</ul>
-</li>
+  <style>
+    /* style mobile top nav to look like main nav */
+    .wy-nav-top {
+        background: black
+    }
+  </style>
+  
+              <ul>
 <li class="toctree-l1"><a class="reference internal" href="quickstart.html">Getting a PandA on the network</a></li>
 <li class="toctree-l1"><a class="reference internal" href="remote.html">Updating a PandA via SSH</a></li>
 <li class="toctree-l1"><a class="reference internal" href="building.html">Building the Root File System</a></li>
 </ul>
 
+  <!-- Include link to changelog -->
+  <a href="https://github.com/PandABlocks/PandABlocks-rootfs/blob/master/CHANGELOG.rst">Changelog</a>
+  <!-- Add versions for selected branches + tags -->
+  <p class="caption"><span class="caption-text">Versions</span></p>
+  <ul id="versions"/>
+  <script>
+    // Add any branches to appear in the side pane here, tags will be added below
+    // Will only appear if docs are built and pushed in gh-pages
+    var versions = ['master', 'main'];
+    var dirs = new Set();
+    function addVersion(name) {
+      if (dirs.has(name)) {
+        var li = document.createElement("li");
+        var a = document.createElement("a");
+        a.href = 'https://PandABlocks.github.io/PandABlocks-rootfs/' + name;
+        a.innerText = name;
+        li.appendChild(a)
+        document.getElementById('versions').appendChild(li);
+      }
+    }
+    Promise.all([
+      // Find gh-pages directories and populate `dirs`
+      fetch("https://api.github.com/repos/PandABlocks/PandABlocks-rootfs/contents?ref=gh-pages")
+      .then(response => response.json())
+      .then(data => data.forEach(function(e) {
+        if (e.type == "dir") dirs.add(e.name);
+      })),
+      // Add tags to `versions`
+      fetch('https://api.github.com/repos/PandABlocks/PandABlocks-rootfs/tags')
+        .then(response => response.json())
+        .then(data => data.forEach(function(e) {
+          versions.push(e.name);
+        }))
+      ]).then(_ => versions.forEach(addVersion))
+  </script>
+
         </div>
       </div>
     </nav>
 
-    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: black" >
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
-          <a href="contents.html">panda-rootfs</a>
+          <a href="#">PandABlocks-rootfs</a>
       </nav>
 
       <div class="wy-nav-content">
         <div class="rst-content">
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
-      <li><a href="contents.html" class="icon icon-home"></a> &raquo;</li>
+      <li><a href="#" class="icon icon-home"></a> &raquo;</li>
       <li>PandABlocks-rootfs</li>
       <li class="wy-breadcrumbs-aside">
             <a href="_sources/index.rst.txt" rel="nofollow"> View page source</a>
@@ -80,12 +117,30 @@
            <div itemprop="articleBody">
              
   <div class="section" id="pandablocks-rootfs">
-<h1>PandABlocks-rootfs<a class="headerlink" href="#pandablocks-rootfs" title="Permalink to this headline">¶</a></h1>
+<h1>PandABlocks-rootfs<a class="headerlink" href="#pandablocks-rootfs" title="Permalink to this headline"></a></h1>
+<p><a class="reference external" href="https://github.com/PandABlocks/PandABlocks-rootfs/actions?query=workflow%3A%22Code+CI%22"><img alt="Code CI" src="https://github.com/PandABlocks/PandABlocks-rootfs/workflows/Code%20CI/badge.svg?branch=master" /></a> <a class="reference external" href="https://github.com/PandABlocks/PandABlocks-rootfs/actions?query=workflow%3A%22Docs+CI%22"><img alt="Docs CI" src="https://github.com/PandABlocks/PandABlocks-rootfs/workflows/Docs%20CI/badge.svg?branch=master" /></a> <a class="reference external" href="https://opensource.org/licenses/Apache-2.0"><img alt="Apache License" src="https://img.shields.io/badge/License-Apache%202.0-blue.svg" /></a></p>
 <p>PandABlocks-rootfs contains the sources to build the root filesystem that
 will boot Linux on the Zynq module that is the heart of a PandABlocks enabled
 device like PandABox.</p>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 16%" />
+<col style="width: 84%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p>Source code</p></td>
+<td><p><a class="reference external" href="https://github.com/PandABlocks/PandABlocks-rootfs">https://github.com/PandABlocks/PandABlocks-rootfs</a></p></td>
+</tr>
+<tr class="row-even"><td><p>Documentation</p></td>
+<td><p><a class="reference external" href="https://PandABlocks.github.io/PandABlocks-rootfs">https://PandABlocks.github.io/PandABlocks-rootfs</a></p></td>
+</tr>
+<tr class="row-odd"><td><p>Changelog</p></td>
+<td><p><a class="reference external" href="https://github.com/PandABlocks/PandABlocks-rootfs/blob/master/CHANGELOG.rst">https://github.com/PandABlocks/PandABlocks-rootfs/blob/master/CHANGELOG.rst</a></p></td>
+</tr>
+</tbody>
+</table>
 <div class="section" id="what-does-the-rootfs-do">
-<h2>What does the rootfs do?<a class="headerlink" href="#what-does-the-rootfs-do" title="Permalink to this headline">¶</a></h2>
+<h2>What does the rootfs do?<a class="headerlink" href="#what-does-the-rootfs-do" title="Permalink to this headline"></a></h2>
 <p>The rootfs is responsible for booting the Zynq, then setting up a number of
 services on it:</p>
 <ul class="simple">
@@ -100,10 +155,40 @@ stick</p></li>
 </ul>
 </div>
 <div class="section" id="how-is-the-documentation-structured">
-<h2>How is the documentation structured?<a class="headerlink" href="#how-is-the-documentation-structured" title="Permalink to this headline">¶</a></h2>
+<h2>How is the documentation structured?<a class="headerlink" href="#how-is-the-documentation-structured" title="Permalink to this headline"></a></h2>
 <p>The documentation is structured into a <a class="reference internal" href="quickstart.html#quickstart-doc"><span class="std std-ref">Getting a PandA on the network</span></a> guide that will
 get the PandA on the network, a <a class="reference internal" href="remote.html#ssh-doc"><span class="std std-ref">Updating a PandA via SSH</span></a> guide, and a <a class="reference internal" href="building.html#building-doc"><span class="std std-ref">Building the Root File System</span></a> guide
 that will allow the rootfs to be rebuilt from source.</p>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="quickstart.html">Getting a PandA on the network</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="quickstart.html#override-file">Override file</a></li>
+<li class="toctree-l2"><a class="reference internal" href="quickstart.html#web-interface">Web Interface</a></li>
+<li class="toctree-l2"><a class="reference internal" href="quickstart.html#web-admin">Web Admin</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="remote.html">Updating a PandA via SSH</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="remote.html#updating-the-rootfs">Updating the rootfs</a></li>
+<li class="toctree-l2"><a class="reference internal" href="remote.html#updating-zpkg-packages">Updating zpkg packages</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="building.html">Building the Root File System</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="building.html#build-dependencies">Build Dependencies</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="building.html#configuring-config">Configuring <code class="docutils literal notranslate"><span class="pre">CONFIG</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="building.html#sources">Sources</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="building.html#output-files">Output Files</a></li>
+<li class="toctree-l2"><a class="reference internal" href="building.html#boot-process">Boot Process</a></li>
+<li class="toctree-l2"><a class="reference internal" href="building.html#preparing-sd-for-install">Preparing SD for Install</a></li>
+<li class="toctree-l2"><a class="reference internal" href="building.html#panda-system-first-boot">Panda System First Boot</a></li>
+<li class="toctree-l2"><a class="reference internal" href="building.html#panda-packages-zpkg">PandA Packages (zpkg)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="building.html#installing-zpkg-files">Installing zpkg Files</a></li>
+<li class="toctree-l2"><a class="reference internal" href="building.html#zpkg-command"><code class="docutils literal notranslate"><span class="pre">zpkg</span></code> Command</a></li>
+</ul>
+</li>
+</ul>
+</div>
 </div>
 </div>
 
@@ -111,7 +196,6 @@ that will allow the rootfs to be rebuilt from source.</p>
            </div>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="contents.html" class="btn btn-neutral float-left" title="Contents" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
         <a href="quickstart.html" class="btn btn-neutral float-right" title="Getting a PandA on the network" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 

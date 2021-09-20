@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Building the Root File System &mdash; panda-rootfs 3.0a1-6-g456b417
+  <title>Building the Root File System &mdash; PandABlocks-rootfs 3.0a1-7-g7058665
  documentation</title>
       <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
@@ -27,12 +27,12 @@
   <div class="wy-grid-for-nav">
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
-        <div class="wy-side-nav-search" >
-            <a href="contents.html" class="icon icon-home"> panda-rootfs
+        <div class="wy-side-nav-search"  style="background: black" >
+            <a href="index.html" class="icon icon-home"> PandABlocks-rootfs
             <img src="_static/PandA-logo-for-black-background.svg" class="logo" alt="Logo"/>
           </a>
               <div class="version">
-                3.0a1-6-g456b417
+                3.0a1-7-g7058665
 
               </div>
 <div role="search">
@@ -43,8 +43,14 @@
   </form>
 </div>
         </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+  <style>
+    /* style mobile top nav to look like main nav */
+    .wy-nav-top {
+        background: black
+    }
+  </style>
+  
               <ul class="current">
-<li class="toctree-l1"><a class="reference internal" href="index.html">Introduction</a></li>
 <li class="toctree-l1"><a class="reference internal" href="quickstart.html">Getting a PandA on the network</a></li>
 <li class="toctree-l1"><a class="reference internal" href="remote.html">Updating a PandA via SSH</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Building the Root File System</a><ul>
@@ -64,20 +70,56 @@
 </li>
 </ul>
 
+  <!-- Include link to changelog -->
+  <a href="https://github.com/PandABlocks/PandABlocks-rootfs/blob/master/CHANGELOG.rst">Changelog</a>
+  <!-- Add versions for selected branches + tags -->
+  <p class="caption"><span class="caption-text">Versions</span></p>
+  <ul id="versions"/>
+  <script>
+    // Add any branches to appear in the side pane here, tags will be added below
+    // Will only appear if docs are built and pushed in gh-pages
+    var versions = ['master', 'main'];
+    var dirs = new Set();
+    function addVersion(name) {
+      if (dirs.has(name)) {
+        var li = document.createElement("li");
+        var a = document.createElement("a");
+        a.href = 'https://PandABlocks.github.io/PandABlocks-rootfs/' + name;
+        a.innerText = name;
+        li.appendChild(a)
+        document.getElementById('versions').appendChild(li);
+      }
+    }
+    Promise.all([
+      // Find gh-pages directories and populate `dirs`
+      fetch("https://api.github.com/repos/PandABlocks/PandABlocks-rootfs/contents?ref=gh-pages")
+      .then(response => response.json())
+      .then(data => data.forEach(function(e) {
+        if (e.type == "dir") dirs.add(e.name);
+      })),
+      // Add tags to `versions`
+      fetch('https://api.github.com/repos/PandABlocks/PandABlocks-rootfs/tags')
+        .then(response => response.json())
+        .then(data => data.forEach(function(e) {
+          versions.push(e.name);
+        }))
+      ]).then(_ => versions.forEach(addVersion))
+  </script>
+
         </div>
       </div>
     </nav>
 
-    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: black" >
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
-          <a href="contents.html">panda-rootfs</a>
+          <a href="index.html">PandABlocks-rootfs</a>
       </nav>
 
       <div class="wy-nav-content">
         <div class="rst-content">
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
-      <li><a href="contents.html" class="icon icon-home"></a> &raquo;</li>
+      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
       <li>Building the Root File System</li>
       <li class="wy-breadcrumbs-aside">
             <a href="_sources/building.rst.txt" rel="nofollow"> View page source</a>
@@ -89,7 +131,7 @@
            <div itemprop="articleBody">
              
   <div class="section" id="building-the-root-file-system">
-<span id="building-doc"></span><h1>Building the Root File System<a class="headerlink" href="#building-the-root-file-system" title="Permalink to this headline">¶</a></h1>
+<span id="building-doc"></span><h1>Building the Root File System<a class="headerlink" href="#building-the-root-file-system" title="Permalink to this headline"></a></h1>
 <p>This project builds a complete system image for booting PandA.  The following
 components are built in turn:</p>
 <ul class="simple">
@@ -100,7 +142,7 @@ boot loader.</p></li>
 bootstrapping, one to act as the final system.</p></li>
 </ul>
 <div class="section" id="build-dependencies">
-<h2>Build Dependencies<a class="headerlink" href="#build-dependencies" title="Permalink to this headline">¶</a></h2>
+<h2>Build Dependencies<a class="headerlink" href="#build-dependencies" title="Permalink to this headline"></a></h2>
 <p>The following must be installed before building this project:</p>
 <ul class="simple">
 <li><p>Xilinx Zynq SDK.</p></li>
@@ -111,7 +153,7 @@ these projects.</p></li>
 <li><p>Sources needed for rootfs build.  This list is quite long, see below.</p></li>
 </ul>
 <div class="section" id="configuring-config">
-<h3>Configuring <code class="docutils literal notranslate"><span class="pre">CONFIG</span></code><a class="headerlink" href="#configuring-config" title="Permalink to this headline">¶</a></h3>
+<h3>Configuring <code class="docutils literal notranslate"><span class="pre">CONFIG</span></code><a class="headerlink" href="#configuring-config" title="Permalink to this headline"></a></h3>
 <p>All of the build dependencies are configured in the file <code class="docutils literal notranslate"><span class="pre">CONFIG</span></code>.  This
 is designed to not be under version control.  Copy the file <code class="docutils literal notranslate"><span class="pre">CONFIG.example</span></code>
 and modify the following fields as required:</p>
@@ -147,7 +189,7 @@ set to <code class="docutils literal notranslate"><span class="pre">$(BINUTILS_D
 The default value is <code class="docutils literal notranslate"><span class="pre">arm-xilinx-linux-gnueabi</span></code>.</p>
 </div>
 <div class="section" id="sources">
-<h3>Sources<a class="headerlink" href="#sources" title="Permalink to this headline">¶</a></h3>
+<h3>Sources<a class="headerlink" href="#sources" title="Permalink to this headline"></a></h3>
 <p>The rootfs requires a long list of dependencies that are freely available on the
 web. They have been gathered together in one tar file here:</p>
 <p><a class="reference external" href="http://www.ohwr.org/attachments/download/5133/rootfs-tarfiles-0.6.tar">http://www.ohwr.org/attachments/download/5133/rootfs-tarfiles-0.6.tar</a></p>
@@ -211,7 +253,7 @@ number of system components.</p>
 </div>
 </div>
 <div class="section" id="output-files">
-<h2>Output Files<a class="headerlink" href="#output-files" title="Permalink to this headline">¶</a></h2>
+<h2>Output Files<a class="headerlink" href="#output-files" title="Permalink to this headline"></a></h2>
 <p>When built the following files are placed in <code class="docutils literal notranslate"><span class="pre">$(BOOT_IMAGE)</span></code> (see <code class="docutils literal notranslate"><span class="pre">CONFIG</span></code>
 to define this):</p>
 <dl class="simple">
@@ -235,7 +277,7 @@ settings.</p>
 </dl>
 </div>
 <div class="section" id="boot-process">
-<h2>Boot Process<a class="headerlink" href="#boot-process" title="Permalink to this headline">¶</a></h2>
+<h2>Boot Process<a class="headerlink" href="#boot-process" title="Permalink to this headline"></a></h2>
 <p>The boot process is as follows:</p>
 <ol class="arabic simple" start="0">
 <li><p>The stage-0 boot loader is hard wired into Zynq.  This loads <code class="docutils literal notranslate"><span class="pre">boot.bin</span></code>
@@ -253,7 +295,7 @@ uncompressing <code class="docutils literal notranslate"><span class="pre">image
 </ol>
 </div>
 <div class="section" id="preparing-sd-for-install">
-<h2>Preparing SD for Install<a class="headerlink" href="#preparing-sd-for-install" title="Permalink to this headline">¶</a></h2>
+<h2>Preparing SD for Install<a class="headerlink" href="#preparing-sd-for-install" title="Permalink to this headline"></a></h2>
 <p>To install a fresh PandA system:</p>
 <ol class="arabic">
 <li><p>Obtain a formatted empty SD card.  A minimum size of 2GB is recommended.</p></li>
@@ -269,7 +311,7 @@ blocks.</p></li>
 </ol>
 </div>
 <div class="section" id="panda-system-first-boot">
-<h2>Panda System First Boot<a class="headerlink" href="#panda-system-first-boot" title="Permalink to this headline">¶</a></h2>
+<h2>Panda System First Boot<a class="headerlink" href="#panda-system-first-boot" title="Permalink to this headline"></a></h2>
 <p>It is wise to boot PandA for the first time with an connected serial console,
 particularly if the MAC file has not been written.  If no MAC file has been
 specified then on boot the serial console will prompt for a MAC address to be
@@ -285,7 +327,7 @@ the speed of the SD card.</p>
 <p>The serial port parameters are 115200n8.</p>
 </div>
 <div class="section" id="panda-packages-zpkg">
-<h2>PandA Packages (zpkg)<a class="headerlink" href="#panda-packages-zpkg" title="Permalink to this headline">¶</a></h2>
+<h2>PandA Packages (zpkg)<a class="headerlink" href="#panda-packages-zpkg" title="Permalink to this headline"></a></h2>
 <p>zpkg files will be used for managing all application software.  A zpkg is
 defined by the following:</p>
 <ul class="simple">
@@ -298,7 +340,7 @@ under <code class="docutils literal notranslate"><span class="pre">/opt</span></
 </ul>
 </div>
 <div class="section" id="installing-zpkg-files">
-<h2>Installing zpkg Files<a class="headerlink" href="#installing-zpkg-files" title="Permalink to this headline">¶</a></h2>
+<h2>Installing zpkg Files<a class="headerlink" href="#installing-zpkg-files" title="Permalink to this headline"></a></h2>
 <p>There are two ways to maintain installed software:</p>
 <ol class="arabic">
 <li><p>The simplest is via the Administration web page:</p>
@@ -320,7 +362,7 @@ script, for example:</p>
 </ol>
 </div>
 <div class="section" id="zpkg-command">
-<h2><code class="docutils literal notranslate"><span class="pre">zpkg</span></code> Command<a class="headerlink" href="#zpkg-command" title="Permalink to this headline">¶</a></h2>
+<h2><code class="docutils literal notranslate"><span class="pre">zpkg</span></code> Command<a class="headerlink" href="#zpkg-command" title="Permalink to this headline"></a></h2>
 <dl class="simple">
 <dt><code class="docutils literal notranslate"><span class="pre">zpkg</span> <span class="pre">list</span></code></dt><dd><p>Lists all installed packages</p>
 </dd>

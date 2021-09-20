@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Getting a PandA on the network &mdash; panda-rootfs 3.0a1-6-g456b417
+  <title>Getting a PandA on the network &mdash; PandABlocks-rootfs 3.0a1-7-g7058665
  documentation</title>
       <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
@@ -28,12 +28,12 @@
   <div class="wy-grid-for-nav">
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
-        <div class="wy-side-nav-search" >
-            <a href="contents.html" class="icon icon-home"> panda-rootfs
+        <div class="wy-side-nav-search"  style="background: black" >
+            <a href="index.html" class="icon icon-home"> PandABlocks-rootfs
             <img src="_static/PandA-logo-for-black-background.svg" class="logo" alt="Logo"/>
           </a>
               <div class="version">
-                3.0a1-6-g456b417
+                3.0a1-7-g7058665
 
               </div>
 <div role="search">
@@ -44,8 +44,14 @@
   </form>
 </div>
         </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+  <style>
+    /* style mobile top nav to look like main nav */
+    .wy-nav-top {
+        background: black
+    }
+  </style>
+  
               <ul class="current">
-<li class="toctree-l1"><a class="reference internal" href="index.html">Introduction</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Getting a PandA on the network</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#override-file">Override file</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#web-interface">Web Interface</a></li>
@@ -56,20 +62,56 @@
 <li class="toctree-l1"><a class="reference internal" href="building.html">Building the Root File System</a></li>
 </ul>
 
+  <!-- Include link to changelog -->
+  <a href="https://github.com/PandABlocks/PandABlocks-rootfs/blob/master/CHANGELOG.rst">Changelog</a>
+  <!-- Add versions for selected branches + tags -->
+  <p class="caption"><span class="caption-text">Versions</span></p>
+  <ul id="versions"/>
+  <script>
+    // Add any branches to appear in the side pane here, tags will be added below
+    // Will only appear if docs are built and pushed in gh-pages
+    var versions = ['master', 'main'];
+    var dirs = new Set();
+    function addVersion(name) {
+      if (dirs.has(name)) {
+        var li = document.createElement("li");
+        var a = document.createElement("a");
+        a.href = 'https://PandABlocks.github.io/PandABlocks-rootfs/' + name;
+        a.innerText = name;
+        li.appendChild(a)
+        document.getElementById('versions').appendChild(li);
+      }
+    }
+    Promise.all([
+      // Find gh-pages directories and populate `dirs`
+      fetch("https://api.github.com/repos/PandABlocks/PandABlocks-rootfs/contents?ref=gh-pages")
+      .then(response => response.json())
+      .then(data => data.forEach(function(e) {
+        if (e.type == "dir") dirs.add(e.name);
+      })),
+      // Add tags to `versions`
+      fetch('https://api.github.com/repos/PandABlocks/PandABlocks-rootfs/tags')
+        .then(response => response.json())
+        .then(data => data.forEach(function(e) {
+          versions.push(e.name);
+        }))
+      ]).then(_ => versions.forEach(addVersion))
+  </script>
+
         </div>
       </div>
     </nav>
 
-    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: black" >
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
-          <a href="contents.html">panda-rootfs</a>
+          <a href="index.html">PandABlocks-rootfs</a>
       </nav>
 
       <div class="wy-nav-content">
         <div class="rst-content">
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
-      <li><a href="contents.html" class="icon icon-home"></a> &raquo;</li>
+      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
       <li>Getting a PandA on the network</li>
       <li class="wy-breadcrumbs-aside">
             <a href="_sources/quickstart.rst.txt" rel="nofollow"> View page source</a>
@@ -81,7 +123,7 @@
            <div itemprop="articleBody">
              
   <div class="section" id="getting-a-panda-on-the-network">
-<span id="quickstart-doc"></span><h1>Getting a PandA on the network<a class="headerlink" href="#getting-a-panda-on-the-network" title="Permalink to this headline">¶</a></h1>
+<span id="quickstart-doc"></span><h1>Getting a PandA on the network<a class="headerlink" href="#getting-a-panda-on-the-network" title="Permalink to this headline"></a></h1>
 <p>The SD card inside a PandA contains a <code class="docutils literal notranslate"><span class="pre">config.txt</span></code> file that allows control
 of networking and other configuration settings</p>
 <div class="code bash highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># This file contains configuration settings.  In this file network and other</span>
@@ -130,7 +172,7 @@ will not be reachable on the network.</p></li>
 <p>Note that in the default configuration PandA will attempt to contact NTP servers
 at <code class="docutils literal notranslate"><span class="pre">0.pool.ntp.org</span></code> etc.</p>
 <div class="section" id="override-file">
-<h2>Override file<a class="headerlink" href="#override-file" title="Permalink to this headline">¶</a></h2>
+<h2>Override file<a class="headerlink" href="#override-file" title="Permalink to this headline"></a></h2>
 <p>If a static IP address needs to be set this can be configured after installation
 via the following override mechanism.</p>
 <p>If a USB drive is plugged into PandA while it is booting, and if the drive
@@ -144,7 +186,7 @@ on the SD card.</p>
 <code class="docutils literal notranslate"><span class="pre">Show</span> <span class="pre">Network</span> <span class="pre">Configuration</span></code> function of the <a class="reference internal" href="#web-admin"><span class="std std-ref">Web Admin</span></a> as explained below.</p>
 </div>
 <div class="section" id="web-interface">
-<h2>Web Interface<a class="headerlink" href="#web-interface" title="Permalink to this headline">¶</a></h2>
+<h2>Web Interface<a class="headerlink" href="#web-interface" title="Permalink to this headline"></a></h2>
 <p>Once a PandA is on the network, it exposes a Web Interface that is accessible
 by typing it’s ip address or hostname into a browser. This consists of a
 number of areas:</p>
@@ -160,7 +202,7 @@ and other remote administration.</p></li>
 </ul>
 </div>
 <div class="section" id="web-admin">
-<span id="id1"></span><h2>Web Admin<a class="headerlink" href="#web-admin" title="Permalink to this headline">¶</a></h2>
+<span id="id1"></span><h2>Web Admin<a class="headerlink" href="#web-admin" title="Permalink to this headline"></a></h2>
 <p>This allows the following functions:</p>
 <ul class="simple">
 <li><p>System</p>
