@@ -321,10 +321,6 @@ $(DEPS_ZIP): $(BOOT_ZIP)
 zips: $(BOOT_ZIP) $(DEPS_ZIP)
 .PHONY: zips
 
-github-release: $(BOOT_ZIP) $(DEPS_ZIP)
-	./make-github-release.py PandABlocks-rootfs $(GIT_VERSION_SUFFIX) $^
-
-
 # ------------------------------------------------------------------------------
 # Documentation
 

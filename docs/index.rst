@@ -1,9 +1,5 @@
-PandABlocks-rootfs
-==================
-
-PandABlocks-rootfs contains the sources to build the root filesystem that
-will boot Linux on the Zynq module that is the heart of a PandABlocks enabled
-device like PandABox.
+.. include:: ../README.rst
+    :end-before: when included in index.rst
 
 What does the rootfs do?
 ------------------------
@@ -26,3 +22,10 @@ How is the documentation structured?
 The documentation is structured into a `quickstart_doc` guide that will
 get the PandA on the network, a `ssh_doc` guide, and a `building_doc` guide
 that will allow the rootfs to be rebuilt from source.
+
+.. toctree::
+
+    quickstart
+    remote
+    building
+    Changelog <https://github.com/PandABlocks/PandABlocks-rootfs/blob/master/CHANGELOG.rst>

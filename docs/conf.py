@@ -41,10 +41,10 @@ source_suffix = '.rst'
 #source_encoding = 'utf-8-sig'
 
 # The master toctree document.
-master_doc = 'contents'
+master_doc = 'index'
 
 # General information about the project.
-project = u'panda-rootfs'
+project = u'PandABlocks-rootfs'
 copyright = u'2015-2016, Michael Abbott, Tom Cobb'
 author = u'Michael Abbott'
 
@@ -114,25 +114,17 @@ nitpicky = True
 
 # The theme to use for HTML and HTML Help pages.  See the documentation for
 # a list of builtin themes.
-# on_rtd is whether we are on readthedocs.org
-import os
-on_rtd = os.environ.get('READTHEDOCS', None) == 'True'
+try:
+    html_theme = 'sphinx_rtd_theme'
+except ImportError:
+    # If theme not found, still go ahead with build.
+    print('sphinx_rtd_theme not found, using default')
 
-if not on_rtd:  # only import and set the theme if we're building docs locally
-    try:
-        from pkg_resources import require
-        require("sphinx_rtd_theme")
-        import sphinx_rtd_theme
-        html_theme = 'sphinx_rtd_theme'
-        html_theme_path = [sphinx_rtd_theme.get_html_theme_path()]
-    except ImportError:
-        # If theme not found, still go ahead with build.
-        print('sphinx_rtd_theme not found, using default')
+# Options for the sphinx rtd theme, use black
+html_theme_options = dict(style_nav_header_background="black")
 
-# Theme options are theme-specific and customize the look and feel of a theme
-# further.  For a list of options available for each theme, see the
-# documentation.
-#html_theme_options = {}
+# Add some CSS classes for columns and other tweaks in a custom css file
+html_css_files = ["theme_overrides.css"]
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ['_templates']
