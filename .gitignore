@@ -1,2 +1,6 @@
 CONFIG
 .idea
+*.egg-info
+build
+**/__pycache__
+.coverage

@@ -52,3 +52,6 @@ RUN apt-get update -y && apt-get upgrade -y && \
 
 COPY /.devbuild.sh /tools/devbuild.sh
 
+# Python/Sphinx requirements
+RUN pip install pipenv
+

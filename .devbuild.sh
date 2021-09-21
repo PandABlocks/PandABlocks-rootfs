@@ -1,11 +1,9 @@
 # This script is used to kick off a build from within a devcontainer
 #
-# to launch the dev container make sure your rootfs project is a peer to
+# to launch the dev container make sure your rootfs project is a cloned as a peer to
 # this project and then run the following command:
 #
 # docker run -it -v $(pwd)/..:/workspace ghcr.io/pandablocks/dev-pandablocks-rootfs:latest
-#
-# TODO verify above volume and image addr once image is published
 #
 
 cd /workspace
