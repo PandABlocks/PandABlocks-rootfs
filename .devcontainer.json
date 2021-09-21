@@ -1,0 +1,51 @@
+// For format details, see https://aka.ms/devcontainer.json. For config options, see the README at:
+// https://github.com/microsoft/vscode-dev-containers/tree/v0.194.0/containers/python-3
+{
+    "name": "dev-pandablocks-rootfs",
+    "build": {
+        "dockerfile": "Dockerfile",
+        "context": "..",
+        "args": {
+            "PLATFORM": "zynq",
+        }
+    },
+    // Set *default* container specific settings.json values on container create.
+    "settings": {
+        "python.pythonPath": "/usr/local/bin/python",
+        "python.languageServer": "Pylance",
+        "python.linting.enabled": true,
+        "python.linting.pylintEnabled": true,
+        "python.terminal.activateEnvironment": false, // prefer to run pipenv in the shell manually
+        "python.testing.unittestEnabled": false, // default to testing off
+        "python.testing.nosetestsEnabled": false, // override this one in the folder if required
+        "python.pipenvPath": "~/.local/bin/pipenv",
+        "python.linting.flake8Enabled": true,
+        "python.linting.flake8Args": [
+            "--max-line-length=88"
+        ],
+        "python.linting.pycodestyleEnabled": false,
+        "python.testing.pytestArgs": [
+            "--tb=long",
+            "-rP"
+        ],
+    },
+    // Add the IDs of extensions you want installed when the container is created.
+    "extensions": [
+        "ms-vscode.cpptools",
+        "ms-python.python",
+        "ms-python.vscode-pylance",
+        "streetsidesoftware.code-spell-checker",
+        "ryanluker.vscode-coverage-gutters",
+        "mhutchie.git-graph",
+        "eamodio.gitlens",
+        "gruntfuggly.todo-tree",
+        "redhat.vscode-yaml",
+        "nsd.vscode-epics",
+    ],
+    // Use 'forwardPorts' to make a list of ports inside the container available locally.
+    // "forwardPorts": [],
+    // Use 'postCreateCommand' to run commands after the container is created.
+    // "postCreateCommand": "pip3 install --user -r requirements.txt",
+    // Comment out connect as root instead. More info: https://aka.ms/vscode-remote/containers/non-root.
+    "remoteUser": "vscode"
+}
