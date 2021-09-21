@@ -13,15 +13,12 @@ RUN apt-get update -y && apt-get upgrade -y && \
     busybox \
     git \
     python3-pip \
-    python3.9-minimal \
     vim \
     && rm -rf /var/lib/apt/lists/*
 
 # useful devcontainer utilities
 RUN busybox --install
 
-# python dependencies
-RUN pip install rst2pdf
 
 ENV GITHUB_WORKSPACE=/tools
 WORKDIR /tools
@@ -37,11 +34,12 @@ RUN mkdir rootfs \
     bash scripts/config-file-pbrootfs.sh ${PLATFORM} && \
     bash scripts/config-file-rootfs.sh
 
-# tool chain dependecies
+# toolchain dependecies
 RUN apt-get update -y && apt-get upgrade -y && \
     apt-get install -y --no-install-recommends \
     bison \
     expat \
+    libexpat1-dev \
     fakeroot \
     flex \
     libffi-dev \
@@ -49,6 +47,9 @@ RUN apt-get update -y && apt-get upgrade -y && \
     libncurses5-dev \
     libreadline-dev \
     zlib1g-dev
+
+# toolchain python dependencies
+RUN pip install rst2pdf
 
 COPY /.devbuild.sh /tools/devbuild.sh
 

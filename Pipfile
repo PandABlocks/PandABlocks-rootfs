@@ -6,13 +6,11 @@ verify_ssl = true
 [dev-packages]
 # Pinning black stops us having to allow pre-releases globally
 black = "==21.7b0"
-
 # Pins to make lockfile usable on multiple Python versions and platforms
 mypy = "*"
 atomicwrites = "*"
 typing-extensions = "*"
 importlib-metadata = "*"
-
 # Test and docs dependencies
 pytest-cov = "*"
 pytest-mypy = "*"
@@ -28,6 +26,7 @@ PandABlocks_rootfs = {editable = true,path = "."}
 # If the module or any of its dependencies depends on typing-extensions
 # then uncomment the following line
 #typing-extensions = "*"
+sphinx = "*"
 
 [scripts]
 tests = "python -m pytest"

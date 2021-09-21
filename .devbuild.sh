@@ -3,8 +3,13 @@
 # to launch the dev container make sure your rootfs project is a cloned as a peer to
 # this project and then run the following command:
 #
-# docker run -it -v $(pwd)/..:/workspace ghcr.io/pandablocks/dev-pandablocks-rootfs:latest
+# module load gcloud
+# podman run --security-opt=label=type:container_runtime_t --rm -it -v $(pwd)/..:/workspace gcr.io/diamond-pubreg/controls/devcontainers/pandablocks-rootfs:latest
 #
+# To update the devcontainer modify Dockerfile and rebuild with
+# module load gcloud
+# podman build --net=host -t gcr.io/diamond-pubreg/controls/devcontainers/pandablocks-rootfs .
+# podman push gcr.io/diamond-pubreg/controls/devcontainers/pandablocks-rootfs 
 
 cd /workspace
 
