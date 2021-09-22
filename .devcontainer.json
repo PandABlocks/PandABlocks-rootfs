@@ -1,13 +1,14 @@
 // For format details, see https://aka.ms/devcontainer.json. For config options, see the README at:
 // https://github.com/microsoft/vscode-dev-containers/tree/v0.194.0/containers/python-3
 {
-    "name": "dev-pandablocks-rootfs",
-    "build": {
-        "dockerfile": "Dockerfile",
-        "context": "..",
-        "args": {
-            "PLATFORM": "zynq",
-        }
+    "name": "pandablocks-rootfs-dev",
+    "image": "gcr.io/diamond-pubreg/controls/devcontainers/pandablocks-rootfs",
+    "remoteEnv": {
+        "DISPLAY": "${localEnv:DISPLAY}",
+        "HOME": "${localEnv:HOME}",
+        "HOSTNAME": "devbox",
+        "USER": "${localEnv:USER}",
+        "WORKON_HOME": "/scratch/${localEnv:USER}",
     },
     // Set *default* container specific settings.json values on container create.
     "settings": {
@@ -47,5 +48,12 @@
     // Use 'postCreateCommand' to run commands after the container is created.
     // "postCreateCommand": "pip3 install --user -r requirements.txt",
     // Comment out connect as root instead. More info: https://aka.ms/vscode-remote/containers/non-root.
-    "remoteUser": "vscode"
+    "remoteUser": "root",
+    "runArgs": [
+        "--net=host",
+        "-ti",
+        "-v",
+        "/dev/dri:/dev/dri",
+        "--security-opt=label=type:container_runtime_t",
+    ],
 }

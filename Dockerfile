@@ -19,8 +19,6 @@ RUN apt-get update -y && apt-get upgrade -y && \
 # useful devcontainer utilities
 RUN busybox --install
 
-
-ENV GITHUB_WORKSPACE=/tools
 WORKDIR /tools
 
 # get the Arm GNU toolchain and tar files
@@ -28,7 +26,7 @@ COPY /.github/scripts scripts
 RUN bash scripts/GNU-toolchain.sh ${PLATFORM}
 RUN bash scripts/tar-files.sh
 
-# prepare CONFIG files for pandablocks-rootfs and rootfs itself
+# prepare CONFIG files for pandablocks-rootfs and rootfs
 RUN mkdir rootfs \
     mkdir PandABlocks-rootfs && \
     bash scripts/config-file-pbrootfs.sh ${PLATFORM} && \
@@ -51,8 +49,8 @@ RUN apt-get update -y && apt-get upgrade -y && \
 # toolchain python dependencies
 RUN pip install rst2pdf
 
-COPY /.devbuild.sh /tools/devbuild.sh
-
 # Python/Sphinx requirements
 RUN pip install pipenv
+
+WORKDIR /workspaces/PandABlocks-rootfs
 
