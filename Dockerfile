@@ -44,7 +44,8 @@ RUN apt-get update -y && apt-get upgrade -y && \
     libssl-dev \
     libncurses5-dev \
     libreadline-dev \
-    zlib1g-dev
+    zlib1g-dev \
+    zip
 
 # toolchain python dependencies
 RUN pip install rst2pdf
