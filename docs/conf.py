@@ -115,13 +115,12 @@ nitpicky = True
 # The theme to use for HTML and HTML Help pages.  See the documentation for
 # a list of builtin themes.
 try:
+    import sphinx_rtd_theme
     html_theme = 'sphinx_rtd_theme'
+    # Options for the sphinx rtd theme, use DLS blue
+    html_theme_options = dict(style_nav_header_background="black")
 except ImportError:
-    # If theme not found, still go ahead with build.
-    print('sphinx_rtd_theme not found, using default')
-
-# Options for the sphinx rtd theme, use black
-html_theme_options = dict(style_nav_header_background="black")
+    html_theme = 'default'
 
 # Add some CSS classes for columns and other tweaks in a custom css file
 html_css_files = ["theme_overrides.css"]
