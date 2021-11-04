@@ -17,7 +17,7 @@ mtd-utils_INSTALL_FILES = flash_erase
 # This is a bare bones install which only executes an init script before calling
 # pivot_root.
 SKELETON = $(configdir)/file-list
-OPTIONS =
+OPTIONS = ldconfig
 EXTRA_LIBS =
 
 # We use the led-daemon during startup
