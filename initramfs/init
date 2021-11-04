@@ -1,4 +1,6 @@
 #!/bin/sh
+# Make sure dynamic libraries are findable
+/sbin/ldconfig
 
 IMAGEFILE=/boot/imagefile.cpio.gz
 
