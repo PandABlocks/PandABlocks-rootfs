@@ -27,18 +27,27 @@ else
     exit -1
 fi
 
-STA_LED_GPIO=$((GPIO_BASE + 51))
-DIA_LED_GPIO=$((GPIO_BASE + 50))
+# Configure and check for presence of LED.  Call thus:
+#
+#   LED_GPIO=$(configure_led led-name)
+#
+configure_led()
+{
+    local SYSFS_PATH=/sys/firmware/devicetree/base/led_daemon/$1
+    local PRESENT=$(test -e $SYSFS_PATH && echo true || echo false)
+    local LED
+    if $PRESENT; then
+        LED_OFF=$(cat $SYSFS_PATH)
+        LED_GPIO=$((GPIO_BASE + $LED_OFF))
+        LED=/sys/class/gpio/gpio$LED_GPIO
+        [ -e $LED ]  ||  echo $LED_GPIO >/sys/class/gpio/export
+        echo out >$LED/direction;
+    fi
+    echo $LED
+}
 
-STA_LED=/sys/class/gpio/gpio$STA_LED_GPIO
-DIA_LED=/sys/class/gpio/gpio$DIA_LED_GPIO
-
-[ -e $STA_LED ]  ||  echo $STA_LED_GPIO >/sys/class/gpio/export
-[ -e $DIA_LED ]  ||  echo $DIA_LED_GPIO >/sys/class/gpio/export
-
-echo out >$STA_LED/direction
-echo out >$DIA_LED/direction
-
+STA_LED=$(configure_led sta-led)
+DIA_LED=$(configure_led dia-led)
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
@@ -101,8 +110,8 @@ while :; do
     for action in $COMMAND; do
         command_seen=1
         parse_action $action
-        echo $sta >$STA_LED/value
-        echo $dia >$DIA_LED/value
+        [ -n "$STA_LED" ] && { echo $sta >$STA_LED/value; }
+        [ -n "$DIA_LED" ] && { echo $dia >$DIA_LED/value; }
 
         do_delay $delay  ||  break
     done
