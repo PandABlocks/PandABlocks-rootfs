@@ -31,7 +31,7 @@ jobs:
         uses: docker/build-push-action@v2
         with:
           context: .
-          file: ./PandABlocks-rootfs/Dockerfile 
+          dockerfile: ./PandABlocks-rootfs/Dockerfile 
           #push: false 
           tags: pandablocks:latest
           outputs: type=docker, dest=/tmp/pandablocks.tar
