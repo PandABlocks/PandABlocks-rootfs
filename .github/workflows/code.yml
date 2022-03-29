@@ -34,14 +34,14 @@ jobs:
           file: ./PandABlocks-rootfs/Dockerfile
           push: false 
           tags: pandablocks:latest
-          outputs: type=docker, dest=/tmp/pandablocks.tar
+          outputs: type=docker, dest=./tmp/pandablocks.tar
       
       # Upload container as an artifact 
       - name: Upload contianer as an artifact
         uses: actions/upload-artifact@v2
         with:
           name: pandablocks
-          path: /tmp
+          path: ./tmp/
   
   build:
     needs: [build-image]
@@ -62,7 +62,7 @@ jobs:
       - uses: actions/download-artifact@v2
         with:
           name: pandablocks
-          path: /tmp
+          path: ./tmp/
 
       # Git repositories
       - name: Checkout Source
@@ -75,7 +75,7 @@ jobs:
       # Build
       - name: Make zips
         run: |
-          cd /tmp
+          cd ./tmp/
           docker load --input pandablocks.tar
           cd ${{ github.workspace }}
           docker run -it --security-opt label=disable \
