@@ -1,0 +1,27 @@
+# Personal customisations.
+#
+# Copy this file to CONFIG and edit the settings below to suit your
+# environment.
+
+# Location of rootfs builder.  This needs to be at least version 1.13 and can be
+# downloaded from https://github.com/araneidae/rootfs
+ROOTFS_TOP =/rootfs
+
+# Toolchain used to build the target
+TOOLCHAIN_ROOT = /gcc-arm-10.2-2020.11-x86_64-$(COMPILER_PREFIX)
+
+# Additionally, if the toolchain uses a vendor specific compiler prefix, we
+# need:
+#
+# COMPILER_PREFIX = arm-xilinx-linux-gnueabi
+
+# Where to find source files
+TAR_FILES = /tar-files
+
+# Target location for build
+PANDA_ROOT = /build/PandA-rootfs-$(PLATFORM)
+
+# Whether the platform is zynq or zyqnmp
+PLATFORM = zynq
+
+# vim: set filetype=make:
