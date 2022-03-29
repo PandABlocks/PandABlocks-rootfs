@@ -34,7 +34,7 @@ jobs:
           file: ./PandABlocks-rootfs/Dockerfile
           push: false 
           tags: pandablocks:latest
-          outputs: type=docker, dest=/tmp/pandablocks.tar
+          outputs: type=docker, dest=tmp/pandablocks.tar
       
       # Upload container as an artifact 
       - name: Upload contianer as an artifact
