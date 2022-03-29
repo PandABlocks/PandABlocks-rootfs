@@ -78,7 +78,7 @@ jobs:
           docker load --input pandablocks.tar
           docker run \
             -v "${{ github.workspace }}:/repos" \
-            -v "${{ github.workspace }}/build:/build:Z,U" \
+            -v "${{ github.workspace }}/build:/build" \
             pandablocks:latest \
             /bin/bash -c \
             "cd PandABlocks-rootfs && make zips"
