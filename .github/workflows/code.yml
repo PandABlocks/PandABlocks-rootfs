@@ -75,10 +75,12 @@ jobs:
       # Build
       - name: Make zips
         run: |
-          docker load --input /tmp/pandablocks.tar
+          cd /tmp
+          docker load --input pandablocks.tar
+          cd ${{ github.workspace }}
           docker run -it --security-opt label=disable \
-            -v "$(GITHUB_WORKSPACE):/repos" \
-            -v "$(GITHUB_WORKSPACE)/build:/build:Z,U" \
+            -v "${{ github.workspace }}:/repos" \
+            -v "${{ github.workspace }}/build:/build:Z,U" \
             pandablocks:latest \
             /bin/bash -c \
             "cd PandABlocks-rootfs && make zips"
