@@ -76,7 +76,7 @@ jobs:
       - name: Make zips
         run: |
           docker load --input pandablocks.tar
-          docker run -security-opt label=disable \
+          docker run label=disable \
             -v "${{ github.workspace }}:/repos" \
             -v "${{ github.workspace }}/build:/build:Z,U" \
             pandablocks:latest \
