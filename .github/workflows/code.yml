@@ -53,14 +53,14 @@ jobs:
           context: . 
           file: ./PandABlocks-rootfs/Dockerfile
           push: false 
-          tags: pandablocks:latest
-          outputs: type=docker, dest=./pandablocks.tar
+          tags: pandablocks-dev-container:latest
+          outputs: type=docker, dest=./pandablocks-dev-container.tar
       
       # Upload container as an artifact 
       - name: Upload contianer as an artifact
         uses: actions/upload-artifact@v2
         with:
-          name: pandablocks
+          name: pandablocks-dev-container
           path: .
   
   # Job the zips
@@ -79,7 +79,7 @@ jobs:
       # Download artifact of image
       - uses: actions/download-artifact@v2
         with:
-          name: pandablocks
+          name: pandablocks-dev-container
           path: .
 
       # Git repositories
@@ -93,11 +93,11 @@ jobs:
       # Run make inside the container 
       - name: Make zips
         run: |
-          docker load --input pandablocks.tar
+          docker load --input pandablocks-dev-container.tar
           docker run \
             -v "${{ github.workspace }}:/repos" \
             -v "${{ github.workspace }}/build:/build" \
-            pandablocks:latest \
+            pandablocks-dev-container:latest \
             /bin/bash -c \
             "cd PandABlocks-rootfs && make zips PLATFORM=${{ matrix.platform }}"
 
@@ -138,14 +138,14 @@ jobs:
       - name: Download artifact of image
         uses: actions/download-artifact@v2
         with:
-          name: pandablocks
+          name: pandablocks-dev-container
           path: .
     
       - name: Load and push image to ghcr
         run: |
           docker load --input pandablocks.tar
           echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u PandABlocks --password-stdin
-          docker push ghcr.io/pandablocks/pandablocks:1.0
+          docker push ghcr.io/pandablocks/pandablocks-dev-container:latest
 
     
 
