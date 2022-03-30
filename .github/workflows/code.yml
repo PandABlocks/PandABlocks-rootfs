@@ -145,7 +145,7 @@ jobs:
         run: |
           docker load --input pandablocks.tar
           echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u PandABlocks --password-stdin
-          docker push ghcr.io/PandABlocks/pandablocks:latest
+          docker push ghcr.io/pandablocks/pandablocks:1.0
 
     
 
