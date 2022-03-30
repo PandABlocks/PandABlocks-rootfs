@@ -23,6 +23,24 @@ jobs:
         with:
           repository: dls-controls/rootfs
           path: rootfs
+       
+      - name: Checkout annotypes
+        uses: actions/checkout@v2
+        with:
+          repository: dls-controls/annotypes
+          path: annotypes
+        
+      - name: Checkout pymalcolm
+        uses: actions/checkout@v2
+        with:
+          repository: dls-controls/pymalcolm
+          path: pymalcolm
+
+      - name: Checkout malcolmjs
+        uses: actions/checkout@v2
+        with:
+          repository: dls-controls/malcolmjs
+          path: malcolmjs
       
       # Docker Buildx 
       - name: Set up Docker Buildx
@@ -45,6 +63,7 @@ jobs:
           name: pandablocks
           path: .
   
+  # Job the zips
   build:
     needs: [build-image]
     strategy:
@@ -82,7 +101,7 @@ jobs:
             /bin/bash -c \
             "cd PandABlocks-rootfs && make zips PLATFORM=${{ matrix.platform }}"
 
-      # Upload zips as Artifacts
+      # Upload zips as artifact
       - name: Upload deps and boot build files
         uses: actions/upload-artifact@v2
         with:
