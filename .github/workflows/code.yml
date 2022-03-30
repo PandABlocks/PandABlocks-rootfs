@@ -7,6 +7,7 @@ on:
   pull_request:
 
 jobs:
+  # Job for creating the container image
   build-image:
     runs-on: ubuntu-latest
     steps:
@@ -22,7 +23,8 @@ jobs:
         with:
           repository: dls-controls/rootfs
           path: rootfs
-
+      
+      # Docker Buildx 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v1
       
@@ -54,9 +56,6 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v1
       
       # Download artifact of image
       - uses: actions/download-artifact@v2
@@ -72,7 +71,7 @@ jobs:
           # require history to get back to last tag for version number of branches
           fetch-depth: 0
 
-      # Build
+      # Run make inside the container 
       - name: Make zips
         run: |
           docker load --input pandablocks.tar
@@ -83,7 +82,7 @@ jobs:
             /bin/bash -c \
             "cd PandABlocks-rootfs && make zips PLATFORM=${{ matrix.platform }}"
 
-      # Artifacts
+      # Upload zips as Artifacts
       - name: Upload deps and boot build files
         uses: actions/upload-artifact@v2
         with:
