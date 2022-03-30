@@ -128,3 +128,24 @@ jobs:
           body: See [Changelog](CHANGELOG.rst) for more details
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  
+  # Container release
+  container-release:
+    needs: [build]
+    runs-on: ubuntu-latest
+    # if: github.event_name == 'push' && startsWith(github.event.ref, 'refs/tags')
+    steps:
+      - name: Download artifact of image
+        uses: actions/download-artifact@v2
+        with:
+          name: pandablocks
+          path: .
+    
+      - name: Load and push image to ghcr
+        run: |
+          docker load --input pandablocks.tar
+          echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u PandABlocks --password-stdin
+          docker push ghcr.io/PandABlocks/pandablocks:latest
+
+    
+
