@@ -143,7 +143,7 @@ jobs:
     
       - name: Load and push image to ghcr
         run: |
-          docker load --input pandablocks.tar
+          docker load --input pandablocks-dev-container.tar
           echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u PandABlocks --password-stdin
           docker push ghcr.io/pandablocks/pandablocks-dev-container:latest
 
