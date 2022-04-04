@@ -20,6 +20,7 @@ jobs:
       # pull image from ghcr and build docs in container 
       - name: pull image and build docs 
         run: |
+          echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u PandABlocks --password-stdin
           docker pull ghcr.io/pandablocks/pandablocks-dev-container:latest
           docker run \
             -v "${{ github.workspace }}:/repos" \
