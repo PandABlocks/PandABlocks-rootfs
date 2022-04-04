@@ -16,22 +16,17 @@ jobs:
           path: PandABlocks-rootfs
           # require history to get back to last tag for version number of branches
           fetch-depth: 0
-
-      # System dependencies (required for build)
-      - name: Install system dependencies
+      
+      # pull image from ghcr and build docs in container 
+      - name: pull image and build docs 
         run: |
-          sudo pip install rst2pdf sphinx sphinx-rtd-theme --upgrade docutils==0.16
-
-      # CONFIG files
-      - name: Generate CONFIG files - zynq
-        run: |
-          sudo bash PandABlocks-rootfs/.github/scripts/config-file-pbrootfs.sh zynq
-
-      # Build
-      - name: Build Docs
-        run: |
-          cd PandABlocks-rootfs
-          make docs
+          docker pull ghcr.io/pandablocks/pandablocks-dev-container:latest
+          docker run \
+            -v "${{ github.workspace }}:/repos" \
+            -v "${{ github.workspace }}/build:/build" \
+            ghcr.io/pandablocks/pandablocks-dev-container:latest \
+            /bin/bash -c \
+            "cd PandABlocks-rootfs && make docs"
 
       - uses: rishabhgupta/split-by@v1
         id: split

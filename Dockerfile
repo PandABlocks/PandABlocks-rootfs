@@ -59,4 +59,4 @@ RUN ln -s /usr/bin/python3 /usr/bin/python
 
 # Entrypoint into the container 
 WORKDIR /repos
-CMD ["bash"]
+CMD ["/bin/bash"]
