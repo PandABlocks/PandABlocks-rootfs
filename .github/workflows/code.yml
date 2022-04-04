@@ -111,7 +111,7 @@ jobs:
   release:
     needs: [build]
     runs-on: ubuntu-latest
-    # make a release on every tag
+    # Make a release on every tag
     if: github.event_name == 'push' && startsWith(github.event.ref, 'refs/tags')
     steps:
       - uses: actions/download-artifact@v2
@@ -145,6 +145,7 @@ jobs:
         run: |
           docker load --input pandablocks-dev-container.tar
           echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u PandABlocks --password-stdin
+          docker tag pandablocks-dev-container ghcr.io/pandablocks/pandablocks-dev-container[:latest]
           docker push ghcr.io/pandablocks/pandablocks-dev-container:latest
 
     
