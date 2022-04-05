@@ -38,7 +38,7 @@ jobs:
       # Publish docs
       - name: Move to versioned directory
         # e.g. master or 0.1.2
-        run: mv build/PandA-rootfs-zynq/build/html "PandABlocks-rootfs/.github/pages/${{ steps.split.outputs._2 }}"
+        run: sudo mv build/PandA-rootfs-zynq/build/html "PandABlocks-rootfs/.github/pages/${{ steps.split.outputs._2 }}"
 
       - name: Publish Docs to gh-pages
         # Only master and tags are published
