@@ -7,11 +7,11 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
-    
+    # Conatiner from ghcr
     container: 
       image: ghcr.io/pandablocks/pandablocks-dev-container:latest
       credentials:
-        username: PandABlocks
+        username: ${{ github.actor }}
         password: ${{ secrets.GITHUB_TOKEN }}
       volumes: 
         - ${{ github.workspace }}:/repos
@@ -26,8 +26,8 @@ jobs:
           # require history to get back to last tag for version number of branches
           fetch-depth: 0
       
-      # Build docs in the container 
-      - name: pull image and build docs 
+      # Build docs inside the container 
+      - name: build docs 
         run: |
             cd PandABlocks-rootfs
             make docs
