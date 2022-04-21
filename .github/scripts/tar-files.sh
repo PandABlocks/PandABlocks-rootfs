@@ -29,7 +29,7 @@ if [[ -z $1 ]]; then
         -OL https://ftp.openbsd.org/pub/OpenBSD/LibreSSL/libressl-3.0.2.tar.gz \
         -OL https://ftp.gnu.org/gnu/m4/m4-1.4.19.tar.gz \
         -OL https://files.pythonhosted.org/packages/11/0a/7f13ef5cd932a107cd4c0f3ebc9d831d9b78e1a0e8c98a098ca17b1d7d97/setuptools-41.6.0.zip \
-        -OL http://jdelvare.nerim.net/mirror/i2c-tools/i2c-tools-3.1.1.tar.bz2 \
+        -OL http://oe-lite.org/mirror/i2c-tools/i2c-tools-3.1.1.tar.bz2 \
         -OL https://ftp.gnu.org/gnu/screen/screen-4.2.1.tar.gz \
         -OL https://ftpmirror.gnu.org/libtool/libtool-2.4.6.tar.gz \
         -OL https://ftp.gnu.org/gnu/ncurses/ncurses-6.1.tar.gz \
@@ -41,8 +41,11 @@ fi
 curl -o u-boot-xlnx-xilinx-v2020.2.2-k26.tar.gz -L https://github.com/Xilinx/u-boot-xlnx/archive/refs/tags/xilinx-v2020.2.2-k26.tar.gz \
     -o linux-xlnx-xilinx-v2020.2.2-k26.tar.gz -L https://github.com/Xilinx/linux-xlnx/archive/refs/tags/xilinx-v2020.2.2-k26.tar.gz
 
-# Install FPGA tar file dependencies 
+# Install tar file dependencies for PandAblocks-FPGA 
 curl -o device-tree-xlnx-xilinx-v2020.2.tar.gz -L https://github.com/Xilinx/device-tree-xlnx/archive/refs/tags/xilinx-v2020.2.tar.gz \
     -o u-boot-xlnx-xilinx-v2020.2.tar.gz -L https://github.com/Xilinx/u-boot-xlnx/archive/refs/tags/xilinx-v2020.2.tar.gz \
     -o arm-trusted-firmware-xilinx-v2020.2.tar.gz -L https://github.com/Xilinx/arm-trusted-firmware/archive/refs/tags/xilinx-v2020.2.tar.gz \
     -o dtc-1.6.1.tar.gz -L https://git.kernel.org/pub/scm/utils/dtc/dtc.git/snapshot/dtc-1.6.1.tar.gz
+
+# Old url to i2c-tools tar file. No longer working
+# -OL http://jdelvare.nerim.net/mirror/i2c-tools/i2c-tools-3.1.1.tar.bz2 \

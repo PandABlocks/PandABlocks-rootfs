@@ -27,7 +27,6 @@ RUN yum -y upgrade && yum -y install \
     xz \
     zlib-devel
 
-
 RUN yum -y group install "Development Tools"
 
 # Get fakeroot which needs epel-release 
@@ -43,6 +42,9 @@ COPY malcolmjs /malcolmjs
 # Toolchains and tar files
 RUN bash scripts/GNU-toolchain.sh
 RUN bash scripts/tar-files.sh
+
+# Install rclone in container
+RUN curl https://rclone.org/install.sh | sudo bash
 
 # For the documentation
 RUN pip3 install matplotlib \ 
