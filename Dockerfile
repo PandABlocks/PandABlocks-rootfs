@@ -34,7 +34,7 @@ RUN yum -y group install "Development Tools"
 RUN yum -y install fakeroot
 
 # Copy in scripts and dls rootfs, annotypes, pymalcolm, and malcolmjs
-COPY repos/PandABlocks-rootfs/.github/scripts /scripts
+COPY PandABlocks-rootfs/.github/scripts /scripts
 COPY rootfs /rootfs
 COPY annotypes /annotypes
 COPY pymalcolm /pymalcolm
