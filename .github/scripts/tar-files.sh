@@ -38,5 +38,5 @@ if [[ -z $1 ]]; then
 fi
 
 # Install linux tar file dependencies
-curl -o u-boot-xlnx-xilinx-v2020.2.2-k26.tar.gz -L https://github.com/Xilinx/u-boot-xlnx/archive/refs/tags/xilinx-v2020.2.2-k26.tar.gz \
-    -o linux-xlnx-xilinx-v2020.2.2-k26.tar.gz -L https://github.com/Xilinx/linux-xlnx/archive/refs/tags/xilinx-v2020.2.2-k26.tar.gz
+curl -o u-boot-xlnx-xilinx-v2021.1.tar.gz -L https://github.com/Xilinx/u-boot-xlnx/archive/refs/tags/xilinx-v2021.1.tar.gz \
+    -o linux-xlnx-xilinx-v2021.1.tar.gz -L https://github.com/Xilinx/linux-xlnx/archive/refs/tags/xilinx-v2021.1.tar.gz
