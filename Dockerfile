@@ -10,7 +10,8 @@ RUN yum -y upgrade && yum -y install \
     dbus-x11 \
     diffutils \
     epel-release \
-    expat-devel \ 
+    expat-devel \
+    fuse \ 
     git \
     glibc-devel \
     libffi-devel \
