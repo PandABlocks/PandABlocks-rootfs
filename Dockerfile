@@ -11,7 +11,6 @@ RUN yum -y upgrade && yum -y install \
     diffutils \
     epel-release \
     expat-devel \
-    fuse \ 
     git \
     glibc-devel \
     libffi-devel \
@@ -44,11 +43,6 @@ COPY malcolmjs /malcolmjs
 # Toolchains and tar files
 RUN bash scripts/GNU-toolchain.sh
 RUN bash scripts/tar-files.sh
-
-# Install rclone in container
-# RUN curl https://rclone.org/install.sh | bash
-
-RUN bash scripts/rclone-patch.sh
 
 # For the documentation
 RUN pip3 install matplotlib \ 
