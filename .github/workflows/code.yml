@@ -99,7 +99,7 @@ jobs:
             -v "${{ github.workspace }}/build:/build" \
             pandablocks-dev-container:latest \
             /bin/bash -c \
-            "cd PandABlocks-rootfs && make zips PLATFORM=${{ matrix.platform }}"
+            "cd PandABlocks-rootfs && ln -s CONFIG.example CONFIG && make zips PLATFORM=${{ matrix.platform }}"
 
       # Upload zips as artifact
       - name: Upload deps and boot build files

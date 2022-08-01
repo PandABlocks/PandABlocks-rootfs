@@ -30,6 +30,7 @@ jobs:
       - name: build docs 
         run: |
             cd PandABlocks-rootfs
+            ln -s CONFIG.example CONFIG
             make docs
 
       - uses: rishabhgupta/split-by@v1
