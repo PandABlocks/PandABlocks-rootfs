@@ -33,16 +33,9 @@ jobs:
             ln -s CONFIG.example CONFIG
             make docs
 
-      - uses: rishabhgupta/split-by@v1
-        id: split
-        with:
-          string: ${{ github.ref }}
-          split-by: /
-
-      # Publish docs
       - name: Move to versioned directory
         # e.g. master or 0.1.2
-        run: mv build/PandA-rootfs-zynq/build/html "PandABlocks-rootfs/.github/pages/${{ steps.split.outputs._2 }}"
+        run: mv build/PandA-rootfs-zynq/build/html "PandABlocks-rootfs/.github/pages/${GITHUB_REF##*/}"
 
       - name: Publish Docs to gh-pages
         # Only master and tags are published
