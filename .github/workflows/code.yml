@@ -54,7 +54,7 @@ jobs:
         id: meta
         uses: docker/metadata-action@v4
         with:
-          images: ghcr.io/${{ github.repository }}
+          images: pandablocks-dev-container
           tags: |
             type=ref,event=branch
             type=ref,event=tag
@@ -169,7 +169,7 @@ jobs:
         id: meta
         uses: docker/metadata-action@v4
         with:
-          images: ghcr.io/${{ github.repository }}
+          images: pandablocks-dev-container
           tags: |
             type=ref,event=branch
             type=ref,event=tag
