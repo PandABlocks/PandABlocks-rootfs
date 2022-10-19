@@ -3,8 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Updating a PandA via SSH &mdash; PandABlocks-rootfs 3.0a2-3-g38fc25e
- documentation</title>
+  <title>Updating a PandA via SSH &mdash; PandABlocks-rootfs 0.0 documentation</title>
       <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="_static/theme_overrides.css" type="text/css" />
@@ -16,6 +15,7 @@
         <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
         <script src="_static/jquery.js"></script>
         <script src="_static/underscore.js"></script>
+        <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="_static/doctools.js"></script>
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
@@ -33,8 +33,7 @@
             <img src="_static/PandA-logo-for-black-background.svg" class="logo" alt="Logo"/>
           </a>
               <div class="version">
-                3.0a2-3-g38fc25e
-
+                0.0
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
@@ -115,7 +114,7 @@
            <div itemprop="articleBody">
              
   <div class="section" id="updating-a-panda-via-ssh">
-<span id="ssh-doc"></span><h1>Updating a PandA via SSH<a class="headerlink" href="#updating-a-panda-via-ssh" title="Permalink to this headline"></a></h1>
+<span id="ssh-doc"></span><h1>Updating a PandA via SSH<a class="headerlink" href="#updating-a-panda-via-ssh" title="Permalink to this heading"></a></h1>
 <p>The Admin interface of the PandA can be used to update the firmware as detailed
 in the <a class="reference internal" href="quickstart.html#quickstart-doc"><span class="std std-ref">Getting a PandA on the network</span></a>, but sometimes it is necessary to update a number of
 PandAs at once. The SSH interface can be used to do this.</p>
@@ -130,7 +129,7 @@ commands below.</p>
 </div>
 <p>First update rootfs and then, after a reboot, update to the latest available zpkg packages (while making sure to match the major versions of everything).</p>
 <div class="section" id="updating-the-rootfs">
-<h2>Updating the rootfs<a class="headerlink" href="#updating-the-rootfs" title="Permalink to this headline"></a></h2>
+<h2>Updating the rootfs<a class="headerlink" href="#updating-the-rootfs" title="Permalink to this heading"></a></h2>
 <p>Download a new <code class="docutils literal notranslate"><span class="pre">boot-x.x.zip</span></code> file from <a class="reference external" href="https://github.com/PandABlocks/PandABlocks-rootfs/releases">GitHub</a> and unzip it somewhere. You
 can then:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ md5sum imagefile.cpio.gz
@@ -144,7 +143,7 @@ $ ssh root@my_panda_ip
 the new rootfs. It they don’t then retry from the beginning.</p>
 </div>
 <div class="section" id="updating-zpkg-packages">
-<h2>Updating zpkg packages<a class="headerlink" href="#updating-zpkg-packages" title="Permalink to this headline"></a></h2>
+<h2>Updating zpkg packages<a class="headerlink" href="#updating-zpkg-packages" title="Permalink to this heading"></a></h2>
 <p>Download new zpkg files from the appropriate GitHub repositories (these are shown at &lt;PandA-URL&gt;/admin/packages/list), then:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ scp *.zpg root@my_panda_ip:/tmp
 $ ssh root@my_panda_ip
@@ -158,11 +157,11 @@ $ ssh root@my_panda_ip
 versions of the FPGA zpkg were installed, then any subsequent installations
 of the FPGA zpkg with <strong>ANY</strong> version of the rootfs would fail with
 message:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">File</span> <span class="n">lib</span><span class="o">/</span><span class="n">python2</span><span class="o">.</span><span class="mi">7</span><span class="o">/</span><span class="n">site</span><span class="o">-</span><span class="n">packages</span><span class="o">/</span><span class="n">malcolm</span><span class="o">/</span><span class="n">modules</span><span class="o">/</span><span class="n">web</span><span class="o">/</span><span class="n">www</span><span class="o">/</span><span class="n">fpga_docs</span> <span class="n">already</span> <span class="n">exists</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">File</span> <span class="n">lib</span><span class="o">/</span><span class="n">python2</span><span class="mf">.7</span><span class="o">/</span><span class="n">site</span><span class="o">-</span><span class="n">packages</span><span class="o">/</span><span class="n">malcolm</span><span class="o">/</span><span class="n">modules</span><span class="o">/</span><span class="n">web</span><span class="o">/</span><span class="n">www</span><span class="o">/</span><span class="n">fpga_docs</span> <span class="n">already</span> <span class="n">exists</span>
 </pre></div>
 </div>
 <p>Once you have seen this error, run:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">rm</span> <span class="o">/</span><span class="n">opt</span><span class="o">/</span><span class="n">lib</span><span class="o">/</span><span class="n">python2</span><span class="o">.</span><span class="mi">7</span><span class="o">/</span><span class="n">site</span><span class="o">-</span><span class="n">packages</span><span class="o">/</span><span class="n">malcolm</span><span class="o">/</span><span class="n">modules</span><span class="o">/</span><span class="n">web</span><span class="o">/</span><span class="n">www</span><span class="o">/</span><span class="n">fpga_docs</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">rm</span> <span class="o">/</span><span class="n">opt</span><span class="o">/</span><span class="n">lib</span><span class="o">/</span><span class="n">python2</span><span class="mf">.7</span><span class="o">/</span><span class="n">site</span><span class="o">-</span><span class="n">packages</span><span class="o">/</span><span class="n">malcolm</span><span class="o">/</span><span class="n">modules</span><span class="o">/</span><span class="n">web</span><span class="o">/</span><span class="n">www</span><span class="o">/</span><span class="n">fpga_docs</span>
 </pre></div>
 </div>
 <p>and then retry the <code class="docutils literal notranslate"><span class="pre">zpkg</span></code> command and it should succeed. Release 1.1 of
