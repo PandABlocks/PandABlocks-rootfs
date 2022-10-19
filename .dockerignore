@@ -1,0 +1,3 @@
+#Ignore the git and cache folders
+.git
+.cache

@@ -7,6 +7,15 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+    # Conatiner from ghcr
+    container: 
+      image: ghcr.io/pandablocks/pandablocks-dev-container:latest
+      credentials:
+        username: ${{ github.actor }}
+        password: ${{ secrets.GITHUB_TOKEN }}
+      volumes: 
+        - ${{ github.workspace }}:/repos
+        - ${{ github.workspace }}/build:/build
 
     steps:
       # Git repositories
@@ -16,33 +25,17 @@ jobs:
           path: PandABlocks-rootfs
           # require history to get back to last tag for version number of branches
           fetch-depth: 0
-
-      # System dependencies (required for build)
-      - name: Install system dependencies
+      
+      # Build docs inside the container 
+      - name: build docs 
         run: |
-          sudo pip install rst2pdf sphinx sphinx-rtd-theme --upgrade docutils==0.16
+            cd PandABlocks-rootfs
+            ln -s CONFIG.example CONFIG
+            make docs
 
-      # CONFIG files
-      - name: Generate CONFIG files - zynq
-        run: |
-          sudo bash PandABlocks-rootfs/.github/scripts/config-file-pbrootfs.sh zynq
-
-      # Build
-      - name: Build Docs
-        run: |
-          cd PandABlocks-rootfs
-          make docs
-
-      - uses: rishabhgupta/split-by@v1
-        id: split
-        with:
-          string: ${{ github.ref }}
-          split-by: /
-
-      # Publish docs
       - name: Move to versioned directory
         # e.g. master or 0.1.2
-        run: mv build/build/html "PandABlocks-rootfs/.github/pages/${{ steps.split.outputs._2 }}"
+        run: mv build/PandA-rootfs-zynq/build/html "PandABlocks-rootfs/.github/pages/${GITHUB_REF##*/}"
 
       - name: Publish Docs to gh-pages
         # Only master and tags are published
