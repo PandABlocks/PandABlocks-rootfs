@@ -173,7 +173,7 @@ $(KERNEL_BUILD)/.config: kernel/$(PLATFORM).config $(KERNEL_SRC)
 	$(MAKE_KERNEL) -j4 oldconfig
 
 $(IMAGE): $(KERNEL_BUILD)/.config
-	$(MAKE_KERNEL) Image
+	$(MAKE_KERNEL) Image modules
 	touch $@
 
 $(UIMAGE): $(IMAGE) $(U_BOOT_MKIMAGE)
