@@ -13,6 +13,7 @@ RUN yum -y upgrade && yum -y install \
     expat-devel \
     git \
     glibc-devel \
+    gmp-devel \
     libffi-devel \
     libjpeg-turbo-devel \
     ncurses-compat-libs \
