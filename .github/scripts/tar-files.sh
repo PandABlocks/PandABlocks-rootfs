@@ -37,25 +37,13 @@ if [[ -z $1 ]]; then
 
 fi
 
-# Install linux tar file dependencies
-curl -o u-boot-xlnx-xilinx-v2020.2.2-k26.tar.gz -L https://github.com/Xilinx/u-boot-xlnx/archive/refs/tags/xilinx-v2020.2.2-k26.tar.gz \
-    -o linux-xlnx-xilinx-v2020.2.2-k26.tar.gz -L https://github.com/Xilinx/linux-xlnx/archive/refs/tags/xilinx-v2020.2.2-k26.tar.gz
-
-# Install tar file dependencies for PandAblocks-FPGA 
-curl -o device-tree-xlnx-xilinx-v2020.2.tar.gz -L https://github.com/Xilinx/device-tree-xlnx/archive/refs/tags/xilinx-v2020.2.tar.gz \
-    -o u-boot-xlnx-xilinx-v2020.2.tar.gz -L https://github.com/Xilinx/u-boot-xlnx/archive/refs/tags/xilinx-v2020.2.tar.gz \
-    -o arm-trusted-firmware-xilinx-v2020.2.tar.gz -L https://github.com/Xilinx/arm-trusted-firmware/archive/refs/tags/xilinx-v2020.2.tar.gz \
-    -o dtc-1.6.1.tar.gz -L https://git.kernel.org/pub/scm/utils/dtc/dtc.git/snapshot/dtc-1.6.1.tar.gz
+# Install tar file dependencies
+curl -o u-boot-xlnx-xilinx-v2022.2.tar.gz -L https://github.com/Xilinx/u-boot-xlnx/archive/refs/tags/xilinx-v2022.2.tar.gz \
+    -o linux-xlnx-xilinx-v2022.2.tar.gz -L https://github.com/Xilinx/linux-xlnx/archive/refs/tags/xilinx-v2022.2.tar.gz \
+    -o device-tree-xlnx-xilinx_v2022.2.tar.gz -L https://github.com/Xilinx/device-tree-xlnx/archive/refs/tags/xilinx_v2022.2.tar.gz \
+    -o arm-trusted-firmware-xilinx-v2022.2.tar.gz -L https://github.com/Xilinx/arm-trusted-firmware/archive/refs/tags/xilinx-v2022.2.tar.gz \
+    -o dtc-1.7.0.tar.gz -L https://git.kernel.org/pub/scm/utils/dtc/dtc.git/snapshot/dtc-1.7.0.tar.gz
 
 # Old url to i2c-tools tar file. No longer working
 # -OL http://jdelvare.nerim.net/mirror/i2c-tools/i2c-tools-3.1.1.tar.bz2 \
 
-# 2021.1 tar files
-curl -o u-boot-xlnx-xilinx-v2021.1.tar.gz -L https://github.com/Xilinx/u-boot-xlnx/archive/refs/tags/xilinx-v2021.1.tar.gz \
-    -o linux-xlnx-xilinx-v2021.1.tar.gz -L https://github.com/Xilinx/linux-xlnx/archive/refs/tags/xilinx-v2021.1.tar.gz
-
-
- curl -o device-tree-xlnx-xilinx_v2021.1.tar.gz -L https://github.com/Xilinx/device-tree-xlnx/archive/refs/tags/xilinx_v2021.1.tar.gz \
-    -o u-boot-xlnx-xilinx-v2021.1.tar.gz -L https://github.com/Xilinx/u-boot-xlnx/archive/refs/tags/xilinx-v2021.1.tar.gz \
-    -o arm-trusted-firmware-xlnx_rebase_v2.4_2021.1.tar.gz -L https://github.com/Xilinx/arm-trusted-firmware/archive/refs/tags/xlnx_rebase_v2.4_2021.1.tar.gz \
-#    -o dtc-1.6.1.tar.gz -L https://git.kernel.org/pub/scm/utils/dtc/dtc.git/snapshot/dtc-1.6.1.tar.gz  

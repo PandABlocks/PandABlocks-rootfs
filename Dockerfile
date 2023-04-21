@@ -13,7 +13,9 @@ RUN yum -y upgrade && yum -y install \
     expat-devel \
     git \
     glibc-devel \
+    gmp-devel \
     libffi-devel \
+    libmpc-devel \
     libjpeg-turbo-devel \
     ncurses-compat-libs \
     openssl-devel \

@@ -8,13 +8,8 @@ TOP := $(CURDIR)
 # Note: if these files have been downloaded through the releases directory then
 # they need to be renamed with the appropriate {u-boot,linux}-xlnx- prefix so
 # that the file name and contents match.
-MD5_SUM_u-boot-xlnx-xilinx-v2015.1 = b6d212208b7694f748727883eebaa74e
-MD5_SUM_linux-xlnx-xilinx-v2015.1  = 930d126df2113221e63c4ec4ce356f2c
-MD5_SUM_u-boot-xlnx-xilinx-v2019.2   = 1b681950c604dbd6e0d7e4612bafb193
-MD5_SUM_linux-xlnx-zynq-soc-for-v5.7 = 41212e3a37d573a6e8d54ff7c37d7549
-MD5_SUM_u-boot-xlnx-xilinx-v2020.2.2-k26 = 391aecbe06c7148540223744b7e4aaf5
-MD5_SUM_linux-xlnx-xilinx-v2020.2.2-k26  = fddd83b9aae0bd5410e18602359fba0d
-
+MD5_SUM_u-boot-xlnx-xilinx-v2022.2 = a9e54fff739d5702465c786b5420d31e
+MD5_SUM_linux-xlnx-xilinx-v2022.2 = 5f156f71acadfb849eb3e1f65e1a42f0
 
 # Define settings that may need to be overridden before including CONFIG.
 SPHINX_BUILD = sphinx-build
@@ -34,8 +29,8 @@ BOOT_ZIP = $(PANDA_ROOT)/boot@$(PLATFORM)-$(GIT_VERSION_SUFFIX).zip
 DEPS_ZIP = $(PANDA_ROOT)/deps@$(PLATFORM)-$(GIT_VERSION_SUFFIX).zip
 
 # Tags for versions of u-boot and kernel
-U_BOOT_TAG = xilinx-v2020.2.2-k26
-KERNEL_TAG = xilinx-v2020.2.2-k26
+U_BOOT_TAG = xilinx-v2022.2
+KERNEL_TAG = xilinx-v2022.2
 
 # Configuration and local settings.
 include CONFIG
@@ -178,7 +173,7 @@ $(KERNEL_BUILD)/.config: kernel/$(PLATFORM).config $(KERNEL_SRC)
 	$(MAKE_KERNEL) -j4 oldconfig
 
 $(IMAGE): $(KERNEL_BUILD)/.config
-	$(MAKE_KERNEL) Image
+	$(MAKE_KERNEL) Image modules
 	touch $@
 
 $(UIMAGE): $(IMAGE) $(U_BOOT_MKIMAGE)
