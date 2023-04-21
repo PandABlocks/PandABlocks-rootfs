@@ -13,6 +13,7 @@ RUN yum -y upgrade && yum -y install \
     expat-devel \
     git \
     glibc-devel \
+    glibc-langpack-en \
     gmp-devel \
     libffi-devel \
     libmpc-devel \
