@@ -1,0 +1,19 @@
+#!/bin/sh
+
+# Ensure NTPD daemon is running.
+
+. /etc/init.d/functions
+
+NTPD_PIDFILE=/var/run/ntpd.pid
+
+do_start()
+{
+    start-stop-daemon -S -p $NTPD_PIDFILE -m -b /usr/sbin/ntpd -- -n
+}
+
+do_stop()
+{
+    start-stop-daemon -K -p $NTPD_PIDFILE
+}
+
+do_start_stop "$1" ntpd
