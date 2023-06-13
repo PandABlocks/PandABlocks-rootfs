@@ -20,12 +20,9 @@ NTP_CONF = n
 PACKAGES += zlib
 PACKAGES += ncurses
 PACKAGES += readline
-PACKAGES += nano
-PACKAGES += screen
 
 PACKAGES += procServ
 PACKAGES += ethtool
-PACKAGES += i2c-tools
 
 SYSTEM_PYTHON = 3
 PACKAGES += libffi
