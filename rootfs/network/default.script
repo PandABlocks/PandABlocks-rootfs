@@ -71,15 +71,12 @@ case "$1" in
             fi
         fi
 
-        if [ -n "$timesrv" ]; then
-            echo "Recreating /etc/ntp.conf from $timesrv"
+        if [ -n "$ntpsrv" ]; then
+            echo "Recreating /etc/ntp.conf from $ntpsrv"
             {
-                for i in $timesrv; do
+                for i in $ntpsrv; do
                     echo "server $i"
                 done
-                echo "driftfile /tmp/ntp.drift"
-                echo "pidfile /var/run/ntpd.pid"
-                echo "logconfig -syncevents -sysevents"
             } > $VAR/ntp.conf-$$
             mv $VAR/ntp.conf-$$ $VAR/ntp.conf
             if [ -f "/var/run/ntpd.pid" ]; then

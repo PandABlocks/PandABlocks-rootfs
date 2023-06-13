@@ -4,7 +4,7 @@
 # Package definitions for Zynq
 
 PACKAGES += busybox
-busybox_VERSION = 1.33.1
+busybox_VERSION = 1.36.1
 busybox_CONFIG = $(configdir)/busybox.config
 INSTALL_UDHCPC_SCRIPT = n
 
@@ -14,14 +14,12 @@ DROPBEAR_KEYS = n
 # Disable use of passwords for ssh login
 DROPBEAR_OPTS = -s
 
-PACKAGES += ntp
-NTP_CONF = n
-
 PACKAGES += zlib
 PACKAGES += ncurses
 PACKAGES += readline
 
 PACKAGES += procServ
+PACKAGES += libmnl
 PACKAGES += ethtool
 
 SYSTEM_PYTHON = 3

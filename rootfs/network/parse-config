@@ -141,12 +141,6 @@ server 2.pool.ntp.org
 server 3.pool.ntp.org
 EOF
     fi
-
-    cat <<EOF
-driftfile /tmp/ntp.drift
-pidfile /var/run/ntpd.pid
-logconfig -syncevents -sysevents
-EOF
 } >$VAR/ntp.conf
 
 
