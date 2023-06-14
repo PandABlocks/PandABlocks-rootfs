@@ -160,9 +160,12 @@ of networking and other configuration settings</p>
 <p>During startup the network will be configured as follows:</p>
 <ul class="simple">
 <li><p>If <code class="docutils literal notranslate"><span class="pre">ADDRESS</span></code> and <code class="docutils literal notranslate"><span class="pre">NETMASK</span></code> are set then a static IP will be assigned, and
-the remaining keys should also be set.</p></li>
+the remaining keys should also be set. Additionally, <code class="docutils literal notranslate"><span class="pre">NTP</span></code> can be set to
+specify a list of NTP servers.</p></li>
 <li><p>Otherwise DHCP will be attempted.  If successful this will assign the IP
-address, gateway and DNS settings, and may assign hostname.</p></li>
+address, gateway and DNS settings, and may assign hostname. If the DHCP
+server provides the NTP option, it will be used to set the NTP servers. This
+will take priority over the <code class="docutils literal notranslate"><span class="pre">NTP</span></code> parameter.</p></li>
 <li><p>If DCHP fails then “ZeroConf” is attempted.  If this also fails then PandA
 will not be reachable on the network.</p></li>
 </ul>

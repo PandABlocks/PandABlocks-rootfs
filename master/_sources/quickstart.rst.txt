@@ -12,10 +12,13 @@ of networking and other configuration settings
 During startup the network will be configured as follows:
 
 * If ``ADDRESS`` and ``NETMASK`` are set then a static IP will be assigned, and
-  the remaining keys should also be set.
+  the remaining keys should also be set. Additionally, ``NTP`` can be set to
+  specify a list of NTP servers.
 
 * Otherwise DHCP will be attempted.  If successful this will assign the IP
-  address, gateway and DNS settings, and may assign hostname.
+  address, gateway and DNS settings, and may assign hostname. If the DHCP
+  server provides the NTP option, it will be used to set the NTP servers. This
+  will take priority over the ``NTP`` parameter.
 
 * If DCHP fails then "ZeroConf" is attempted.  If this also fails then PandA
   will not be reachable on the network.
