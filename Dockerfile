@@ -60,6 +60,9 @@ RUN bash scripts/config-file-rootfs.sh
 # Error can't find python
 RUN ln -s /usr/bin/python3 /usr/bin/python
 
-# Entrypoint into the container 
+# Make sure git doesn't fail when used to obtain a tag name
+RUN git config --global --add safe.directory '*'
+
+# Entrypoint into the container
 WORKDIR /repos
 CMD ["/bin/bash"]
