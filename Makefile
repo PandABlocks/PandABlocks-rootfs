@@ -170,7 +170,7 @@ $(KERNEL_SRC):
 $(KERNEL_BUILD)/.config: kernel/$(PLATFORM).config $(KERNEL_SRC)
 	mkdir -p $(KERNEL_BUILD)
 	cp $< $@
-	$(MAKE_KERNEL) -j4 oldconfig
+	$(MAKE_KERNEL) -j4 olddefconfig
 
 $(IMAGE): $(KERNEL_BUILD)/.config
 	$(MAKE_KERNEL) Image modules
