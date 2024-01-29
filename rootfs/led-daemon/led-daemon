@@ -13,11 +13,11 @@ GRAIN=100000        # Our timing granularity: 100ms in microseconds
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 # LED initialisation
 
-# The LED GPIO numbers are determined from the physical GPIO numbers (50 for the
-# STA status LED, 51 for the DIA diagnostic LED), but an offset is added
-# for somewhat mysterious reasons.
+# The LED GPIO numbers are determined from the physical GPIO numbers (eg 50 for the
+# STA status LED, 51 for the DIA diagnostic LED in the case of PandABox), 
+# but an offset is added for somewhat mysterious reasons.
 ZYNQ_GPIO_BASE=906
-ZYNQMP_GPIO_BASE=338
+ZYNQMP_GPIO_BASE=334
 if [ -e /sys/class/gpio/gpiochip${ZYNQ_GPIO_BASE} ]; then
     GPIO_BASE=${ZYNQ_GPIO_BASE}
 elif [ -e /sys/class/gpio/gpiochip${ZYNQMP_GPIO_BASE} ]; then
