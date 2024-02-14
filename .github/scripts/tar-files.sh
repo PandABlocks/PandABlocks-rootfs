@@ -36,9 +36,13 @@ if [[ -z $1 ]]; then
 fi
 
 # Install tar file dependencies
-curl -o u-boot-xlnx-xilinx-v2023.2.tar.gz -L https://github.com/Xilinx/u-boot-xlnx/archive/refs/tags/xilinx-v2023.2.tar.gz \
+curl -o u-boot-xlnx-xilinx-v2022.2.tar.gz -L https://github.com/Xilinx/u-boot-xlnx/archive/refs/tags/xilinx-v2022.2.tar.gz \
+    -o u-boot-xlnx-xilinx-v2023.2.tar.gz -L https://github.com/Xilinx/u-boot-xlnx/archive/refs/tags/xilinx-v2023.2.tar.gz \
+    -o linux-xlnx-xilinx-v2022.2.tar.gz -L https://github.com/Xilinx/linux-xlnx/archive/refs/tags/xilinx-v2022.2.tar.gz \
     -o linux-xlnx-xilinx-v2023.2.tar.gz -L https://github.com/Xilinx/linux-xlnx/archive/refs/tags/xilinx-v2023.2.tar.gz \
+    -o device-tree-xlnx-xilinx_v2022.2.tar.gz -L https://github.com/Xilinx/device-tree-xlnx/archive/refs/tags/xilinx_v2022.2.tar.gz \
     -o device-tree-xlnx-xilinx_v2023.2.tar.gz -L https://github.com/Xilinx/device-tree-xlnx/archive/refs/tags/xilinx_v2023.2.tar.gz \
+    -o arm-trusted-firmware-xilinx-v2022.2.tar.gz -L https://github.com/Xilinx/arm-trusted-firmware/archive/refs/tags/xilinx-v2022.2.tar.gz \
     -o arm-trusted-firmware-xilinx-v2023.2.tar.gz -L https://github.com/Xilinx/arm-trusted-firmware/archive/refs/tags/xilinx-v2023.2.tar.gz \
     -o dtc-1.7.0.tar.gz -L https://git.kernel.org/pub/scm/utils/dtc/dtc.git/snapshot/dtc-1.7.0.tar.gz
 
