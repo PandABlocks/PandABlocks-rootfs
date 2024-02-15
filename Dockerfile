@@ -14,10 +14,12 @@ RUN yum -y upgrade && yum -y install \
     git \
     glibc-devel \
     glibc-langpack-en \
+    gnutls-devel \
     gmp-devel \
     libffi-devel \
     libmpc-devel \
     libjpeg-turbo-devel \
+    libuuid-devel \
     ncurses-compat-libs \
     openssl-devel \
     patch \

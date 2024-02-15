@@ -8,8 +8,8 @@ TOP := $(CURDIR)
 # Note: if these files have been downloaded through the releases directory then
 # they need to be renamed with the appropriate {u-boot,linux}-xlnx- prefix so
 # that the file name and contents match.
-MD5_SUM_u-boot-xlnx-xilinx-v2022.2 = a9e54fff739d5702465c786b5420d31e
-MD5_SUM_linux-xlnx-xilinx-v2022.2 = 5f156f71acadfb849eb3e1f65e1a42f0
+MD5_SUM_u-boot-xlnx-xilinx-v2023.2 = 135d51a81aadaed096a667e41db6e110
+MD5_SUM_linux-xlnx-xilinx-v2023.2 = 95b396e350aaab3f4ef944e3b22b1799
 
 # Define settings that may need to be overridden before including CONFIG.
 SPHINX_BUILD = sphinx-build
@@ -29,8 +29,8 @@ BOOT_ZIP = $(PANDA_ROOT)/boot@$(PLATFORM)-$(GIT_VERSION_SUFFIX).zip
 DEPS_ZIP = $(PANDA_ROOT)/deps@$(PLATFORM)-$(GIT_VERSION_SUFFIX).zip
 
 # Tags for versions of u-boot and kernel
-U_BOOT_TAG = xilinx-v2022.2
-KERNEL_TAG = xilinx-v2022.2
+U_BOOT_TAG = xilinx-v2023.2
+KERNEL_TAG = xilinx-v2023.2
 
 # Configuration and local settings.
 include CONFIG
@@ -170,7 +170,7 @@ $(KERNEL_SRC):
 $(KERNEL_BUILD)/.config: kernel/$(PLATFORM).config $(KERNEL_SRC)
 	mkdir -p $(KERNEL_BUILD)
 	cp $< $@
-	$(MAKE_KERNEL) -j4 oldconfig
+	$(MAKE_KERNEL) -j4 olddefconfig
 
 $(IMAGE): $(KERNEL_BUILD)/.config
 	$(MAKE_KERNEL) Image modules
