@@ -169,7 +169,7 @@ $(KERNEL_SRC):
 
 $(KERNEL_BUILD)/.config: kernel/$(PLATFORM).config $(KERNEL_SRC)
 	mkdir -p $(KERNEL_BUILD)
-	cp $< $@
+	cp -f $< $@
 	$(MAKE_KERNEL) -j4 olddefconfig
 
 $(IMAGE): $(KERNEL_BUILD)/.config
@@ -295,7 +295,7 @@ BOOT_FILES += boot/config.txt           # Configuration settings for target
 
 boot: $(BOOT_FILES)
 	mkdir -p $(BOOT_IMAGE)
-	cp $^ $(BOOT_IMAGE)
+	cp -f $^ $(BOOT_IMAGE)
 
 .PHONY: boot
 
