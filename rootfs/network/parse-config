@@ -6,6 +6,13 @@
 VAR=/var/run/network
 CONFIG_FILE=/boot/config.txt
 
+get_mac_address()
+{
+    # we default to PandABox way (for backward compatibility)
+    cat /qspi/MAC
+}
+
+[ -e /boot/target-defs ] && source /boot/target-defs
 
 # As a network fallback measure, if there is a USB key containing a file named
 # panda-config.txt in its root, then use that instead of the default config
@@ -70,7 +77,7 @@ compute_broadcast() { ip_to_dotted $(($1 | ~$2)); }
 
 
 # First set the MAC address
-ifconfig eth0 hw ether $(cat /qspi/MAC)
+ifconfig eth0 hw ether $(get_mac_address)
 
 
 mkdir -p $VAR
