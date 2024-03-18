@@ -16,15 +16,16 @@ GRAIN=100000        # Our timing granularity: 100ms in microseconds
 # The LED GPIO numbers are determined from the physical GPIO numbers (eg 50 for the
 # STA status LED, 51 for the DIA diagnostic LED in the case of PandABox), 
 # but an offset is added for somewhat mysterious reasons.
-ZYNQ_GPIO_BASE=906
-ZYNQMP_GPIO_BASE=334
-if [ -e /sys/class/gpio/gpiochip${ZYNQ_GPIO_BASE} ]; then
-    GPIO_BASE=${ZYNQ_GPIO_BASE}
-elif [ -e /sys/class/gpio/gpiochip${ZYNQMP_GPIO_BASE} ]; then
-    GPIO_BASE=${ZYNQMP_GPIO_BASE}
-else
+LED_GPIO_BASE=906
+STA_LED_OFFSET=51
+DIA_LED_OFFSET=50
+# Last values correspond to target PandABox for backward compatibility, but
+# target-defs is expected to set them
+[ -e /boot/target-defs ] && source /boot/target-defs
+
+if [ ! -e /sys/class/gpio/gpiochip${LED_GPIO_BASE} ]; then
     echo "Unknown GPIO chip"
-    exit -1
+    exit 1
 fi
 
 # Configure and check for presence of LED.  Call thus:
@@ -33,21 +34,15 @@ fi
 #
 configure_led()
 {
-    local SYSFS_PATH=/sys/firmware/devicetree/base/led_daemon/$1
-    local PRESENT=$(test -e $SYSFS_PATH && echo true || echo false)
-    local LED
-    if $PRESENT; then
-        LED_OFF=$(cat $SYSFS_PATH)
-        LED_GPIO=$((GPIO_BASE + $LED_OFF))
-        LED=/sys/class/gpio/gpio$LED_GPIO
-        [ -e $LED ]  ||  echo $LED_GPIO >/sys/class/gpio/export
-        echo out >$LED/direction;
-    fi
+    local LED_GPIO=$((LED_GPIO_BASE + $1))
+    local LED=/sys/class/gpio/gpio$LED_GPIO
+    [ -e $LED ]  ||  echo $LED_GPIO >/sys/class/gpio/export
+    echo out >$LED/direction;
     echo $LED
 }
 
-STA_LED=$(configure_led sta-led)
-DIA_LED=$(configure_led dia-led)
+STA_LED=$(configure_led $STA_LED_OFFSET)
+DIA_LED=$(configure_led $DIA_LED_OFFSET)
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
