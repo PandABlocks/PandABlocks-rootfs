@@ -16,6 +16,8 @@ import pandablocks
 
 # General information about the project.
 project = "PandABlocks-rootfs"
+copyright = "2024, Diamond Light Source"
+author = "Tom Cobb"
 
 # The full version, including alpha/beta/rc tags.
 release = pandablocks.__version__
@@ -38,6 +40,8 @@ extensions = [
     "sphinx.ext.intersphinx",
     # Add links to source code in API docs
     "sphinx.ext.viewcode",
+    # Adds support for matplotlib plots
+    "matplotlib.sphinxext.plot_directive",
     # Adds the inheritance-diagram generation directive
     "sphinx.ext.inheritance_diagram",
     # Add a copy button to each code block
@@ -68,6 +72,8 @@ nitpick_ignore = [
     ("py:class", "'object'"),
     ("py:class", "'id'"),
     ("py:class", "typing_extensions.Literal"),
+    ("py:func", "int"),
+    ("py:class", "pandablocks.commands.T"),
 ]
 
 # Both the class’ and the __init__ method’s docstring are concatenated and
@@ -100,10 +106,25 @@ pygments_style = "sphinx"
 
 # This means you can link things like `str` and `asyncio` to the relevant
 # docs in the python documentation.
-intersphinx_mapping = {"python": ("https://docs.python.org/3/", None)}
+intersphinx_mapping = {
+    "python": ("https://docs.python.org/3/", None),
+    "numpy": ("https://numpy.org/doc/stable/", None),
+    "h5py": ("https://docs.h5py.org/en/stable/", None),
+}
 
 # A dictionary of graphviz graph attributes for inheritance diagrams.
 inheritance_graph_attrs = {"rankdir": "TB"}
+
+# Common links that should be available on every page
+rst_epilog = """
+.. _Diamond Light Source: http://www.diamond.ac.uk
+.. _black: https://github.com/psf/black
+.. _ruff: https://beta.ruff.rs/docs/
+.. _mypy: http://mypy-lang.org/
+.. _pre-commit: https://pre-commit.com/
+.. _numpy: https://numpy.org/
+.. _h5py: https://www.h5py.org/
+"""
 
 # Ignore localhost links for periodic check that links in docs are valid
 linkcheck_ignore = [r"http://localhost:\d+/"]
@@ -119,8 +140,8 @@ copybutton_prompt_is_regexp = True
 # a list of builtin themes.
 #
 html_theme = "pydata_sphinx_theme"
-github_repo = "PandABlocks-rootfs-docs"
-github_user = "shihab-dls"
+github_repo = "PandABlocks-rootfs"
+github_user = "PandABlocks"
 switcher_json = f"https://{github_user}.github.io/{github_repo}/switcher.json"
 switcher_exists = requests.get(switcher_json).ok
 if not switcher_exists:
@@ -135,12 +156,12 @@ if not switcher_exists:
 # Theme options for pydata_sphinx_theme
 # We don't check switcher because there are 3 possible states for a repo:
 # 1. New project, docs are not published so there is no switcher
-# 2. Existing project with latest copier template, switcher exists and works
-# 3. Existing project with old copier template that makes broken switcher,
+# 2. Existing project with latest skeleton, switcher exists and works
+# 3. Existing project with old skeleton that makes broken switcher,
 #    switcher exists but is broken
-# Point 3 makes checking switcher difficult, because the updated copier template
-# will fix the switcher at the end of the docs workflow, but never gets a chance
-# to complete as the docs build warns and fails.
+# Point 3 makes checking switcher difficult, because the updated skeleton
+# will fix the switcher at the end of the docs workflow, but never gets a
+# chance to complete as the docs build warns and fails.
 html_theme_options = {
     "logo": {
         "text": project,
@@ -166,7 +187,7 @@ html_theme_options = {
 # A dictionary of values to pass into the template engine’s context for all pages
 html_context = {
     "github_user": github_user,
-    "github_repo": github_repo,
+    "github_repo": project,
     "github_version": version,
     "doc_path": "docs",
 }
@@ -175,7 +196,7 @@ html_context = {
 html_show_sphinx = False
 
 # If true, "(C) Copyright ..." is shown in the HTML footer. Default is True.
-html_show_copyright = False
+html_show_copyright = True
 
 # Logo
 html_logo = "images/PandA-logo-for-black-background.svg"
