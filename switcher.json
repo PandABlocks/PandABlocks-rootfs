@@ -1,0 +1,46 @@
+[
+  {
+    "version": "master",
+    "url": "https://PandABlocks.github.io/PandABlocks-rootfs/master/"
+  },
+  {
+    "version": "3.1a1",
+    "url": "https://PandABlocks.github.io/PandABlocks-rootfs/3.1a1/"
+  },
+  {
+    "version": "3.0b1",
+    "url": "https://PandABlocks.github.io/PandABlocks-rootfs/3.0b1/"
+  },
+  {
+    "version": "3.0a7",
+    "url": "https://PandABlocks.github.io/PandABlocks-rootfs/3.0a7/"
+  },
+  {
+    "version": "3.0a6",
+    "url": "https://PandABlocks.github.io/PandABlocks-rootfs/3.0a6/"
+  },
+  {
+    "version": "3.0a5",
+    "url": "https://PandABlocks.github.io/PandABlocks-rootfs/3.0a5/"
+  },
+  {
+    "version": "3.0a4",
+    "url": "https://PandABlocks.github.io/PandABlocks-rootfs/3.0a4/"
+  },
+  {
+    "version": "3.0a3",
+    "url": "https://PandABlocks.github.io/PandABlocks-rootfs/3.0a3/"
+  },
+  {
+    "version": "3.0a2",
+    "url": "https://PandABlocks.github.io/PandABlocks-rootfs/3.0a2/"
+  },
+  {
+    "version": "3.0",
+    "url": "https://PandABlocks.github.io/PandABlocks-rootfs/3.0/"
+  },
+  {
+    "version": "doc_changes",
+    "url": "https://PandABlocks.github.io/PandABlocks-rootfs/doc_changes/"
+  }
+]
