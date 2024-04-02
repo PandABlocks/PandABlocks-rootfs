@@ -68,3 +68,5 @@ RUN git config --global --add safe.directory '*'
 # Entrypoint into the container
 WORKDIR /repos
 CMD ["/bin/bash"]
+
+ARG PYTHON_VERSION=3.11
