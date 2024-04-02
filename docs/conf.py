@@ -40,8 +40,6 @@ extensions = [
     "sphinx.ext.intersphinx",
     # Add links to source code in API docs
     "sphinx.ext.viewcode",
-    # Adds support for matplotlib plots
-    "matplotlib.sphinxext.plot_directive",
     # Adds the inheritance-diagram generation directive
     "sphinx.ext.inheritance_diagram",
     # Add a copy button to each code block
