@@ -290,6 +290,7 @@ class CommandHandler(RequestHandler):
         self.list_package_instructions()
         self.p("Packages placed on the USB stick can be navigated to below:")
         root, glob_list = glob_dir('*.zpg', *path_suffix)
+        glob_list.sort()
         if glob_list:
             self.h2("Available in %s:" % tt(root))
             self.t("form_select.html", label="Install Selected Packages",
@@ -398,6 +399,7 @@ class CommandHandler(RequestHandler):
         ensure_usb_key_inserted()
         root = os.path.join(MNT, *path_suffix)
         packages = [os.path.join(root, f) for f in self.get_arguments('value')]
+        packages.sort()
         yield self.zpkg("install", *packages)
 
     @coroutine
