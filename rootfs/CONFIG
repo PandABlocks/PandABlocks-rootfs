@@ -30,6 +30,7 @@ PACKAGES += setuptools
 PACKAGES += numpy
 PACKAGES += cothread
 PACKAGES += tornado
+PACKAGES += $(configdir)/fbpad
 
 
 # -----------------------------------------------------------------------------

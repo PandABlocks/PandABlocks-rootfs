@@ -1,0 +1,19 @@
+fbpad_VERSION ?= e9e9cb089f8b0e5177bab1c7c48053af09abaa46
+
+TAR_EXTENSION = .tar.gz
+MD5_SUM_e9e9cb089f8b0e5177bab1c7c48053af09abaa46 = f2646d4a33822ba0fc0680c8c86263ef
+PATCHES_e9e9cb089f8b0e5177bab1c7c48053af09abaa46 = set-font-path.patch disable-cursor.patch
+
+
+build:
+	make -C $(O) -f $(srcdir)/Makefile \
+            CFLAGS='$(CFLAGS)' CC=$(COMPILER_PREFIX)-gcc VPATH=$(srcdir)
+	install $(O)/fbpad $(I)
+	install $(packagedir)/font.tf $(I)
+
+install:
+	$(install) -s -m-w $(I)/fbpad /usr/bin
+	$(install) -d /usr/share/fbpad
+	$(install) $(I)/font.tf /usr/share/fbpad
+
+# vim: set filetype=make:
