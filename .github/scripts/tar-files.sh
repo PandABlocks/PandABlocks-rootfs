@@ -31,7 +31,8 @@ if [[ -z $1 ]]; then
         -OL https://files.pythonhosted.org/packages/11/0a/7f13ef5cd932a107cd4c0f3ebc9d831d9b78e1a0e8c98a098ca17b1d7d97/setuptools-41.6.0.zip \
         -OL https://ftpmirror.gnu.org/libtool/libtool-2.4.6.tar.gz \
         -OL https://ftp.gnu.org/gnu/ncurses/ncurses-6.4.tar.gz \
-        -OL https://pkgconfig.freedesktop.org/releases/pkg-config-0.28.tar.gz
+        -OL https://pkgconfig.freedesktop.org/releases/pkg-config-0.28.tar.gz \
+        -o fbpad-e9e9cb089f8b0e5177bab1c7c48053af09abaa46.tar.gz -L https://github.com/aligrudi/fbpad/archive/e9e9cb089f8b0e5177bab1c7c48053af09abaa46.tar.gz
 
 fi
 

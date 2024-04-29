@@ -1,0 +1,13 @@
+diff --git a/conf.h b/conf.h
+index c7f52d6..2aed4b6 100644
+--- a/conf.h
++++ b/conf.h
+@@ -11,7 +11,7 @@
+ #define TERM		"linux"
+ 
+ /* tinyfont files for regular, italic, and bold fonts */
+-#define FR		"/path/to/font.tf"
++#define FR		"/usr/share/fbpad/font.tf"
+ #define FI		NULL
+ #define FB		NULL
+ 

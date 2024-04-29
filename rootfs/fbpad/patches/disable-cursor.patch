@@ -1,0 +1,29 @@
+diff --git a/conf.h b/conf.h
+index c7f52d6..6351b22 100644
+--- a/conf.h
++++ b/conf.h
+@@ -2,6 +2,9 @@
+ #define TAGS		"xnlhtr01uiva "
+ #define TAGS_SAVED	""
+ 
++/* Disable cursor */
++#define NOCURSOR	1
++
+ /* programs mapped to m-c, m-m, m-e */
+ #define SHELL		{"sh"}
+ #define EDITOR		{"vi"}
+diff --git a/term.c b/term.c
+index 2349577..52ba82f 100644
+--- a/term.c
++++ b/term.c
+@@ -174,8 +174,10 @@ static void draw_char(int ch, int r, int c)
+ 
+ static void draw_cursor(int put)
+ {
++#ifndef NOCURSOR
+ 	if (candraw(row, row + 1))
+ 		_draw_pos(row, col, put);
++#endif
+ }
+ 
+ static void lazy_start(void)
