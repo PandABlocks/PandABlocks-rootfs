@@ -77,7 +77,8 @@ compute_broadcast() { ip_to_dotted $(($1 | ~$2)); }
 
 
 # First set the MAC address
-ifconfig eth0 hw ether $(get_mac_address)
+MAC="$(get_mac_address)"
+[ -n "$MAC" ] && ifconfig eth0 hw ether "$MAC"
 
 
 mkdir -p $VAR
