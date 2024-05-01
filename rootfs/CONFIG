@@ -52,5 +52,6 @@ OPTIONS += $(configdir)/automount
 OPTIONS += $(configdir)/zpkg
 OPTIONS += $(configdir)/web-admin
 OPTIONS += $(configdir)/led-daemon
+OPTIONS += $(configdir)/target-specific
 
 # vim: set filetype=make:

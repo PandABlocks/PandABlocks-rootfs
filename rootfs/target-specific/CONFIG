@@ -1,0 +1,8 @@
+# Target-specific startup
+
+# The service is run before parse-config so that we can do network-related
+# fixes in the target-specific startup function
+option:
+	$(startup) $(optiondir)/target-specific S009
+
+# vim: set filetype=make:

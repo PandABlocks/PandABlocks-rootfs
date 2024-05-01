@@ -1,0 +1,6 @@
+#!/bin/sh
+
+# Run target specific tasks that could be defined in the FPGA repository.
+target_specific_start() { :; }
+[ -e /boot/target-defs ] && source /boot/target-defs
+target_specific_start
