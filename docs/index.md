@@ -27,19 +27,22 @@ How the documentation is structured
 :::{grid-item-card} {material-regular}`directions;2em`
 :link: how-to/building.md
 :link-type: ref
-+++
 :::
 
 :::{grid-item-card} {material-regular}`directions;2em`
 :link: how-to/remote.md
 :link-type: ref
-+++
 :::
 
 :::{grid-item-card} {material-regular}`directions;2em`
 :link: how-to/quickstart.md
 :link-type: ref
-+++
 :::
 
 ::::
+
+.. toctree::
+:hidden:
+how-to/building.md
+how-to/remote.md
+how-to/quickstart.md
