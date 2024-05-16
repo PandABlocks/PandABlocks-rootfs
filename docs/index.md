@@ -21,13 +21,28 @@ How the documentation is structured
 
 <!-- https://sphinx-design.readthedocs.io/en/latest/grids.html -->
 
-::::{grid} 1
-:gutter: 4
+::::{grid} 3
+:gutter: 2
 
 :::{grid-item-card} {material-regular}`directions;2em`
+```{toctree}
+:glob:
 how-to/building.md
 +++
-Practical step-by-step guides for the more experienced user.
+:::
+
+:::{grid-item-card} {material-regular}`directions;2em`
+```{toctree}
+:glob:
+how-to/remote.md
++++
+:::
+
+:::{grid-item-card} {material-regular}`directions;2em`
+```{toctree}
+:glob:
+how-to/quickstart.md
++++
 :::
 
 ::::
