@@ -6,8 +6,6 @@ html_theme.sidebar_secondary.remove: true
 :end-before: <!-- README only content
 ```
 
-:hide-navigation:
-
 What does the rootfs do?
 -------------------------
 
