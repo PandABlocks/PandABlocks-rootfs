@@ -178,9 +178,9 @@ html_theme_options = {
         "version_match": version,
     },
     "check_switcher": False,
+    "navbar_center":[],
     "navbar_end": ["theme-switcher", "icon-links", "version-switcher"],
     "navigation_with_keys": False,
-    "body_max_width": 'none',
 }
 
 # A dictionary of values to pass into the template engine’s context for all pages
