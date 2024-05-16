@@ -26,17 +26,20 @@ How the documentation is structured
 
 :::{grid-item-card} {material-regular}`directions;2em`
 :link: how-to/building.md
-:link-type: ref
+:link-type: doc
+Building the Root File System
 :::
 
 :::{grid-item-card} {material-regular}`directions;2em`
 :link: how-to/remote.md
-:link-type: ref
+:link-type: doc
+Updating a PandA via SSH
 :::
 
 :::{grid-item-card} {material-regular}`directions;2em`
 :link: how-to/quickstart.md
-:link-type: ref
+:link-type: doc
+Getting a PandA on the network
 :::
 
 ::::
