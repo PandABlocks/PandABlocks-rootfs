@@ -178,7 +178,7 @@ html_theme_options = {
         "version_match": version,
     },
     "check_switcher": False,
-    "navbar_center":[],
+    "navbar_center":["navbar-nav-small"],
     "navbar_end": ["theme-switcher", "icon-links", "version-switcher"],
     "navigation_with_keys": False,
 }
