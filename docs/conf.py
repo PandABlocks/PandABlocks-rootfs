@@ -160,6 +160,11 @@ if not switcher_exists:
 # Point 3 makes checking switcher difficult, because the updated skeleton
 # will fix the switcher at the end of the docs workflow, but never gets a
 # chance to complete as the docs build warns and fails.
+html_static_path = ['_static']
+
+html_css_files = [
+    'css/custom.css',
+]
 html_theme_options = {
     "logo": {
         "text": project,
@@ -178,7 +183,6 @@ html_theme_options = {
         "version_match": version,
     },
     "check_switcher": False,
-    "navbar_center":["navbar-nav-small"],
     "navbar_end": ["theme-switcher", "icon-links", "version-switcher"],
     "navigation_with_keys": False,
 }
