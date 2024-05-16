@@ -23,46 +23,31 @@ Documentation is split into four categories, also accessible from links in the t
 
 <!-- https://sphinx-design.readthedocs.io/en/latest/grids.html -->
 
-::::{grid} 2
-:gutter: 4
+::::{grid} 3
+:gutter: 1
 
 :::{grid-item-card} {material-regular}`directions_walk;2em`
 ```{toctree}
-:maxdepth: 2
-:hidden:
-tutorials
+:maxdepth: 1
+how-to/building.md
 ```
 +++
-Tutorials for installation and typical usage. New users start here.
 :::
 
 :::{grid-item-card} {material-regular}`directions;2em`
 ```{toctree}
-:maxdepth: 2
-how-to
+:maxdepth: 1
+how-to/quickstart.md
 ```
 +++
-Practical step-by-step guides for the more experienced user.
 :::
 
 :::{grid-item-card} {material-regular}`info;2em`
 ```{toctree}
-:maxdepth: 2
-:hidden:
-explanations
+:maxdepth: 1
+how-to/remote.md
 ```
 +++
-Explanations of how it works and why it works that way.
-:::
-
-:::{grid-item-card} {material-regular}`menu_book;2em`
-```{toctree}
-:maxdepth: 2
-:hidden:
-reference
-```
-+++
-Technical reference material including APIs and release notes.
 :::
 
 ::::
