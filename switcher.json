@@ -54,5 +54,9 @@
   {
     "version": "doc_changes",
     "url": "https://PandABlocks.github.io/PandABlocks-rootfs/doc_changes/"
+  },
+  {
+    "version": "docs_and_docker",
+    "url": "https://PandABlocks.github.io/PandABlocks-rootfs/docs_and_docker/"
   }
 ]
