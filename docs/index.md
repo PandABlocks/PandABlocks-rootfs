@@ -41,8 +41,9 @@ How the documentation is structured
 
 ::::
 
-.. toctree::
+```{toctree}
 :hidden:
 how-to/building.md
 how-to/remote.md
 how-to/quickstart.md
+```
