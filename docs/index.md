@@ -24,19 +24,19 @@ How the documentation is structured
 ::::{grid} 3
 :gutter: 4
 
-:::{grid-item-card} {material-regular}`file-code;2em`
+:::{grid-item-card} {octicon}`file-code;4em`
 :link: how-to/building
 :link-type: doc
 Building Root File System
 :::
 
-:::{grid-item-card} {material-regular}`repo-push;2em`
+:::{grid-item-card} {octicon}`repo-push;4em`
 :link: how-to/remote
 :link-type: doc
 Updating PandA via SSH
 :::
 
-:::{grid-item-card} {material-regular}`server;2em`
+:::{grid-item-card} {octicon}`server;4em`
 :link: how-to/quickstart
 :link-type: doc
 Getting PandA on network
