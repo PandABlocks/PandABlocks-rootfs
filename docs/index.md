@@ -19,18 +19,13 @@ The rootfs is responsible for booting the Zynq, then setting up a number of serv
 How the documentation is structured
 -----------------------------------
 
-Documentation is split into four categories, also accessible from links in the top bar.
-
 <!-- https://sphinx-design.readthedocs.io/en/latest/grids.html -->
 
 ::::{grid} 1
 :gutter: 4
 
 :::{grid-item-card} {material-regular}`directions;2em`
-```{toctree}
-:maxdepth: 2
-how-to
-```
+how-to/building.md
 +++
 Practical step-by-step guides for the more experienced user.
 :::
