@@ -22,24 +22,24 @@ How the documentation is structured
 <!-- https://sphinx-design.readthedocs.io/en/latest/grids.html -->
 
 ::::{grid} 3
-:gutter: 2
+:gutter: 4
 
-:::{grid-item-card} {material-regular}`directions;2em`
+:::{grid-item-card} {material-regular}`file-code;2em`
 :link: how-to/building
 :link-type: doc
-Building the Root File System
+Building Root File System
 :::
 
-:::{grid-item-card} {material-regular}`directions;2em`
+:::{grid-item-card} {material-regular}`repo-push;2em`
 :link: how-to/remote
 :link-type: doc
-Updating a PandA via SSH
+Updating PandA via SSH
 :::
 
-:::{grid-item-card} {material-regular}`directions;2em`
+:::{grid-item-card} {material-regular}`server;2em`
 :link: how-to/quickstart
 :link-type: doc
-Getting a PandA on the network
+Getting PandA on network
 :::
 
 ::::
