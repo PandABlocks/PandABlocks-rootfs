@@ -6,6 +6,8 @@ html_theme.sidebar_secondary.remove: true
 :end-before: <!-- README only content
 ```
 
+:hide-navigation:
+
 What does the rootfs do?
 -------------------------
 
@@ -27,19 +29,19 @@ How the documentation is structured
 :::{grid-item-card} {octicon}`file-code;4em`
 :link: how-to/building
 :link-type: doc
-Building Root File System
+Building the Root File System
 :::
 
 :::{grid-item-card} {octicon}`repo-push;4em`
 :link: how-to/remote
 :link-type: doc
-Updating PandA via SSH
+Updating a PandA via SSH
 :::
 
 :::{grid-item-card} {octicon}`server;4em`
 :link: how-to/quickstart
 :link-type: doc
-Getting PandA on network
+Getting a PandA on the network
 :::
 
 ::::
