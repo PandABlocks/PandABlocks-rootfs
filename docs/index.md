@@ -25,23 +25,20 @@ How the documentation is structured
 :gutter: 2
 
 :::{grid-item-card} {material-regular}`directions;2em`
-```{toctree}
-:glob:
-how-to/building.md
+:link: how-to/building.md
+:link-type: ref
 +++
 :::
 
 :::{grid-item-card} {material-regular}`directions;2em`
-```{toctree}
-:glob:
-how-to/remote.md
+:link: how-to/remote.md
+:link-type: ref
 +++
 :::
 
 :::{grid-item-card} {material-regular}`directions;2em`
-```{toctree}
-:glob:
-how-to/quickstart.md
+:link: how-to/quickstart.md
+:link-type: ref
 +++
 :::
 
