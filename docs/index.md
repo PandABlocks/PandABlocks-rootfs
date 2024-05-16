@@ -26,7 +26,6 @@ Documentation is split into four categories, also accessible from links in the t
 ::::{grid} 2
 :gutter: 4
 
-:hidden:
 :::{grid-item-card} {material-regular}`directions_walk;2em`
 ```{toctree}
 :maxdepth: 2
