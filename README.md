@@ -1,6 +1,4 @@
 [![CI](https://github.com/PandABlocks/PandABlocks-rootfs/actions/workflows/ci.yml/badge.svg)](https://github.com/PandABlocks/PandABlocks-rootfs/actions/workflows/ci.yml)
-[![Coverage](https://codecov.io/gh/PandABlocks/PandABlocks-rootfs/branch/master/graph/badge.svg)](https://codecov.io/gh/PandABlocks/PandABlocks-rootfs)
-[![PyPI](https://img.shields.io/pypi/v/pandablocks.svg)](https://pypi.org/project/pandablocks)
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
 
 # PandABlocks-rootfs
