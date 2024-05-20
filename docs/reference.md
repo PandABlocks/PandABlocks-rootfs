@@ -8,5 +8,5 @@ Technical reference material including APIs and release notes.
 
 reference/*
 genindex
-Release Notes <https://github.com/shihab-dls/PandABlocks-rootfs-docs/releases>
+Release Notes <https://github.com/PandABlocks/PandABlocks-rootfs-docs/releases>
 ```
