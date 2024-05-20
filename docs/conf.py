@@ -195,7 +195,7 @@ html_theme_options = {
 }
 
 html_sidebars = {
-    "**": []
+    "***": []
 }
 
 # A dictionary of values to pass into the template engine’s context for all pages
