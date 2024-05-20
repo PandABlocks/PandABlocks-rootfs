@@ -195,6 +195,11 @@ html_context = {
     "doc_path": "docs",
 }
 
+# Removed left-sidebar from all pages
+html_sidebars = {
+    "*": []
+}
+
 # If true, "Created using Sphinx" is shown in the HTML footer. Default is True.
 html_show_sphinx = False
 

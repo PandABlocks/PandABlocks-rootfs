@@ -42,7 +42,7 @@ dev = [
 PandABlocks-rootfs = "pandablocks.__main__:main"
 
 [project.urls]
-GitHub = "https://github.com/shihab-dls/PandABlocks-rootfs"
+GitHub = "https://github.com/PandABlocks/PandABlocks-rootfs"
 
 [[project.authors]] # Further authors may be added by duplicating this section
 email = "tom.cobb@diamond.ac.uk"

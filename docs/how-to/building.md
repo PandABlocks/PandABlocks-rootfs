@@ -87,29 +87,28 @@ d13a99dc0b60ba69f5f8ec1235e5b232 tornado-4.3.tar.gz
 
 These packages are used as follows in the build:
 
-autoconf, automake, libtool, m4, pkg-config:
-
+`autoconf, automake, libtool, m4, pkg-config`:
     The rootfs builder needs specific and up to date versions of these tools.
-busybox:
 
+`busybox`:
     The entire target system environment is run with busybox.
-e2fsprogs, mtd-utils:
 
+`e2fsprogs, mtd-utils`:
     These packages are needed by the initramfs bootstrap process.
-dropbear, ntp:
 
+`dropbear, ntp`:
     These provide fundamental target resources: dropbear provides an ssh server, ntp is used for accurate timestamps.
-Python, enum34, libressl, numpy, cothread, ws4py:
 
+`Python, enum34, libressl, numpy, cothread, ws4py`:
     Python and a variety of supporting libraries will be used for running a number of system components.
-conserver, procServ, screen:
 
+`conserver, procServ, screen`:
     It is possible that these may be used for server management.
-ethtool, iperf, lsof, strace, nano:
 
+`ethtool, iperf, lsof, strace, nano`:
     These are useful debugging utilities, together with an easy to use editor.
-ncurses, readline, zlib:
 
+`ncurses, readline, zlib`:
     These are all libraries used by some of the packages above.
 
 ## Output Files
