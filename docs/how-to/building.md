@@ -12,7 +12,7 @@ The following must be installed before building this project:
 
 - Xilinx Zynq SDK.
 - U-Boot and Linux kernel sources. This project requires the Xilinx branches of these projects.
-- The Diamond rootfs builder. This can be downloaded from https://github.com/araneidae/rootfs
+- The Diamond rootfs builder. This can be downloaded from [github.com/araneidae/rootfs](https://github.com/araneidae/rootfs)
 - Sources needed for rootfs build. This list is quite long, see below.
 
 ### Configuring `CONFIG`
@@ -43,7 +43,7 @@ Note that the `COMPILER_PREFIX` symbol can also be overwritten if required. The 
 
 The rootfs requires a long list of dependencies that are freely available on the web. They have been gathered together in one tar file here:
 
-[](http://www.ohwr.org/attachments/download/5133/rootfs-tarfiles-0.6.tar)
+[rootfs-tarfiles-0.6.tar](http://www.ohwr.org/attachments/download/5133/rootfs-tarfiles-0.6.tar)
 
 They consist of the following sources, listed below with their MD5 checksums:
 
