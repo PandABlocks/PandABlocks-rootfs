@@ -7,10 +7,17 @@
 import sys
 from pathlib import Path
 from subprocess import check_output
+from urllib.request import urlretrieve
 
 import requests
 
 import pandablocks
+
+# Download top level (github.io repo) files
+urlretrieve (
+    "https://raw.githubusercontent.com/PandABlocks/PandABlocks.github.io/main/docs/how-to/remote.rst",
+    "how-to/remote.rst"
+)
 
 # -- General configuration ------------------------------------------------
 
@@ -187,17 +194,16 @@ html_theme_options = {
     "navigation_with_keys": False,
 }
 
+html_sidebars = {
+    "**": []
+}
+
 # A dictionary of values to pass into the template engine’s context for all pages
 html_context = {
     "github_user": github_user,
     "github_repo": project,
     "github_version": version,
     "doc_path": "docs",
-}
-
-# Removed left-sidebar from all pages
-html_sidebars = {
-    "*": []
 }
 
 # If true, "Created using Sphinx" is shown in the HTML footer. Default is True.
