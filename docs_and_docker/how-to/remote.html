@@ -8,7 +8,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Updating a PandA via SSH &#8212; PandABlocks-rootfs 3.1a5.dev4+gf660331 documentation</title>
+    <title>Updating a PandA via SSH &#8212; PandABlocks-rootfs 3.1a5.dev6+g7848419 documentation</title>
   
   
   
@@ -39,7 +39,7 @@
 <link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=8d27b9dea8ad943066ae" />
   <script src="../_static/vendor/fontawesome/6.5.1/js/all.min.js?digest=8d27b9dea8ad943066ae"></script>
 
-    <script src="../_static/documentation_options.js?v=c4f457ff"></script>
+    <script src="../_static/documentation_options.js?v=09139c77"></script>
     <script src="../_static/doctools.js?v=9a2dae69"></script>
     <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -292,7 +292,7 @@ document.write(`
       
       
       
-      <div class="bd-sidebar-primary bd-sidebar">
+      <div class="bd-sidebar-primary bd-sidebar hide-on-wide">
         
 
   
@@ -402,15 +402,6 @@ document.write(`
     
   </div>
   
-    <div class="sidebar-primary-items__start sidebar-primary__section">
-        <div class="sidebar-primary-item">
-<nav class="bd-docs-nav bd-links"
-     aria-label="Section Navigation">
-  <p class="bd-links__title" role="heading" aria-level="1">Section Navigation</p>
-  <div class="bd-toc-item navbar-nav"></div>
-</nav></div>
-    </div>
-  
   
   <div class="sidebar-primary-items__end sidebar-primary__section">
   </div>
@@ -461,39 +452,75 @@ document.write(`
                 <article class="bd-article">
                   
   <section id="updating-a-panda-via-ssh">
-<h1>Updating a PandA via SSH<a class="headerlink" href="#updating-a-panda-via-ssh" title="Link to this heading">#</a></h1>
-<p>The Admin interface of the PandA can be used to update the firmware as detailed in the Getting a PandA on the network, but sometimes it is necessary to update a number of PandAs at once. The SSH interface can be used to do this.</p>
-<p>To gain access over SSH, either add an authorized_keys file to the SD card, or load it from USB via the <code class="docutils literal notranslate"><span class="pre">Admin</span> <span class="pre">interface</span></code>.</p>
-<p>It is then possible to log in remotely and perform operations on the PandA</p>
+<span id="ssh-doc"></span><h1>Updating a PandA via SSH<a class="headerlink" href="#updating-a-panda-via-ssh" title="Link to this heading">#</a></h1>
+<p>The Admin interface of the PandA can be used to update the firmware as detailed
+in the <a class="reference external" href="https://pandablocks.github.io/PandABlocks-rootfs/master/quickstart.html">quickstart_doc</a>, but sometimes it is necessary to update a number of
+PandAs at once. The SSH interface can be used to do this.</p>
+<p>To gain access over SSH, either add an <code class="docutils literal notranslate"><span class="pre">authorized_keys</span></code> file to the SD card,
+or load it from USB via the Admin interface.</p>
+<p>It is then possible to log in remotely and perform operations on the PandA.</p>
 <div class="admonition warning">
 <p class="admonition-title">Warning</p>
-<p>PandA only has a single user, root, and remote access is done as this user. Root has privileges to break the system, so be careful when running the commands below.</p>
+<p>PandA only has a single user; root, and remote access is done as this user.
+Root has privileges to break the system, so be careful when running the
+commands below.</p>
 </div>
-<p>First update rootfs and then, after a reboot, update to the latest available zpkg packages (while making sure to match the major versions of everything).</p>
+<p>First update rootfs and then, after a reboot, update to the latest available zpkg
+packages (while making sure to match the major versions of everything).</p>
 <section id="updating-the-rootfs">
 <h2>Updating the rootfs<a class="headerlink" href="#updating-the-rootfs" title="Link to this heading">#</a></h2>
-<p>Download a new <code class="docutils literal notranslate"><span class="pre">boot-x.x.zip</span></code> file from GitHub and unzip it somewhere. You can then:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ md5sum imagefile.cpio.gz
-$ scp imagefile.cpio.gz root@my_panda_ip:/boot
+<p>Download a new <code class="docutils literal notranslate"><span class="pre">boot-x.x.zip</span></code> file from <a class="reference external" href="https://github.com/PandABlocks/PandABlocks.github.io/releases">GitHub</a> and unzip it somewhere. You
+can then:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ md5sum boot/imagefile.cpio.gz
+$ scp boot/* root@my_panda_ip:/boot
 $ ssh root@my_panda_ip
 # sync
 # md5sum /boot/imagefile.cpio.gz
 </pre></div>
 </div>
-<p>If the two md5 sums match then you can power cycle the box and it will install the new rootfs. It they don’t then retry from the beginning.</p>
+<dl class="simple">
+<dt>If the two md5 sums match it has copied correctly. Within /boot you should find::</dt><dd><ul class="simple">
+<li><p>boot.scr</p></li>
+<li><p>uImage</p></li>
+<li><p>boot.bin</p></li>
+<li><p>devicetree.dtb</p></li>
+<li><p>uinitramfs</p></li>
+</ul>
+</dd>
+</dl>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>For PandA v3.0 and beyond boot.bin and devicetree.dtb now come from the PandABlocks-FPGA build
+but are combined in the <code class="docutils literal notranslate"><span class="pre">boot-x.x.zip</span></code> on the rootfs release page.</p>
+</div>
+<p>You can power cycle the box and it will install the new rootfs.</p>
 </section>
 <section id="updating-zpkg-packages">
 <h2>Updating zpkg packages<a class="headerlink" href="#updating-zpkg-packages" title="Link to this heading">#</a></h2>
-<p>Download new zpkg files from the appropriate GitHub repositories (these are shown at <PandA-URL>/admin/packages/list), then:</p>
+<dl class="simple">
+<dt>A PandA firmware installation consists of 4 Zpkgs:</dt><dd><ul class="simple">
+<li><p>panda-fpga&#64;*.zpg</p></li>
+<li><p>panda-server&#64;*.zpg</p></li>
+<li><p>panda-webcontrol&#64;*.zpg</p></li>
+<li><p>panda-slowfpga&#64;*.zpg (PandA 3.0 onwards)</p></li>
+</ul>
+</dd>
+</dl>
+<p>Download new zpkg files from <a class="reference external" href="https://github.com/PandABlocks/PandABlocks.github.io/releases">GitHub</a>, then:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ scp *.zpg root@my_panda_ip:/tmp
 $ ssh root@my_panda_ip
 # zpkg install /tmp/*.zpg
 </pre></div>
 </div>
-<p>This will install the new versions of the appropriate packages, and restart the services on the box to use them.</p>
+<p>This will install the new versions of the appropriate packages, and restart the services
+on the box to use them. From the PandA 3.0 release and beyond, a new zpkg file will be
+needed: panda-slowfpga&#64;*.zpg.</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
-<p>Release 1.0 of the rootfs contained a bug which means that if 1.0 or later versions of the FPGA zpkg were installed, then any subsequent installations of the FPGA zpkg with ANY version of the rootfs would fail with message:</p>
+<p>Release 1.0 of the rootfs contained a bug which means that if 1.0 or later
+versions of the FPGA zpkg were installed, then any subsequent installations
+of the FPGA zpkg with <strong>ANY</strong> version of the rootfs would fail with
+message:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">File</span> <span class="n">lib</span><span class="o">/</span><span class="n">python2</span><span class="mf">.7</span><span class="o">/</span><span class="n">site</span><span class="o">-</span><span class="n">packages</span><span class="o">/</span><span class="n">malcolm</span><span class="o">/</span><span class="n">modules</span><span class="o">/</span><span class="n">web</span><span class="o">/</span><span class="n">www</span><span class="o">/</span><span class="n">fpga_docs</span> <span class="n">already</span> <span class="n">exists</span>
 </pre></div>
 </div>
@@ -501,8 +528,22 @@ $ ssh root@my_panda_ip
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">rm</span> <span class="o">/</span><span class="n">opt</span><span class="o">/</span><span class="n">lib</span><span class="o">/</span><span class="n">python2</span><span class="mf">.7</span><span class="o">/</span><span class="n">site</span><span class="o">-</span><span class="n">packages</span><span class="o">/</span><span class="n">malcolm</span><span class="o">/</span><span class="n">modules</span><span class="o">/</span><span class="n">web</span><span class="o">/</span><span class="n">www</span><span class="o">/</span><span class="n">fpga_docs</span>
 </pre></div>
 </div>
-<p>and then retry the <code class="docutils literal notranslate"><span class="pre">zpkg</span></code> command and it should succeed. Release 1.1 of the rootfs fixes this, but you will still have to follow the steps above to correct the error.</p>
+<p>and then retry the <code class="docutils literal notranslate"><span class="pre">zpkg</span></code> command and it should succeed. Release 1.1 of
+the rootfs fixes this, but you will still have to follow the steps above to
+correct the error.</p>
 </div>
+</section>
+<section id="update-24v-eeprom">
+<h2>Update 24V eeprom<a class="headerlink" href="#update-24v-eeprom" title="Link to this heading">#</a></h2>
+<p>PandA 3.0 requires an update to the EEPROM of 24Vio FMC cards to do this:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>Find the right ipmi_definition file according the the product and revision (the one for FMC24V is under its module folder)</p></li>
+<li><p>Copy it to panda</p></li>
+<li><p>Run /opt/bin/write_eeprom &lt;path-to-ipmi-definition&gt;</p></li>
+<li><p>After writing, the script will read the EEPROM to confirm the content matches</p></li>
+</ul>
+</div></blockquote>
 </section>
 </section>
 
@@ -554,6 +595,7 @@ $ ssh root@my_panda_ip
     <ul class="visible nav section-nav flex-column">
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#updating-the-rootfs">Updating the rootfs</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#updating-zpkg-packages">Updating zpkg packages</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#update-24v-eeprom">Update 24V eeprom</a></li>
 </ul>
   </nav></div>
 
@@ -561,7 +603,7 @@ $ ssh root@my_panda_ip
 
   
   <div class="tocsection editthispage">
-    <a href="https://github.com/PandABlocks/PandABlocks-rootfs/edit/docs_and_docker/docs/how-to/remote.md">
+    <a href="https://github.com/PandABlocks/PandABlocks-rootfs/edit/docs_and_docker/docs/how-to/remote.rst">
       <i class="fa-solid fa-pencil"></i>
       
       
@@ -576,7 +618,7 @@ $ ssh root@my_panda_ip
   <div class="sidebar-secondary-item">
 
   <div class="tocsection sourcelink">
-    <a href="../_sources/how-to/remote.md.txt">
+    <a href="../_sources/how-to/remote.rst.txt">
       <i class="fa-solid fa-file-lines"></i> Show Source
     </a>
   </div>
