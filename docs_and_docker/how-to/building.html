@@ -8,7 +8,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Building the Root File System &#8212; PandABlocks-rootfs 3.1a5.dev3+g21bca1b.d20240520 documentation</title>
+    <title>Building the Root File System &#8212; PandABlocks-rootfs 3.1a5.dev4+gf660331 documentation</title>
   
   
   
@@ -39,7 +39,7 @@
 <link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=8d27b9dea8ad943066ae" />
   <script src="../_static/vendor/fontawesome/6.5.1/js/all.min.js?digest=8d27b9dea8ad943066ae"></script>
 
-    <script src="../_static/documentation_options.js?v=b8b4b588"></script>
+    <script src="../_static/documentation_options.js?v=c4f457ff"></script>
     <script src="../_static/doctools.js?v=9a2dae69"></script>
     <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -540,38 +540,22 @@ This is the path to the compiled system root (derived from libc). Normally this 
 </pre></div>
 </div>
 <p>These packages are used as follows in the build:</p>
-<p>autoconf, automake, libtool, m4, pkg-config:</p>
-<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>The rootfs builder needs specific and up to date versions of these tools.
-</pre></div>
-</div>
-<p>busybox:</p>
-<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>The entire target system environment is run with busybox.
-</pre></div>
-</div>
-<p>e2fsprogs, mtd-utils:</p>
-<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>These packages are needed by the initramfs bootstrap process.
-</pre></div>
-</div>
-<p>dropbear, ntp:</p>
-<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>These provide fundamental target resources: dropbear provides an ssh server, ntp is used for accurate timestamps.
-</pre></div>
-</div>
-<p>Python, enum34, libressl, numpy, cothread, ws4py:</p>
-<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>Python and a variety of supporting libraries will be used for running a number of system components.
-</pre></div>
-</div>
-<p>conserver, procServ, screen:</p>
-<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>It is possible that these may be used for server management.
-</pre></div>
-</div>
-<p>ethtool, iperf, lsof, strace, nano:</p>
-<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>These are useful debugging utilities, together with an easy to use editor.
-</pre></div>
-</div>
-<p>ncurses, readline, zlib:</p>
-<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>These are all libraries used by some of the packages above.
-</pre></div>
-</div>
+<p><code class="docutils literal notranslate"><span class="pre">autoconf,</span> <span class="pre">automake,</span> <span class="pre">libtool,</span> <span class="pre">m4,</span> <span class="pre">pkg-config</span></code>:
+The rootfs builder needs specific and up to date versions of these tools.</p>
+<p><code class="docutils literal notranslate"><span class="pre">busybox</span></code>:
+The entire target system environment is run with busybox.</p>
+<p><code class="docutils literal notranslate"><span class="pre">e2fsprogs,</span> <span class="pre">mtd-utils</span></code>:
+These packages are needed by the initramfs bootstrap process.</p>
+<p><code class="docutils literal notranslate"><span class="pre">dropbear,</span> <span class="pre">ntp</span></code>:
+These provide fundamental target resources: dropbear provides an ssh server, ntp is used for accurate timestamps.</p>
+<p><code class="docutils literal notranslate"><span class="pre">Python,</span> <span class="pre">enum34,</span> <span class="pre">libressl,</span> <span class="pre">numpy,</span> <span class="pre">cothread,</span> <span class="pre">ws4py</span></code>:
+Python and a variety of supporting libraries will be used for running a number of system components.</p>
+<p><code class="docutils literal notranslate"><span class="pre">conserver,</span> <span class="pre">procServ,</span> <span class="pre">screen</span></code>:
+It is possible that these may be used for server management.</p>
+<p><code class="docutils literal notranslate"><span class="pre">ethtool,</span> <span class="pre">iperf,</span> <span class="pre">lsof,</span> <span class="pre">strace,</span> <span class="pre">nano</span></code>:
+These are useful debugging utilities, together with an easy to use editor.</p>
+<p><code class="docutils literal notranslate"><span class="pre">ncurses,</span> <span class="pre">readline,</span> <span class="pre">zlib</span></code>:
+These are all libraries used by some of the packages above.</p>
 </section>
 </section>
 <section id="output-files">
