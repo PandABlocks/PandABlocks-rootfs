@@ -290,6 +290,7 @@ class CommandHandler(RequestHandler):
         self.list_package_instructions()
         self.p("Packages placed on the USB stick can be navigated to below:")
         root, glob_list = glob_dir('*.zpg', *path_suffix)
+        glob_list.sort()
         if glob_list:
             self.h2("Available in %s:" % tt(root))
             self.t("form_select.html", label="Install Selected Packages",
@@ -398,6 +399,7 @@ class CommandHandler(RequestHandler):
         ensure_usb_key_inserted()
         root = os.path.join(MNT, *path_suffix)
         packages = [os.path.join(root, f) for f in self.get_arguments('value')]
+        packages.sort()
         yield self.zpkg("install", *packages)
 
     @coroutine
@@ -454,7 +456,11 @@ class CommandHandler(RequestHandler):
         self.p(
             "Rootfs copied successfully to SD card. If you restart now it "
             "will be installed on boot. If you have changed your mind you "
-            "can delete the new rootfs from the SD card and cancel.")
+            "can delete the new rootfs from the SD card and cancel. "
+            "For a major upgrade it is recommended that you remove the" 
+            "installed zpkgs to avoid compatibility issues.")
+        self.t('button.html', label='Remove zpkgs, Reboot and install it now',
+                path='system/remove_zpkgs_reboot_rootfs')
         self.t('button.html', label='Delete new rootfs and cancel',
                 path='packages/delete_rootfs')
         self.t('button.html', label='Reboot and install it now',
@@ -466,6 +472,23 @@ class CommandHandler(RequestHandler):
         ensure_usb_key_inserted()
         yield self.revert_rootfs_files()
         self.p("Rootfs upgrade successfully cancelled.")
+
+    @add_post_page("system/remove_zpkgs_reboot_rootfs")
+    def post_remove_zpkgs_reboot_rootfs(self):
+        """Removing zpkgs, Rebooting System to Install Rootfs"""
+        ensure_usb_key_inserted()
+        zpkg_list = sorted(blocking_cmd_lines('zpkg', 'list'))
+        pkgs = []
+        if zpkg_list:
+            for line in zpkg_list:
+                pkgs.append(line.split()[0])
+        yield self.zpkg("remove", *pkgs)
+        yield self.run_command("rm", "-f", ROOTFS_OLD)
+        yield self.sync()
+        self.p("Rebooting now, please wait. "
+               "This page will refresh in 60 seconds...")
+        self.write('<meta http-equiv="refresh" content="60;url=/admin.html">')
+        yield self.run_command('reboot')
 
     @add_post_page("system/reboot_rootfs")
     def post_reboot_rootfs(self):
