@@ -6,10 +6,9 @@ IMAGEFILE=/boot/imagefile.cpio.gz
 
 
 # Get our basic working environment up.
+mount -t devtmpfs devtmpfs /dev
 mount -t proc proc /proc
 mount -t sysfs sysfs /sys
-mdev -s
-
 
 # This is called if something goes horribly wrong.
 panic()
@@ -31,6 +30,10 @@ set -x
 /sbin/led-daemon &
 LED_DAEMON_PID=$!
 
+while [ ! -e /dev/mmcblk0 ]; do
+    echo "Waiting for /dev/mmcblk0 to appear"
+    sleep 1
+done
 
 # Mounting /boot isn't altogether straightforward as the SD card may or may not
 # be partitioned, so we have to try both mmcblk0p1 and mmcblk0
@@ -276,4 +279,5 @@ sync
 umount /boot
 umount /sys
 umount /proc
+umount /dev
 exec switch_root -c /dev/console /rootfs /sbin/init
