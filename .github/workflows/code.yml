@@ -67,7 +67,7 @@ jobs:
 
       # Upload container as an artifact 
       - name: Upload contianer as an artifact
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           name: pandablocks-dev-container
           path: .
@@ -88,7 +88,7 @@ jobs:
     steps:
       
       # Download artifact of image
-      - uses: actions/download-artifact@v2
+      - uses: actions/download-artifact@v3
         with:
           name: pandablocks-dev-container
           path: .
@@ -114,7 +114,7 @@ jobs:
 
       # Upload zips as artifact
       - name: Upload deps and boot build files
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           name: zips
           path: ./build/PandA-rootfs-${{ matrix.platform }}/*.zip
@@ -125,7 +125,7 @@ jobs:
     # Make a release on every tag
     if: github.event_name == 'push' && startsWith(github.event.ref, 'refs/tags')
     steps:
-      - uses: actions/download-artifact@v2
+      - uses: actions/download-artifact@v3
         with:
           name: zips
           path: zips
