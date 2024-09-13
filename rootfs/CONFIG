@@ -31,6 +31,9 @@ PACKAGES += numpy
 PACKAGES += cothread
 PACKAGES += tornado
 PACKAGES += $(configdir)/fbpad
+PACKAGES += mtd-utils
+mtd-utils_INSTALL_FILES = \
+    flash_erase flash_lock flash_unlock flashcp lsmtd mtd_debug mtdinfo mtdpart
 
 
 # -----------------------------------------------------------------------------
