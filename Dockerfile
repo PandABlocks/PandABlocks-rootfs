@@ -52,7 +52,9 @@ RUN bash scripts/tar-files.sh
 RUN bash scripts/install-ghdl.sh
 
 # For the documentation
-RUN pip3 install matplotlib \ 
+RUN pip3 install \
+    cocotb \
+    matplotlib \ 
     rst2pdf \
     sphinx \
     sphinx-rtd-theme \
