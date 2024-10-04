@@ -1,0 +1,1 @@
+Files in this directory are currently included in the top-level documentation. To amend this, grouping together these files into one top-level grid-card, remove how-to.md from "exclude_patterns" in conf.py, and amend index.md.
