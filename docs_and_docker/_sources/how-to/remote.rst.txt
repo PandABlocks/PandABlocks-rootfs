@@ -4,7 +4,7 @@ Updating a PandA via SSH
 ========================
 
 The Admin interface of the PandA can be used to update the firmware as detailed
-in the quickstart_doc_, but sometimes it is necessary to update a number of
+in the _web_doc, but sometimes it is necessary to update a number of
 PandAs at once. The SSH interface can be used to do this.
 
 To gain access over SSH, either add an ``authorized_keys`` file to the SD card,
@@ -20,8 +20,6 @@ It is then possible to log in remotely and perform operations on the PandA.
 
 First update rootfs and then, after a reboot, update to the latest available zpkg 
 packages (while making sure to match the major versions of everything).
-
-.. _quickstart_doc: https://pandablocks.github.io/PandABlocks-rootfs/master/quickstart.html
 
 Updating the rootfs
 -------------------
