@@ -77,9 +77,9 @@ Sources
 ~~~~~~~
 
 The rootfs requires a long list of dependencies that are freely available on the
-web. They have been gathered together in one tar file here:
+web. You can download them using the script located in this repo:
 
-http://www.ohwr.org/attachments/download/5133/rootfs-tarfiles-0.6.tar
+https://github.com/PandABlocks/PandABlocks-rootfs/blob/master/.github/scripts/tar-files.sh
 
 They consist of the following sources, listed below with their MD5 checksums::
 
