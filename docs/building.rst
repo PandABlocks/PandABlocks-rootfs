@@ -4,7 +4,7 @@ Building the Root File System
 =============================
 
 This project builds a complete system image for booting PandA.  The following
-components are built in turn:
+components are built in turn for two different platforms: Zynq and Zynqmp:
 
 * The U-Boot boot loader is built and assembled together with the Zynq stage-1
   boot loader.
@@ -26,7 +26,7 @@ The following must be installed before building this project:
   these projects.
 
 * The Diamond rootfs builder.  This can be downloaded from
-  https://github.com/araneidae/rootfs
+  https://github.com/DiamondLightSource/rootfs
 
 * Sources needed for rootfs build.  This list is quite long, see below.
 
@@ -77,9 +77,13 @@ Sources
 ~~~~~~~
 
 The rootfs requires a long list of dependencies that are freely available on the
-web. You can download them using the script located in this repo:
+web. They are installed in the pandablocks-dev-container and you can download them 
+using the script located in this repo:
 
 https://github.com/PandABlocks/PandABlocks-rootfs/blob/master/.github/scripts/tar-files.sh
+
+If they are unavailable from their sources for any reason, the latest version
+used for a rootfs build can be found in the releases_ page for this repo.
 
 They consist of the following sources, listed below with their MD5 checksums::
 
@@ -90,31 +94,31 @@ They consist of the following sources, listed below with their MD5 checksums::
     716946a105ca228ab545fc37a70df3a3 automake-1.15.tar.gz
     0b65a216ce9dc9c1a7e20a729dd7c05b backports_abc-0.4.tar.gz
     788214f20214c64631f0859dc79f23c6 backports.ssl_match_hostname-3.4.0.2.tar.gz
-    7925683d7dd105aabe9b6b618d48cc73 busybox-1.23.2.tar.bz2
+    0fc591bc9f4e365dfd9ade0014f32561 busybox-1.36.1.tar.bz2
     bb13834970c468f73415618437f3feac conserver-8.2.0.tar.gz
     5d69a1b712fb8fec6ad461e676bf1097 cothread-2.14.tar.gz
-    e967e320344cd4bfebe321e3ab8514d6 dropbear-2015.67.tar.bz2
-    bc759fc62666786f5436e2075beb3265 e2fsprogs-1.42.13.tar.gz
+    a75a34bcc03cacf71a2db9da3b7c94a5 dropbear-2022.83.tar.bz2
+    e8ef5fa3b72557be5e9fe564a25da6eb e2fsprogs-1.46.2.tar.gz
     ac80f432ac9373e7d162834b264034b6 enum34-1.0.4.tar.gz
-    3b2322695e9ee7bf447ebcdb85f93e83 ethtool-2.6.36.tar.gz
+    3fc1f61d408adc73e28e6eb77e89140e ethtool-6.3.tar.gz
     5154c00201d599acc00194c6c278ca23 iperf-3.0.2.tar.gz
-    277e4bd258fd4fb2aadaed760320c566 libressl-2.2.0.tar.gz
+    97d8bf90f858dc0a384e7f9693ca9ad2 libressl-3.0.2.tar.gz
     addf44b646ddb4e3919805aa88fa7c5e libtool-2.4.6.tar.gz
     1b29c10db4aa88afcaeeaabeef6790db lsof_4.88.tar.bz2
-    a5e9954b1dae036762f7b13673a2cf76 m4-1.4.17.tar.gz
-    4ad1f758d49615efe14edb107eddac5c mtd-utils-1.5.1.tar.bz2
+    f4a2b0284d80353b995f8ef2385ed73c m4-1.4.19.tar.gz
+    19191bc0195a779c0bd1284c886084ab mtd-utils-2.1.2.tar.bz2
     1c612b478f976abf8ef926480c7a3684 nano-2.4.1.tar.gz
-    8cb9c412e5f2d96bc6f459aa8c6282a1 ncurses-5.9.tar.gz
-    fa37049383316322d060ec9061ac23a9 ntp-4.2.8p2.tar.gz
-    a1ed53432dbcd256398898d35bc8e645 numpy-1.9.2.tar.gz
+    5a62487b5d4ac6b132fe2bf9f8fad29b ncurses-6.4.tar.gz
+    e1e6b23d2fc75cced41801dbcd6c2561 ntp-4.2.8p15.tar.gz
+    59d27965e42caedf8913ebe03cf36f87 numpy-1.17.5.tar.gz
     aa3c86e67551adc3ac865160e34a2a0d pkg-config-0.28.tar.gz
-    bbf052e7fcc6fa403d2514219346da04 procServ-2.6.0.tar.gz
-    d7547558fd673bd9d38e2108c6b42521 Python-2.7.10.tgz
-    33c8fb279e981274f485fd91da77e94a readline-6.3.tar.gz
+    88b1f59f5f5d9d2cfe53ba8bfdc60fd8 procServ-2.8.0.tar.gz
+    e18a9d1a0a6d858b9787e03fc6fdaa20 Python-3.8.0.tgz
+    4aa1b31be779e6b84f9a96cb66bc50f6 readline-8.2.tar.gz
     419a0594e2b25039239af8b90eda7d92 screen-4.2.1.tar.gz
     af2fc6a3d6cc5a02d0bf54d909785fcb singledispatch-3.4.0.3.tar.gz
     107a5be455493861189e9b57a3a51912 strace-4.10.tar.xz
-    d13a99dc0b60ba69f5f8ec1235e5b232 tornado-4.3.tar.gz
+    28fe1d74c871f55accdd93cd6e184699 tornado-6.0.3.tar.gz
     44d667c142d7cda120332623eab69f40 zlib-1.2.8.tar.gz
 
 These packages are used as follows in the build:
@@ -146,6 +150,7 @@ ncurses, readline, zlib:
     These are all libraries used by some of the packages above.
 
 
+.. _releases: https://github.com/PandABlocks/PandABlocks-rootfs/releases
 
 Output Files
 ------------
