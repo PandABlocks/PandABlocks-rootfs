@@ -34,7 +34,7 @@ jobs:
           docker run \
             -v "${{ github.workspace }}:/repos" \
             -v "${{ github.workspace }}/build:/build" \
-            pandablocks-dev-container:latest \
+            pandablocks-dev-container:latest:developer \
             /bin/bash -c \
             "cd PandABlocks-rootfs && ln -s CONFIG.example CONFIG && make zips PLATFORM=${{ matrix.platform }}"
 
