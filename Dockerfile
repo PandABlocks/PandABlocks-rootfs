@@ -20,11 +20,14 @@ RUN yum -y upgrade && yum -y install \
     libmpc-devel \
     libjpeg-turbo-devel \
     libuuid-devel \
+    llvm-devel \
     ncurses-compat-libs \
     openssl-devel \
     patch \
     python3-devel \
     python3-setuptools \ 
+    python3.12-devel \
+    python3.12-pip \
     readline-devel \
     unzip \ 
     xorg-x11-server-Xvfb \
@@ -45,19 +48,28 @@ COPY annotypes /annotypes
 COPY pymalcolm /pymalcolm
 COPY malcolmjs /malcolmjs
 
+# Needed for cocotb install
+RUN dnf -y --enablerepo=powertools install libstdc++-static
+
 # Toolchains and tar files
 RUN bash scripts/GNU-toolchain.sh
 RUN bash scripts/tar-files.sh
 RUN bash scripts/install-ghdl.sh
+RUN bash scripts/install-nvc.sh   
+RUN bash scripts/install-cocotb.sh
 
 # For the documentation
 RUN pip3 install \
-    cocotb \
     matplotlib \ 
     rst2pdf \
     sphinx \
     sphinx-rtd-theme \
     --upgrade docutils==0.16
+
+# For cocotb (needs python3.7 +)
+RUN python3.12 -m pip install \
+    coverage \
+    vhdeps
 
 # Create config file for dls-rootfs
 RUN bash scripts/config-file-rootfs.sh
