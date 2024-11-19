@@ -35,6 +35,8 @@ RUN yum -y upgrade && yum -y install \
     xz \
     zlib-devel
 
+RUN update-alternatives --set python /usr/bin/python3.12
+RUN update-alternatives --set python3 /usr/bin/python3.12
 
 RUN yum -y group install "Development Tools"
 
@@ -67,15 +69,12 @@ RUN pip3 install \
     --upgrade docutils==0.16
 
 # For cocotb (needs python3.7 +)
-RUN python3.12 -m pip install \
+RUN python -m pip install \
     coverage \
     vhdeps
 
 # Create config file for dls-rootfs
 RUN bash scripts/config-file-rootfs.sh
-
-# Error can't find python
-RUN ln -s /usr/bin/python3 /usr/bin/python
 
 # Make sure git doesn't fail when used to obtain a tag name
 RUN git config --global --add safe.directory '*'
