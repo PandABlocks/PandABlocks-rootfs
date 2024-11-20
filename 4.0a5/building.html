@@ -1,0 +1,414 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Building the Root File System &mdash; PandABlocks-rootfs 4.0a5
+ documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css" />
+      <link rel="stylesheet" type="text/css" href="_static/theme_overrides.css" />
+
+  
+    <link rel="shortcut icon" href="_static/favicon.ico"/>
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script src="_static/sphinx_highlight.js"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="prev" title="Updating a PandA via SSH" href="remote.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search"  style="background: black" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            PandABlocks-rootfs
+              <img src="_static/PandA-logo-for-black-background.svg" class="logo" alt="Logo"/>
+          </a>
+              <div class="version">
+                4.0a5
+
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+  
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="quickstart.html">Getting a PandA on the network</a></li>
+<li class="toctree-l1"><a class="reference internal" href="remote.html">Updating a PandA via SSH</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Building the Root File System</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#build-dependencies">Build Dependencies</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#configuring-config">Configuring <code class="docutils literal notranslate"><span class="pre">CONFIG</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#sources">Sources</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#output-files">Output Files</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#boot-process">Boot Process</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#preparing-sd-for-install">Preparing SD for Install</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#panda-system-first-boot">Panda System First Boot</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#panda-packages-zpkg">PandA Packages (zpkg)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#installing-zpkg-files">Installing zpkg Files</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#zpkg-command"><code class="docutils literal notranslate"><span class="pre">zpkg</span></code> Command</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference external" href="https://github.com/PandABlocks/PandABlocks-rootfs/blob/master/CHANGELOG.rst">Changelog</a></li>
+</ul>
+
+  <!-- Add versions for selected branches + tags -->
+  <p class="caption"><span class="caption-text">Versions</span></p>
+  <ul id="versions"/>
+  <script>
+    // Add any branches to appear in the side pane here, tags will be added below
+    // Will only appear if docs are built and pushed in gh-pages
+    var versions = ['master', 'main'];
+    var dirs = new Set();
+    function addVersion(name) {
+      if (dirs.has(name)) {
+        var li = document.createElement("li");
+        var a = document.createElement("a");
+        a.href = 'https://PandABlocks.github.io/PandABlocks-rootfs/' + name;
+        a.innerText = name;
+        li.appendChild(a)
+        document.getElementById('versions').appendChild(li);
+      }
+    }
+    Promise.all([
+      // Find gh-pages directories and populate `dirs`
+      fetch("https://api.github.com/repos/PandABlocks/PandABlocks-rootfs/contents?ref=gh-pages")
+      .then(response => response.json())
+      .then(data => data.forEach(function(e) {
+        if (e.type == "dir") dirs.add(e.name);
+      })),
+      // Add tags to `versions`
+      fetch('https://api.github.com/repos/PandABlocks/PandABlocks-rootfs/tags')
+        .then(response => response.json())
+        .then(data => data.forEach(function(e) {
+          versions.push(e.name);
+        }))
+      ]).then(_ => versions.forEach(addVersion))
+  </script>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: black" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">PandABlocks-rootfs</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Building the Root File System</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/building.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <div class="section" id="building-the-root-file-system">
+<span id="building-doc"></span><h1>Building the Root File System<a class="headerlink" href="#building-the-root-file-system" title="Permalink to this heading"></a></h1>
+<p>This project builds a complete system image for booting PandA.  The following
+components are built in turn:</p>
+<ul class="simple">
+<li><p>The U-Boot boot loader is built and assembled together with the Zynq stage-1
+boot loader.</p></li>
+<li><p>The Linux kernel is built.</p></li>
+<li><p>Two target root file systems are assembled: one for final system
+bootstrapping, one to act as the final system.</p></li>
+</ul>
+<div class="section" id="build-dependencies">
+<h2>Build Dependencies<a class="headerlink" href="#build-dependencies" title="Permalink to this heading"></a></h2>
+<p>The following must be installed before building this project:</p>
+<ul class="simple">
+<li><p>Xilinx Zynq SDK.</p></li>
+<li><p>U-Boot and Linux kernel sources.  This project requires the Xilinx branches of
+these projects.</p></li>
+<li><p>The Diamond rootfs builder.  This can be downloaded from
+<a class="reference external" href="https://github.com/araneidae/rootfs">https://github.com/araneidae/rootfs</a></p></li>
+<li><p>Sources needed for rootfs build.  This list is quite long, see below.</p></li>
+</ul>
+<div class="section" id="configuring-config">
+<h3>Configuring <code class="docutils literal notranslate"><span class="pre">CONFIG</span></code><a class="headerlink" href="#configuring-config" title="Permalink to this heading"></a></h3>
+<p>All of the build dependencies are configured in the file <code class="docutils literal notranslate"><span class="pre">CONFIG</span></code>.  This
+is designed to not be under version control.  Copy the file <code class="docutils literal notranslate"><span class="pre">CONFIG.example</span></code>
+and modify the following fields as required:</p>
+<dl class="simple">
+<dt><code class="docutils literal notranslate"><span class="pre">PANDA_ROOT</span></code>:</dt><dd><p>This is where the entire build occurs.  At least 2GB of storage must be free
+in this area.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">TAR_FILES</span></code>:</dt><dd><p>All of the source files require to build the system will be looked for in
+this directory.  This can also be a list of directories if necessary.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">SDK_ROOT</span></code>:</dt><dd><p>Location of the Xilinx SDK that will be used to build the system.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">ROOTFS_TOP</span></code>:</dt><dd><p>This needs to point to the root directory of the Diamond rootfs builder,
+download from the github location given above.</p>
+</dd>
+</dl>
+<p>Three files and directories are taken from <code class="docutils literal notranslate"><span class="pre">SDK_ROOT</span></code>, and they can instead be
+specified directly.  Note that in this case <code class="docutils literal notranslate"><span class="pre">SDK_ROOT</span></code> must <em>not</em> be set.</p>
+<dl class="simple">
+<dt><code class="docutils literal notranslate"><span class="pre">BOOTGEN</span></code></dt><dd><p>This is the path to a Xilinx toolchain tool used to build the <code class="docutils literal notranslate"><span class="pre">boot.bin</span></code>
+file.  By default this is set to <code class="docutils literal notranslate"><span class="pre">$(SDK_ROOT)/bin/bootgen</span></code>.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">BINUTILS_DIR</span></code></dt><dd><p>This is the path to the gcc cross-compiler toolchain to use.  By default
+this is set to <code class="docutils literal notranslate"><span class="pre">$(SDK_ROOT)/gnu/arm/lin</span></code>.  The directory
+<code class="docutils literal notranslate"><span class="pre">$(BINUTILS_DIR)/bin</span></code> will be added to the path during the build.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">SYSROOT</span></code></dt><dd><p>This is the path to the compiled system root (derived from libc).  Normally
+this is part of the installed toolchain, and if not set elsewhere this is
+set to <code class="docutils literal notranslate"><span class="pre">$(BINUTILS_DIR)/$(COMPILER_PREFIX)/libc</span></code>.</p>
+</dd>
+</dl>
+<p>Note that the <code class="docutils literal notranslate"><span class="pre">COMPILER_PREFIX</span></code> symbol can also be overwritten if required.
+The default value is <code class="docutils literal notranslate"><span class="pre">arm-xilinx-linux-gnueabi</span></code>.</p>
+</div>
+<div class="section" id="sources">
+<h3>Sources<a class="headerlink" href="#sources" title="Permalink to this heading"></a></h3>
+<p>The rootfs requires a long list of dependencies that are freely available on the
+web. They have been gathered together in one tar file here:</p>
+<p><a class="reference external" href="http://www.ohwr.org/attachments/download/5133/rootfs-tarfiles-0.6.tar">http://www.ohwr.org/attachments/download/5133/rootfs-tarfiles-0.6.tar</a></p>
+<p>They consist of the following sources, listed below with their MD5 checksums:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="mi">930</span><span class="n">d126df2113221e63c4ec4ce356f2c</span> <span class="n">linux</span><span class="o">-</span><span class="n">xilinx</span><span class="o">-</span><span class="n">v2015</span><span class="mf">.1</span><span class="o">.</span><span class="n">tar</span><span class="o">.</span><span class="n">gz</span>
+<span class="n">b6d212208b7694f748727883eebaa74e</span> <span class="n">u</span><span class="o">-</span><span class="n">boot</span><span class="o">-</span><span class="n">xlnx</span><span class="o">-</span><span class="n">xilinx</span><span class="o">-</span><span class="n">v2015</span><span class="mf">.1</span><span class="o">.</span><span class="n">tar</span><span class="o">.</span><span class="n">gz</span>
+
+<span class="mi">82</span><span class="n">d05e03b93e45f5a39b828dc9c6c29b</span> <span class="n">autoconf</span><span class="o">-</span><span class="mf">2.69</span><span class="o">.</span><span class="n">tar</span><span class="o">.</span><span class="n">gz</span>
+<span class="mi">716946</span><span class="n">a105ca228ab545fc37a70df3a3</span> <span class="n">automake</span><span class="o">-</span><span class="mf">1.15</span><span class="o">.</span><span class="n">tar</span><span class="o">.</span><span class="n">gz</span>
+<span class="mi">0</span><span class="n">b65a216ce9dc9c1a7e20a729dd7c05b</span> <span class="n">backports_abc</span><span class="o">-</span><span class="mf">0.4</span><span class="o">.</span><span class="n">tar</span><span class="o">.</span><span class="n">gz</span>
+<span class="mi">788214</span><span class="n">f20214c64631f0859dc79f23c6</span> <span class="n">backports</span><span class="o">.</span><span class="n">ssl_match_hostname</span><span class="o">-</span><span class="mf">3.4.0.2</span><span class="o">.</span><span class="n">tar</span><span class="o">.</span><span class="n">gz</span>
+<span class="mi">7925683</span><span class="n">d7dd105aabe9b6b618d48cc73</span> <span class="n">busybox</span><span class="o">-</span><span class="mf">1.23.2</span><span class="o">.</span><span class="n">tar</span><span class="o">.</span><span class="n">bz2</span>
+<span class="n">bb13834970c468f73415618437f3feac</span> <span class="n">conserver</span><span class="o">-</span><span class="mf">8.2.0</span><span class="o">.</span><span class="n">tar</span><span class="o">.</span><span class="n">gz</span>
+<span class="mi">5</span><span class="n">d69a1b712fb8fec6ad461e676bf1097</span> <span class="n">cothread</span><span class="o">-</span><span class="mf">2.14</span><span class="o">.</span><span class="n">tar</span><span class="o">.</span><span class="n">gz</span>
+<span class="n">e967e320344cd4bfebe321e3ab8514d6</span> <span class="n">dropbear</span><span class="o">-</span><span class="mf">2015.67</span><span class="o">.</span><span class="n">tar</span><span class="o">.</span><span class="n">bz2</span>
+<span class="n">bc759fc62666786f5436e2075beb3265</span> <span class="n">e2fsprogs</span><span class="o">-</span><span class="mf">1.42.13</span><span class="o">.</span><span class="n">tar</span><span class="o">.</span><span class="n">gz</span>
+<span class="n">ac80f432ac9373e7d162834b264034b6</span> <span class="n">enum34</span><span class="o">-</span><span class="mf">1.0.4</span><span class="o">.</span><span class="n">tar</span><span class="o">.</span><span class="n">gz</span>
+<span class="mi">3</span><span class="n">b2322695e9ee7bf447ebcdb85f93e83</span> <span class="n">ethtool</span><span class="o">-</span><span class="mf">2.6.36</span><span class="o">.</span><span class="n">tar</span><span class="o">.</span><span class="n">gz</span>
+<span class="mi">5154</span><span class="n">c00201d599acc00194c6c278ca23</span> <span class="n">iperf</span><span class="o">-</span><span class="mf">3.0.2</span><span class="o">.</span><span class="n">tar</span><span class="o">.</span><span class="n">gz</span>
+<span class="mf">277e4</span><span class="n">bd258fd4fb2aadaed760320c566</span> <span class="n">libressl</span><span class="o">-</span><span class="mf">2.2.0</span><span class="o">.</span><span class="n">tar</span><span class="o">.</span><span class="n">gz</span>
+<span class="n">addf44b646ddb4e3919805aa88fa7c5e</span> <span class="n">libtool</span><span class="o">-</span><span class="mf">2.4.6</span><span class="o">.</span><span class="n">tar</span><span class="o">.</span><span class="n">gz</span>
+<span class="mi">1</span><span class="n">b29c10db4aa88afcaeeaabeef6790db</span> <span class="n">lsof_4</span><span class="mf">.88</span><span class="o">.</span><span class="n">tar</span><span class="o">.</span><span class="n">bz2</span>
+<span class="n">a5e9954b1dae036762f7b13673a2cf76</span> <span class="n">m4</span><span class="o">-</span><span class="mf">1.4.17</span><span class="o">.</span><span class="n">tar</span><span class="o">.</span><span class="n">gz</span>
+<span class="mi">4</span><span class="n">ad1f758d49615efe14edb107eddac5c</span> <span class="n">mtd</span><span class="o">-</span><span class="n">utils</span><span class="o">-</span><span class="mf">1.5.1</span><span class="o">.</span><span class="n">tar</span><span class="o">.</span><span class="n">bz2</span>
+<span class="mi">1</span><span class="n">c612b478f976abf8ef926480c7a3684</span> <span class="n">nano</span><span class="o">-</span><span class="mf">2.4.1</span><span class="o">.</span><span class="n">tar</span><span class="o">.</span><span class="n">gz</span>
+<span class="mi">8</span><span class="n">cb9c412e5f2d96bc6f459aa8c6282a1</span> <span class="n">ncurses</span><span class="o">-</span><span class="mf">5.9</span><span class="o">.</span><span class="n">tar</span><span class="o">.</span><span class="n">gz</span>
+<span class="n">fa37049383316322d060ec9061ac23a9</span> <span class="n">ntp</span><span class="o">-</span><span class="mf">4.2.8</span><span class="n">p2</span><span class="o">.</span><span class="n">tar</span><span class="o">.</span><span class="n">gz</span>
+<span class="n">a1ed53432dbcd256398898d35bc8e645</span> <span class="n">numpy</span><span class="o">-</span><span class="mf">1.9.2</span><span class="o">.</span><span class="n">tar</span><span class="o">.</span><span class="n">gz</span>
+<span class="n">aa3c86e67551adc3ac865160e34a2a0d</span> <span class="n">pkg</span><span class="o">-</span><span class="n">config</span><span class="o">-</span><span class="mf">0.28</span><span class="o">.</span><span class="n">tar</span><span class="o">.</span><span class="n">gz</span>
+<span class="n">bbf052e7fcc6fa403d2514219346da04</span> <span class="n">procServ</span><span class="o">-</span><span class="mf">2.6.0</span><span class="o">.</span><span class="n">tar</span><span class="o">.</span><span class="n">gz</span>
+<span class="n">d7547558fd673bd9d38e2108c6b42521</span> <span class="n">Python</span><span class="o">-</span><span class="mf">2.7.10</span><span class="o">.</span><span class="n">tgz</span>
+<span class="mi">33</span><span class="n">c8fb279e981274f485fd91da77e94a</span> <span class="n">readline</span><span class="o">-</span><span class="mf">6.3</span><span class="o">.</span><span class="n">tar</span><span class="o">.</span><span class="n">gz</span>
+<span class="mi">419</span><span class="n">a0594e2b25039239af8b90eda7d92</span> <span class="n">screen</span><span class="o">-</span><span class="mf">4.2.1</span><span class="o">.</span><span class="n">tar</span><span class="o">.</span><span class="n">gz</span>
+<span class="n">af2fc6a3d6cc5a02d0bf54d909785fcb</span> <span class="n">singledispatch</span><span class="o">-</span><span class="mf">3.4.0.3</span><span class="o">.</span><span class="n">tar</span><span class="o">.</span><span class="n">gz</span>
+<span class="mi">107</span><span class="n">a5be455493861189e9b57a3a51912</span> <span class="n">strace</span><span class="o">-</span><span class="mf">4.10</span><span class="o">.</span><span class="n">tar</span><span class="o">.</span><span class="n">xz</span>
+<span class="n">d13a99dc0b60ba69f5f8ec1235e5b232</span> <span class="n">tornado</span><span class="o">-</span><span class="mf">4.3</span><span class="o">.</span><span class="n">tar</span><span class="o">.</span><span class="n">gz</span>
+<span class="mi">44</span><span class="n">d667c142d7cda120332623eab69f40</span> <span class="n">zlib</span><span class="o">-</span><span class="mf">1.2.8</span><span class="o">.</span><span class="n">tar</span><span class="o">.</span><span class="n">gz</span>
+</pre></div>
+</div>
+<p>These packages are used as follows in the build:</p>
+<dl class="simple">
+<dt>autoconf, automake, libtool, m4, pkg-config:</dt><dd><p>The rootfs builder needs specific and up to date versions of these tools.</p>
+</dd>
+<dt>busybox:</dt><dd><p>The entire target system environment is run with busybox.</p>
+</dd>
+<dt>e2fsprogs, mtd-utils:</dt><dd><p>These packages are needed by the initramfs bootstrap process.</p>
+</dd>
+<dt>dropbear, ntp:</dt><dd><p>These provide fundamental target resources: dropbear provides an ssh server,
+ntp is used for accurate timestamps.</p>
+</dd>
+<dt>Python, enum34, libressl, numpy, cothread, ws4py:</dt><dd><p>Python and a variety of supporting libraries will be used for running a
+number of system components.</p>
+</dd>
+<dt>conserver, procServ, screen:</dt><dd><p>It is possible that these may be used for server management.</p>
+</dd>
+<dt>ethtool, iperf, lsof, strace, nano:</dt><dd><p>These are useful debugging utilities, together with an easy to use editor.</p>
+</dd>
+<dt>ncurses, readline, zlib:</dt><dd><p>These are all libraries used by some of the packages above.</p>
+</dd>
+</dl>
+</div>
+</div>
+<div class="section" id="output-files">
+<h2>Output Files<a class="headerlink" href="#output-files" title="Permalink to this heading"></a></h2>
+<p>When built the following files are placed in <code class="docutils literal notranslate"><span class="pre">$(BOOT_IMAGE)</span></code> (see <code class="docutils literal notranslate"><span class="pre">CONFIG</span></code>
+to define this):</p>
+<dl class="simple">
+<dt><code class="docutils literal notranslate"><span class="pre">boot.bin</span></code>:</dt><dd><p>This file is loaded by the Zynq stage-0 boot loader and contains a standard
+stage 1 boot loader together with U-Boot, which acts as the stage-2 boot
+loader.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">uEnv.txt</span></code>:</dt><dd><p>This is read by U-Boot to override a couple of default boot settings.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">uImage</span></code>:</dt><dd><p>This is the Linux kernel image loaded by U-Boot.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">devicetree.dtb</span></code>:</dt><dd><p>This is passed to the kernel to define the system hardware resources.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">uinitramfs</span></code>:</dt><dd><p>This is the initial user-space system executed by the kernel.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">imagefile.cpio.gz</span></code>:</dt><dd><p>This file will be used to prepare the initial state of the file system.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">config.txt</span></code>:</dt><dd><p>This is designed to be user editable and contains network configuration
+settings.</p>
+</dd>
+</dl>
+</div>
+<div class="section" id="boot-process">
+<h2>Boot Process<a class="headerlink" href="#boot-process" title="Permalink to this heading"></a></h2>
+<p>The boot process is as follows:</p>
+<ol class="arabic simple" start="0">
+<li><p>The stage-0 boot loader is hard wired into Zynq.  This loads <code class="docutils literal notranslate"><span class="pre">boot.bin</span></code>
+from the SD card into memory and executes the next step.</p></li>
+<li><p>The stage-1 boot loader loads U-Boot from the <code class="docutils literal notranslate"><span class="pre">boot.bin</span></code> file.</p></li>
+<li><p>The stage-2 boot loader is U-Boot.  This loads the kernel into memory
+together with the device tree and initial ram filesystem image.</p></li>
+<li><p>The kernel initialises hardware resources and then prepares the initial file
+system image loaded from <code class="docutils literal notranslate"><span class="pre">uinitramfs</span></code>.  The init script in this image is
+executed.</p></li>
+<li><p>The initial init script checks the configuration and prompts for a MAC
+address if necessary, and repartitions the SD card if necessary before
+uncompressing <code class="docutils literal notranslate"><span class="pre">imagefile.cpio.gz</span></code> onto the target system.</p></li>
+<li><p>Finally the target system is executed.</p></li>
+</ol>
+</div>
+<div class="section" id="preparing-sd-for-install">
+<h2>Preparing SD for Install<a class="headerlink" href="#preparing-sd-for-install" title="Permalink to this heading"></a></h2>
+<p>To install a fresh PandA system:</p>
+<ol class="arabic">
+<li><p>Obtain a formatted empty SD card.  A minimum size of 2GB is recommended.</p></li>
+<li><p>Place the following files on the SD card (from rootfs build):</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">boot</span><span class="o">.</span><span class="n">bin</span>    <span class="n">devicetree</span><span class="o">.</span><span class="n">dtb</span>     <span class="n">uEnv</span><span class="o">.</span><span class="n">txt</span>  <span class="n">uinitramfs</span>
+<span class="n">config</span><span class="o">.</span><span class="n">txt</span>  <span class="n">imagefile</span><span class="o">.</span><span class="n">cpio</span><span class="o">.</span><span class="n">gz</span>  <span class="n">uImage</span>
+</pre></div>
+</div>
+</li>
+<li><p>Allocate MAC address to target system.  These need to be purchased in
+blocks.</p></li>
+<li><p>(Optionally) Write MAC address into a file named <code class="docutils literal notranslate"><span class="pre">MAC</span></code> on the SD card.</p></li>
+</ol>
+</div>
+<div class="section" id="panda-system-first-boot">
+<h2>Panda System First Boot<a class="headerlink" href="#panda-system-first-boot" title="Permalink to this heading"></a></h2>
+<p>It is wise to boot PandA for the first time with an connected serial console,
+particularly if the MAC file has not been written.  If no MAC file has been
+specified then on boot the serial console will prompt for a MAC address to be
+specified:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">------------------------------------</span>
+<span class="n">Enter</span> <span class="n">MAC</span> <span class="n">address</span><span class="p">:</span>
+</pre></div>
+</div>
+<p>The SD card will then be repartitioned, the content of <code class="docutils literal notranslate"><span class="pre">imagefile.cpio.gz</span></code>
+will be installed and this file is deleted.</p>
+<p>The installation process takes a couple of minutes or so, depending somewhat on
+the speed of the SD card.</p>
+<p>The serial port parameters are 115200n8.</p>
+</div>
+<div class="section" id="panda-packages-zpkg">
+<h2>PandA Packages (zpkg)<a class="headerlink" href="#panda-packages-zpkg" title="Permalink to this heading"></a></h2>
+<p>zpkg files will be used for managing all application software.  A zpkg is
+defined by the following:</p>
+<ul class="simple">
+<li><p>The name of a zpkg file must be of the form <em>package</em><code class="docutils literal notranslate"><span class="pre">&#64;</span></code><em>version</em><code class="docutils literal notranslate"><span class="pre">.zpg</span></code>, where <em>package</em> is the package name and <em>version</em> identifies the
+package version.</p></li>
+<li><p>A zpkg file is simply a gzipped tar file containing files to be installed
+under <code class="docutils literal notranslate"><span class="pre">/opt</span></code>.</p></li>
+<li><p>A startup script, if required, must be present in the zpkg under
+<code class="docutils literal notranslate"><span class="pre">etc/init.d</span></code> and linked from <code class="docutils literal notranslate"><span class="pre">etc/rc.d</span></code>.</p></li>
+</ul>
+</div>
+<div class="section" id="installing-zpkg-files">
+<h2>Installing zpkg Files<a class="headerlink" href="#installing-zpkg-files" title="Permalink to this heading"></a></h2>
+<p>There are two ways to maintain installed software:</p>
+<ol class="arabic">
+<li><p>The simplest is via the Administration web page:</p>
+<ul class="simple">
+<li><p>First place the <code class="docutils literal notranslate"><span class="pre">.zpg</span></code> files to install on a USB stick.</p></li>
+<li><p>Insert USB stick into PandA</p></li>
+<li><p>Select “Install zpg files from USB” from admin page</p></li>
+<li><p>Navigate to appropriate location and select package(s) to install</p></li>
+<li><p>Click on “Install Selected”</p></li>
+</ul>
+</li>
+<li><p>Alternatively files can be copied directly to PandA and installed via a
+script, for example:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">scp</span> <span class="n">panda</span><span class="o">-</span><span class="n">fpga</span><span class="nd">@version</span><span class="o">.</span><span class="n">zpg</span> <span class="n">root</span><span class="nd">@panda</span><span class="p">:</span><span class="o">/</span><span class="n">tmp</span>
+<span class="n">ssh</span> <span class="n">root</span><span class="nd">@panda</span> <span class="n">zpkg</span> <span class="n">install</span> <span class="o">/</span><span class="n">tmp</span><span class="o">/</span><span class="n">panda</span><span class="o">-</span><span class="n">fpga</span><span class="nd">@version</span><span class="o">.</span><span class="n">zpg</span>
+</pre></div>
+</div>
+</li>
+</ol>
+</div>
+<div class="section" id="zpkg-command">
+<h2><code class="docutils literal notranslate"><span class="pre">zpkg</span></code> Command<a class="headerlink" href="#zpkg-command" title="Permalink to this heading"></a></h2>
+<dl class="simple">
+<dt><code class="docutils literal notranslate"><span class="pre">zpkg</span> <span class="pre">list</span></code></dt><dd><p>Lists all installed packages</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">zpkg</span> <span class="pre">install</span> <span class="pre">package</span> <span class="pre">...</span></code></dt><dd><p>Installs or replaces named packages</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">zpkg</span> <span class="pre">remove</span> <span class="pre">package</span> <span class="pre">...</span></code></dt><dd><p>Removes named packages</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">zpkg</span> <span class="pre">show</span> <span class="pre">package</span> <span class="pre">...</span></code></dt><dd><p>Shows files in named packages</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">zpkg</span> <span class="pre">verify</span> <span class="pre">package</span> <span class="pre">...</span></code></dt><dd><p>Verifies files in named packages</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">zpkg</span> <span class="pre">help</span></code></dt><dd><p>Show this list of options</p>
+</dd>
+</dl>
+</div>
+</div>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="remote.html" class="btn btn-neutral float-left" title="Updating a PandA via SSH" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2015-2016, Michael Abbott, Tom Cobb.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

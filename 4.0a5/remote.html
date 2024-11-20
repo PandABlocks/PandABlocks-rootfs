@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Updating a PandA via SSH &mdash; PandABlocks-rootfs 4.0a5
+ documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css" />
+      <link rel="stylesheet" type="text/css" href="_static/theme_overrides.css" />
+
+  
+    <link rel="shortcut icon" href="_static/favicon.ico"/>
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script src="_static/sphinx_highlight.js"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Building the Root File System" href="building.html" />
+    <link rel="prev" title="Getting a PandA on the network" href="quickstart.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search"  style="background: black" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            PandABlocks-rootfs
+              <img src="_static/PandA-logo-for-black-background.svg" class="logo" alt="Logo"/>
+          </a>
+              <div class="version">
+                4.0a5
+
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+  
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="quickstart.html">Getting a PandA on the network</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Updating a PandA via SSH</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#updating-the-rootfs">Updating the rootfs</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#updating-zpkg-packages">Updating zpkg packages</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="building.html">Building the Root File System</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://github.com/PandABlocks/PandABlocks-rootfs/blob/master/CHANGELOG.rst">Changelog</a></li>
+</ul>
+
+  <!-- Add versions for selected branches + tags -->
+  <p class="caption"><span class="caption-text">Versions</span></p>
+  <ul id="versions"/>
+  <script>
+    // Add any branches to appear in the side pane here, tags will be added below
+    // Will only appear if docs are built and pushed in gh-pages
+    var versions = ['master', 'main'];
+    var dirs = new Set();
+    function addVersion(name) {
+      if (dirs.has(name)) {
+        var li = document.createElement("li");
+        var a = document.createElement("a");
+        a.href = 'https://PandABlocks.github.io/PandABlocks-rootfs/' + name;
+        a.innerText = name;
+        li.appendChild(a)
+        document.getElementById('versions').appendChild(li);
+      }
+    }
+    Promise.all([
+      // Find gh-pages directories and populate `dirs`
+      fetch("https://api.github.com/repos/PandABlocks/PandABlocks-rootfs/contents?ref=gh-pages")
+      .then(response => response.json())
+      .then(data => data.forEach(function(e) {
+        if (e.type == "dir") dirs.add(e.name);
+      })),
+      // Add tags to `versions`
+      fetch('https://api.github.com/repos/PandABlocks/PandABlocks-rootfs/tags')
+        .then(response => response.json())
+        .then(data => data.forEach(function(e) {
+          versions.push(e.name);
+        }))
+      ]).then(_ => versions.forEach(addVersion))
+  </script>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: black" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">PandABlocks-rootfs</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Updating a PandA via SSH</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/remote.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <div class="section" id="updating-a-panda-via-ssh">
+<span id="ssh-doc"></span><h1>Updating a PandA via SSH<a class="headerlink" href="#updating-a-panda-via-ssh" title="Permalink to this heading"></a></h1>
+<p>The Admin interface of the PandA can be used to update the firmware as detailed
+in the <a class="reference internal" href="quickstart.html#quickstart-doc"><span class="std std-ref">Getting a PandA on the network</span></a>, but sometimes it is necessary to update a number of
+PandAs at once. The SSH interface can be used to do this.</p>
+<p>To gain access over SSH, either add an <code class="docutils literal notranslate"><span class="pre">authorized_keys</span></code> file to the SD card,
+or load it from USB via the Admin interface.</p>
+<p>It is then possible to log in remotely and perform operations on the PandA</p>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>PandA only has a single user, root, and remote access is done as this user.
+Root has privileges to break the system, so be careful when running the
+commands below.</p>
+</div>
+<p>First update rootfs and then, after a reboot, update to the latest available zpkg packages (while making sure to match the major versions of everything).</p>
+<div class="section" id="updating-the-rootfs">
+<h2>Updating the rootfs<a class="headerlink" href="#updating-the-rootfs" title="Permalink to this heading"></a></h2>
+<p>Download a new <code class="docutils literal notranslate"><span class="pre">boot-x.x.zip</span></code> file from <a class="reference external" href="https://github.com/PandABlocks/PandABlocks-rootfs/releases">GitHub</a> and unzip it somewhere. You
+can then:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ md5sum imagefile.cpio.gz
+$ scp imagefile.cpio.gz root@my_panda_ip:/boot
+$ ssh root@my_panda_ip
+# sync
+# md5sum /boot/imagefile.cpio.gz
+</pre></div>
+</div>
+<p>If the two md5 sums match then you can power cycle the box and it will install
+the new rootfs. It they don’t then retry from the beginning.</p>
+</div>
+<div class="section" id="updating-zpkg-packages">
+<h2>Updating zpkg packages<a class="headerlink" href="#updating-zpkg-packages" title="Permalink to this heading"></a></h2>
+<p>Download new zpkg files from the appropriate GitHub repositories (these are shown at &lt;PandA-URL&gt;/admin/packages/list), then:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ scp *.zpg root@my_panda_ip:/tmp
+$ ssh root@my_panda_ip
+# zpkg install /tmp/*.zpg
+</pre></div>
+</div>
+<p>This will install the new versions of the appropriate packages, and restart the services on the box to use them.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Release 1.0 of the rootfs contained a bug which means that if 1.0 or later
+versions of the FPGA zpkg were installed, then any subsequent installations
+of the FPGA zpkg with <strong>ANY</strong> version of the rootfs would fail with
+message:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">File</span> <span class="n">lib</span><span class="o">/</span><span class="n">python2</span><span class="mf">.7</span><span class="o">/</span><span class="n">site</span><span class="o">-</span><span class="n">packages</span><span class="o">/</span><span class="n">malcolm</span><span class="o">/</span><span class="n">modules</span><span class="o">/</span><span class="n">web</span><span class="o">/</span><span class="n">www</span><span class="o">/</span><span class="n">fpga_docs</span> <span class="n">already</span> <span class="n">exists</span>
+</pre></div>
+</div>
+<p>Once you have seen this error, run:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">rm</span> <span class="o">/</span><span class="n">opt</span><span class="o">/</span><span class="n">lib</span><span class="o">/</span><span class="n">python2</span><span class="mf">.7</span><span class="o">/</span><span class="n">site</span><span class="o">-</span><span class="n">packages</span><span class="o">/</span><span class="n">malcolm</span><span class="o">/</span><span class="n">modules</span><span class="o">/</span><span class="n">web</span><span class="o">/</span><span class="n">www</span><span class="o">/</span><span class="n">fpga_docs</span>
+</pre></div>
+</div>
+<p>and then retry the <code class="docutils literal notranslate"><span class="pre">zpkg</span></code> command and it should succeed. Release 1.1 of
+the rootfs fixes this, but you will still have to follow the steps above to
+correct the error.</p>
+</div>
+</div>
+</div>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="quickstart.html" class="btn btn-neutral float-left" title="Getting a PandA on the network" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="building.html" class="btn btn-neutral float-right" title="Building the Root File System" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2015-2016, Michael Abbott, Tom Cobb.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
