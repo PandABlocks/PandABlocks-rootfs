@@ -35,6 +35,7 @@ RUN yum -y upgrade && yum -y install \
     xz \
     zlib-devel
 
+# cocotb requires python 3.7+
 RUN update-alternatives --set python /usr/bin/python3.12
 RUN update-alternatives --set python3 /usr/bin/python3.12
 
@@ -68,8 +69,8 @@ RUN pip3 install \
     sphinx-rtd-theme \
     --upgrade docutils==0.16
 
-# For cocotb (needs python3.7 +)
-RUN python -m pip install \
+# For cocotb
+RUN pip3 install \
     coverage \
     vhdeps
 
