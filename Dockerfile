@@ -65,6 +65,9 @@ RUN ln -s /usr/bin/python3 /usr/bin/python
 # Make sure git doesn't fail when used to obtain a tag name
 RUN git config --global --add safe.directory '*'
 
+WORKDIR /repos
+CMD ["/bin/bash"]
+
 FROM developer AS ci
 
 # ARC setup arguments
