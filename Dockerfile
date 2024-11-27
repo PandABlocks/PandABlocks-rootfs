@@ -74,7 +74,8 @@ RUN pip3 install \
 # For cocotb
 RUN pip3 install \
     coverage \
-    vhdeps
+    vhdeps \
+    pandas
 
 # Create config file for dls-rootfs
 RUN bash scripts/config-file-rootfs.sh
