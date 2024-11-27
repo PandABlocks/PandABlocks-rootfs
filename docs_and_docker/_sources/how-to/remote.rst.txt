@@ -92,7 +92,9 @@ Update 24V eeprom
 PandA 3.0 requires an update to the EEPROM of 24Vio FMC cards to do this:
 
 
-    - Find the right ipmi_definition file according the the product and revision (the one for FMC24V is under its module folder)
+    - Find the right ipmi_definition file according the the product and revision (the one for FMC24V_ is under its module folder)
     - Copy it to panda
     - Run /opt/bin/write_eeprom <path-to-ipmi-definition>
     - After writing, the script will read the EEPROM to confirm the content matches
+
+.. _FMC24V: https://github.com/PandABlocks/PandABlocks-FPGA/blob/master/modules/fmc_24vio/ipmi_definition.ini

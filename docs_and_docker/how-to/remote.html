@@ -8,7 +8,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Updating a PandA via SSH &#8212; PandABlocks-rootfs 3.1a8.dev2+ge39c13b documentation</title>
+    <title>Updating a PandA via SSH &#8212; PandABlocks-rootfs 4.1a2.dev1+g61c4633 documentation</title>
   
   
   
@@ -42,7 +42,7 @@
   <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=26a4bc78f4c0ddb94549" />
 <link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=26a4bc78f4c0ddb94549" />
 
-    <script src="../_static/documentation_options.js?v=acc3a9ff"></script>
+    <script src="../_static/documentation_options.js?v=ce952360"></script>
     <script src="../_static/doctools.js?v=9bcbadda"></script>
     <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -511,7 +511,7 @@ correct the error.</p>
 <p>PandA 3.0 requires an update to the EEPROM of 24Vio FMC cards to do this:</p>
 <blockquote>
 <div><ul class="simple">
-<li><p>Find the right ipmi_definition file according the the product and revision (the one for FMC24V is under its module folder)</p></li>
+<li><p>Find the right ipmi_definition file according the the product and revision (the one for <a class="reference external" href="https://github.com/PandABlocks/PandABlocks-FPGA/blob/master/modules/fmc_24vio/ipmi_definition.ini">FMC24V</a> is under its module folder)</p></li>
 <li><p>Copy it to panda</p></li>
 <li><p>Run /opt/bin/write_eeprom &lt;path-to-ipmi-definition&gt;</p></li>
 <li><p>After writing, the script will read the EEPROM to confirm the content matches</p></li>
