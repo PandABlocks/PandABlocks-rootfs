@@ -20,6 +20,7 @@ RUN yum -y upgrade && yum -y install \
     libmpc-devel \
     libjpeg-turbo-devel \
     libuuid-devel \
+    lzop \
     ncurses-compat-libs \
     openssl-devel \
     patch \
