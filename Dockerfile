@@ -107,6 +107,9 @@ RUN cd "$RUNNER_ASSETS_DIR" \
     && unzip ./runner-container-hooks.zip -d ./k8s \
     && rm -f runner-container-hooks.zip
 
+# Add Tini to attach a zombie process subreaper to vivado jobs in container
+RUN yum -y install tini
+
 # Sets working directory
 WORKDIR /repos
 # Entrypoint into container
