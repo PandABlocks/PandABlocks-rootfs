@@ -36,8 +36,8 @@ RUN yum -y upgrade && yum -y install \
 
 RUN yum -y group install "Development Tools"
 
-# Get fakeroot which needs epel-release 
-RUN yum -y install fakeroot
+# Get dependencies from EPEL repo
+RUN yum -y install fakeroot gcc-gnat gtkwave
 
 # Copy in scripts and dls rootfs, annotypes, pymalcolm, and malcolmjs
 COPY PandABlocks-rootfs/.github/scripts /scripts
@@ -49,9 +49,12 @@ COPY malcolmjs /malcolmjs
 # Toolchains and tar files
 RUN bash scripts/GNU-toolchain.sh
 RUN bash scripts/tar-files.sh
+RUN bash scripts/install-ghdl.sh
 
 # For the documentation
-RUN pip3 install matplotlib \ 
+RUN pip3 install \
+    cocotb \
+    matplotlib \ 
     rst2pdf \
     sphinx \
     sphinx-rtd-theme \
