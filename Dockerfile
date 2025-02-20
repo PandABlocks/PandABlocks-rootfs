@@ -75,6 +75,7 @@ RUN pip3 install \
     coverage \
     vhdeps \
     pandas \
+    pytest \
     git+https://github.com/cocotb/cocotb.git@6649d76
 
 # Create config file for dls-rootfs
