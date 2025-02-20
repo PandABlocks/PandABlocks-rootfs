@@ -61,7 +61,6 @@ RUN bash scripts/GNU-toolchain.sh
 RUN bash scripts/tar-files.sh
 RUN bash scripts/install-ghdl.sh
 RUN bash scripts/install-nvc.sh   
-RUN bash scripts/install-cocotb.sh
 
 # For the documentation
 RUN pip3 install \
@@ -75,7 +74,8 @@ RUN pip3 install \
 RUN pip3 install \
     coverage \
     vhdeps \
-    pandas
+    pandas \
+    git+https://github.com/cocotb/cocotb.git@6649d76
 
 # Create config file for dls-rootfs
 RUN bash scripts/config-file-rootfs.sh
