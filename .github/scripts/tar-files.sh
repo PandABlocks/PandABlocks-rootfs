@@ -45,7 +45,7 @@ curl -o u-boot-xlnx-xilinx-v2022.2.tar.gz -L https://github.com/Xilinx/u-boot-xl
     -o device-tree-xlnx-xilinx_v2023.2.tar.gz -L https://github.com/Xilinx/device-tree-xlnx/archive/refs/tags/xilinx_v2023.2.tar.gz \
     -o arm-trusted-firmware-xilinx-v2022.2.tar.gz -L https://github.com/Xilinx/arm-trusted-firmware/archive/refs/tags/xilinx-v2022.2.tar.gz \
     -o arm-trusted-firmware-xilinx-v2023.2.tar.gz -L https://github.com/Xilinx/arm-trusted-firmware/archive/refs/tags/xilinx-v2023.2.tar.gz \
-    -o dtc-1.7.0.tar.gz -L https://git.kernel.org/pub/scm/utils/dtc/dtc.git/dtc-1.7.0.tar.gz
+    -o dtc-1.7.0.tar.gz -L https://git.kernel.org/pub/scm/utils/dtc/dtc.git/snapshot/dtc-1.7.0.tar.gz
 
 # Old url to i2c-tools tar file. No longer working
 # -OL http://jdelvare.nerim.net/mirror/i2c-tools/i2c-tools-3.1.1.tar.bz2 \
