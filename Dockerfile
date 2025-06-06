@@ -1,6 +1,6 @@
 # ./Dockerfile
 
-FROM rockylinux:8.5  as developer
+FROM rockylinux:9.3  as developer
 
 # Host dependencies 
 RUN yum -y upgrade && yum -y install \
