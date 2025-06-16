@@ -18,21 +18,19 @@ get_mac_address()
 # panda-config.txt in its root, then use that instead of the default config
 # file.
 #   Unfortunately, it can take some time for the USB hot-plug process to finish
-# resolving, and all we can do is wait.  We start by checking the USB chain: if
-# there's more than the root hub then we'll wait and check.
-if [ -n "$(lsusb | grep -v '1d6b:000.')" ]; then
-    # Wait for hot-plug to finish mounting.
-    sleep 4
+# resolving, and all we can do is wait.  It takes about a second to show in lsusb 
+# then another to mount it, so 4s should be long enough to wait to check.
+# Wait for hot-plug to finish mounting.
+sleep 4
 
-    # Search for an alternative config.txt file.
-    for config in /mnt/*/panda-config.txt; do
-        if [ -e $config ]; then
-            echo Using alternate config file $config
-            CONFIG_FILE=$config
-            break
-        fi
-    done
-fi
+# Search for an alternative config.txt file.
+for config in /mnt/*/panda-config.txt; do
+    if [ -e $config ]; then
+        echo Using alternate config file $config
+        CONFIG_FILE=$config
+        break
+    fi
+done
 echo "$CONFIG_FILE" >/tmp/config_file
 
 
