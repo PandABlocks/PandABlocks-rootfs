@@ -2,14 +2,16 @@
 
 FROM rockylinux:8.5  as developer
 
-# Host dependencies 
+# Add epel repo
+RUN yum -y install epel-release
+
+# Host dependencies
 RUN yum -y upgrade && yum -y install \
     bc \
     bzip2 \
     cpio \
     dbus-x11 \
     diffutils \
-    epel-release \
     expat-devel \
     git \
     glibc-devel \
