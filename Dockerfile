@@ -25,6 +25,7 @@ RUN yum -y upgrade && yum -y install \
     lzop \
     llvm-devel \
     ncurses-compat-libs \
+    nmap-ncat \
     openssl-devel \
     patch \
     python3-devel \
