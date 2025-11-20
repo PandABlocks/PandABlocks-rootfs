@@ -156,7 +156,7 @@ The boot process is as follows:
 
 To install a fresh PandA system:
 
-1. Obtain a formatted empty SD card. A minimum size of 2GB is recommended.
+1. Obtain a FAT32 formatted empty SD card. A minimum size of 2GB is recommended.
 
 2. Place the following files on the SD card (from rootfs build):
 
@@ -167,6 +167,9 @@ config.txt  imagefile.cpio.gz  uImage
 
 3. Allocate MAC address to target system. These need to be purchased in blocks.
 4. (Optionally) Write MAC address into a file named `MAC` on the SD card.
+
+> [!NOTE]
+> The files above are generated during the build process. If you are creating an SD card from release files you will need to include files from the latest release along with files from the 3.0 release.
 
 ## Panda System First Boot
 
